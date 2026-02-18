@@ -18,5 +18,6 @@ export const teamMembers = [
     { name: "Harsh Shukla", role: "Web & Technical Head", image: "./assets/harsh.jpg", linkedin: "https://www.linkedin.com/in/harsh-shukla-7b1a40329", instagram: "https://www.instagram.com/hrittik_india/" },
     { name: "Arpita Prakash", role: "Operational Head", image: "./assets/arpita.jpg", linkedin: "https://www.linkedin.com/in/arpita-prakash-369493336", instagram: "https://www.instagram.com/hrittik_india/" },
     { name: "Mohammad Asif", role: "PR Executive", image: "./assets/asif.jpg", linkedin: "https://www.linkedin.com/in/x-asif", instagram: "https://www.instagram.com/hrittik_india/" },
+    { name: "Hrittik Maurya", role: "Marketing Head", image: "./assets/hrittik-editor.jpg", linkedin: "https://www.linkedin.com/in/hrittik-maurya", instagram: "https://www.instagram.com/hrittik_india/" },
     { name: "Hrittik Maurya", role: "Marketing Head", image: "./assets/hrittik-editor.jpg", linkedin: "https://www.linkedin.com/in/hrittik-maurya", instagram: "https://www.instagram.com/hrittik_india/" }
 ];
