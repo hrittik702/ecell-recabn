@@ -9,56 +9,52 @@ const Hero = () => {
   useGSAP(() => {
     const tl = gsap.timeline();
     
-    tl.fromTo('.hero-tag',
+    tl.fromTo('.hero-headline', 
       { y: 20, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.6, ease: 'power2.out' }
-    )
-    .fromTo('.hero-headline', 
-      { y: 20, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.7, ease: 'power2.out' },
-      '+=0.1'
+      { y: 0, opacity: 1, duration: 0.7, ease: 'power2.out' }
     )
     .fromTo('.hero-subtext', 
       { y: 20, opacity: 0 },
       { y: 0, opacity: 1, duration: 0.6, ease: 'power2.out' }, 
       '+=0.1'
-    )
-    .fromTo('.hero-cta', 
-      { y: 20, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.6, ease: 'power2.out', clearProps: 'transform' }, 
-      '+=0.1'
     );
   }, { scope: containerRef });
 
   return (
-    <section ref={containerRef} id="home" className="relative min-h-[85vh] pt-44 md:pt-52 pb-32 md:pb-40 flex items-center justify-center text-center bg-[#F9FAFB] overflow-hidden">
-      <div className="relative z-10 w-full max-w-6xl px-6 mx-auto">
-        
-        {/* Monospaced Tag */}
-        <div className="hero-tag mb-8 inline-block">
-          <span className="text-xs font-mono font-semibold tracking-widest text-gray-500 uppercase border-b border-gray-300 pb-1">
-            E-CELL REC ABN
-          </span>
-        </div>
-
-        {/* Powerful Laser Clip-Path Wipe & State-Shifting Headline */}
+    <section ref={containerRef} id="home" className="relative min-h-[95vh] pt-[20rem] sm:pt-[24rem] md:pt-[28rem] pb-16 md:pb-20 flex items-end justify-center text-center overflow-hidden">
+      
+      {/* Background Image Asset - Framed for Unobstructed Face Visibility */}
+      <div className="absolute inset-0 z-0">
+        <img 
+          src="/assets/hero-bg.jpg" 
+          alt="E-Cell REC Ambedkar Nagar Team at E-Summit" 
+          className="w-full h-full object-cover object-[75%_20%] scale-105"
+        />
+        {/* Ultra-Minimal 0.5px Blur Black Backdrop Overlay */}
         <div 
-          className="hero-headline cursor-pointer select-none mb-12 font-display font-bold uppercase text-4xl sm:text-6xl md:text-7xl lg:text-[6.25rem] leading-[1.04] tracking-tight"
+          className="absolute inset-0 bg-black/40" 
+          style={{ backdropFilter: 'blur(0.5px)', WebkitBackdropFilter: 'blur(0.5px)' }}
+        />
+      </div>
+
+      <div className="relative z-10 w-full max-w-6xl px-6 mx-auto mb-2">
+        
+        {/* Muted White Headline with Minimal Drop Shadow for Contrast */}
+        <div 
+          className="hero-headline cursor-pointer select-none mb-8 font-display font-bold uppercase text-3xl sm:text-5xl md:text-6xl lg:text-[5.5rem] leading-[1.04] tracking-tight text-[#F4F4F6] drop-shadow-[0_2px_8px_rgba(0,0,0,0.75)]"
           onMouseEnter={() => setIsShifted(true)}
           onMouseLeave={() => setIsShifted(false)}
         >
           {/* Line 1: VICHAR & AAKAR */}
-          <div className="flex justify-center items-center gap-x-4 md:gap-x-10 mb-3">
+          <div className="flex justify-center items-center gap-x-4 md:gap-x-10 mb-2">
             
             {/* VICHAR: Dual Layer Sweep */}
             <div className="relative inline-block">
-              {/* Base Outlined Layer */}
-              <span className="text-transparent [-webkit-text-stroke:2.5px_#111827]">
+              <span className="text-transparent [-webkit-text-stroke:2.5px_#F4F4F6]">
                 VICHAR
               </span>
-              {/* Top Solid Layer (Sweeps out on shift) */}
               <span 
-                className="absolute inset-0 text-gray-900 overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.87,0,0.13,1)]"
+                className="absolute inset-0 text-[#F4F4F6] overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.87,0,0.13,1)]"
                 style={{
                   clipPath: isShifted ? 'polygon(100% 0, 100% 0, 100% 100%, 100% 100%)' : 'polygon(0 0, 100% 0, 100% 100%, 0 100%)'
                 }}
@@ -69,13 +65,11 @@ const Hero = () => {
 
             {/* AAKAR: Dual Layer Sweep + Scaled */}
             <div className="relative inline-block transform scale-110">
-              {/* Base Outlined Layer */}
-              <span className="text-transparent [-webkit-text-stroke:2.5px_#111827]">
+              <span className="text-transparent [-webkit-text-stroke:2.5px_#F4F4F6]">
                 AAKAR
               </span>
-              {/* Top Solid Layer (Sweeps in on shift) */}
               <span 
-                className="absolute inset-0 text-gray-900 overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.87,0,0.13,1)]"
+                className="absolute inset-0 text-[#F4F4F6] overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.87,0,0.13,1)]"
                 style={{
                   clipPath: isShifted ? 'polygon(0 0, 100% 0, 100% 100%, 0 100%)' : 'polygon(0 0, 0 0, 0 100%, 0 100%)'
                 }}
@@ -91,13 +85,11 @@ const Hero = () => {
             
             {/* SAAKAAR: Dual Layer Sweep */}
             <div className="relative inline-block">
-              {/* Base Outlined Layer */}
-              <span className="text-transparent [-webkit-text-stroke:2.5px_#111827]">
+              <span className="text-transparent [-webkit-text-stroke:2.5px_#F4F4F6]">
                 SAAKAAR
               </span>
-              {/* Top Solid Layer (Sweeps out on shift) */}
               <span 
-                className="absolute inset-0 text-gray-900 overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.87,0,0.13,1)]"
+                className="absolute inset-0 text-[#F4F4F6] overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.87,0,0.13,1)]"
                 style={{
                   clipPath: isShifted ? 'polygon(100% 0, 100% 0, 100% 100%, 100% 100%)' : 'polygon(0 0, 100% 0, 100% 100%, 0 100%)'
                 }}
@@ -108,13 +100,11 @@ const Hero = () => {
 
             {/* BAAZAAR: Dual Layer Sweep + Scaled */}
             <div className="relative inline-block transform scale-110">
-              {/* Base Outlined Layer */}
-              <span className="text-transparent [-webkit-text-stroke:2.5px_#111827]">
+              <span className="text-transparent [-webkit-text-stroke:2.5px_#F4F4F6]">
                 BAAZAAR
               </span>
-              {/* Top Solid Layer (Sweeps in on shift) */}
               <span 
-                className="absolute inset-0 text-gray-900 overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.87,0,0.13,1)]"
+                className="absolute inset-0 text-[#F4F4F6] overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.87,0,0.13,1)]"
                 style={{
                   clipPath: isShifted ? 'polygon(0 0, 100% 0, 100% 100%, 0 100%)' : 'polygon(0 0, 0 0, 0 100%, 0 100%)'
                 }}
@@ -126,20 +116,10 @@ const Hero = () => {
           </div>
         </div>
 
-        {/* Sub-headline */}
-        <p className="hero-subtext text-base sm:text-lg md:text-xl text-gray-600 mb-10 font-medium max-w-xl mx-auto font-sans leading-relaxed">
+        {/* Sub-headline with Minimal Drop Shadow */}
+        <p className="hero-subtext text-base sm:text-lg md:text-xl text-[#E5E7EB] mb-2 font-medium max-w-xl mx-auto font-sans leading-relaxed drop-shadow-[0_1.5px_4px_rgba(0,0,0,0.8)]">
           Igniting the spirit of entrepreneurship and innovation at REC Ambedkar Nagar.
         </p>
-
-        {/* Corporate Rectangular CTA Button */}
-        <div className="hero-cta">
-          <a 
-            href="#contact" 
-            className="inline-block px-8 py-3.5 bg-gray-900 hover:bg-gray-800 text-white rounded-lg font-sans font-medium text-sm tracking-wide transition-colors duration-200 shadow-sm hover:scale-[1.02]"
-          >
-            Join the Movement
-          </a>
-        </div>
 
       </div>
     </section>

@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Instagram, Linkedin } from 'lucide-react';
+import { Instagram, Linkedin, Globe } from 'lucide-react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 
@@ -15,7 +15,7 @@ const currentTeam = [
   { id: 10, name: "Harsh Shukla", role: "Technical Head", image: "/assets/harsh.jpg", linkedin: "https://www.linkedin.com/in/harsh-shukla-7b1a40329", instagram: "https://www.instagram.com/hrittik_india/" },
   { id: 11, name: "Arpita Prakash", role: "Operational Head", image: "/assets/arpita.jpg", linkedin: "https://www.linkedin.com/in/arpita-prakash-369493336", instagram: "https://www.instagram.com/hrittik_india/" },
   { id: 12, name: "Mohammad Asif", role: "PR Executive", image: "/assets/asif.jpg", linkedin: "https://www.linkedin.com/in/x-asif", instagram: "https://www.instagram.com/hrittik_india/" },
-  { id: 13, name: "Hrittik Maurya", role: "Marketing Head", image: "/assets/hrittik-editor.jpg", linkedin: "https://www.linkedin.com/in/hrittik-maurya", instagram: "https://www.instagram.com/hrittik_india/" }
+  { id: 13, name: "Hrittik Maurya", role: "Marketing Head", image: "/assets/hrittik-editor.jpg", linkedin: "https://www.linkedin.com/in/hrittik-maurya", portfolio: "https://portfolio-hrittik.vercel.app/" }
 ];
 
 // 2. Our Passout Seniors (First 2 leaders)
@@ -43,14 +43,19 @@ const TeamCard = ({ member }) => (
       <p className="text-gray-600 text-xs font-semibold uppercase tracking-wider mb-3 font-sans">{member.role}</p>
       
       <div className="flex justify-center space-x-3">
-        {member.instagram && (
-          <a href={member.instagram} target="_blank" rel="noreferrer" aria-label="Instagram" className="text-gray-400 hover:text-gray-900 transition-colors">
-            <Instagram size={16} />
+        {member.portfolio && (
+          <a href={member.portfolio} target="_blank" rel="noreferrer" aria-label="Portfolio" className="text-gray-400 hover:text-gray-900 transition-colors" title="Personal Portfolio">
+            <Globe size={16} />
           </a>
         )}
         {member.linkedin && (
-          <a href={member.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn" className="text-gray-400 hover:text-gray-900 transition-colors">
+          <a href={member.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn" className="text-gray-400 hover:text-gray-900 transition-colors" title="LinkedIn Profile">
             <Linkedin size={16} />
+          </a>
+        )}
+        {member.instagram && (
+          <a href={member.instagram} target="_blank" rel="noreferrer" aria-label="Instagram" className="text-gray-400 hover:text-gray-900 transition-colors" title="Instagram Profile">
+            <Instagram size={16} />
           </a>
         )}
       </div>
