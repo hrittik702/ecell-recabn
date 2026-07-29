@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply m-0 p-0 overflow-x-hidden relative min-h-screen font-sans text-gray-900;
+    background-color: #F9FAFB;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold tracking-tight text-gray-900;
+  }
+}
+
+@layer utilities {
+  /* Minimal Corporate Card */
+  .glass-panel {
+    @apply bg-white border border-gray-200/60 shadow-2xs rounded-xl relative overflow-hidden;
+    will-change: transform, opacity;
+  }
+
+  /* Bento Grid Utilities */
+  .bento-grid {
+    @apply grid grid-cols-1 md:grid-cols-3 md:grid-rows-2 gap-6;
+  }
+  
+  .bento-item-large {
+    @apply md:col-span-2 md:row-span-2;
+  }
+  
+  .bento-item-wide {
+    @apply md:col-span-2;
+  }
+  
+  .bento-item-tall {
+    @apply md:row-span-2;
+  }
+
+  /* Non-blurred #111 Custom Mouse Follower */
+  .mousefollower {
+    width: 10px !important;
+    height: 10px !important;
+    background-color: #111111 !important;
+    border-radius: 50% !important;
+    filter: none !important;
+    border: none !important;
+    z-index: 9999 !important;
+  }
+}
