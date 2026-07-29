@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { ArrowUpRight, Trophy, Star } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 
@@ -10,6 +10,7 @@ const events = [
     title: 'NEC Finals | Advance Track — IIT Bombay',
     description: 'Proudly represented REC Ambedkar Nagar at the National Entrepreneurship Challenge (NEC) at IIT Bombay. Secured Rank 104 out of 4,000+ national teams, Top-5 in Fish Tank, and Finalist in Corporate Duel & Deciphering the Labyrinth.',
     tag: 'NATIONAL MILESTONE',
+    image: '/assets/nec 2026.png',
     gridClass: 'bento-item-large'
   },
   {
@@ -87,28 +88,43 @@ const Events = () => {
             <div key={event.id} className={`event-card bg-white border border-gray-200/80 rounded-xl p-8 md:p-10 flex flex-col justify-between shadow-2xs hover:shadow-md transition-all duration-300 group ${event.gridClass}`}>
               
               {/* Top Row: High-Contrast Date Tag & NAKED Arrow Icon */}
-              <div className="flex justify-between items-center mb-8">
-                <span className="text-xs font-mono font-bold tracking-widest text-gray-700 uppercase border-b border-gray-300 pb-1">
-                  {event.date}
-                </span>
-                {/* Naked Arrow Icon with Translate Animation on Hover */}
-                <ArrowUpRight 
-                  size={24} 
-                  className="text-gray-400 group-hover:text-gray-900 transform group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-200" 
-                />
-              </div>
-
-              {/* Internal Card Content with Dominant Typography */}
               <div>
-                <span className="text-[10px] font-mono font-bold tracking-widest text-indigo-600 uppercase border border-indigo-100 bg-indigo-50/50 px-2 py-0.5 rounded mb-3 inline-block">
-                  {event.tag}
-                </span>
-                <h3 className={`${event.gridClass ? 'text-3xl md:text-5xl' : 'text-2xl md:text-3xl'} font-display font-bold text-gray-900 mb-4 leading-tight`}>
-                  {event.title}
-                </h3>
-                <p className="text-gray-600 leading-relaxed text-base font-sans font-medium">
-                  {event.description}
-                </p>
+                <div className="flex justify-between items-center mb-6">
+                  <span className="text-xs font-mono font-bold tracking-widest text-gray-700 uppercase border-b border-gray-300 pb-1">
+                    {event.date}
+                  </span>
+                  {/* Naked Arrow Icon with Translate Animation on Hover */}
+                  <ArrowUpRight 
+                    size={24} 
+                    className="text-gray-400 group-hover:text-gray-900 transform group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-200" 
+                  />
+                </div>
+
+                {/* Card Banner Image if present */}
+                {event.image && (
+                  <div className="relative w-full h-56 md:h-72 overflow-hidden rounded-lg bg-gray-100 mb-6 border border-gray-200/60">
+                    <img 
+                      src={event.image} 
+                      alt={event.title} 
+                      loading="lazy"
+                      decoding="async"
+                      className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" 
+                    />
+                  </div>
+                )}
+
+                {/* Internal Card Content */}
+                <div>
+                  <span className="text-[10px] font-mono font-bold tracking-widest text-indigo-600 uppercase border border-indigo-100 bg-indigo-50/50 px-2 py-0.5 rounded mb-3 inline-block">
+                    {event.tag}
+                  </span>
+                  <h3 className={`${event.gridClass ? 'text-3xl md:text-4xl' : 'text-2xl md:text-3xl'} font-display font-bold text-gray-900 mb-3 leading-tight`}>
+                    {event.title}
+                  </h3>
+                  <p className="text-gray-600 leading-relaxed text-base font-sans font-medium">
+                    {event.description}
+                  </p>
+                </div>
               </div>
 
             </div>

@@ -13,7 +13,7 @@ export default {
       },
       fontFamily: {
         sans: ['"Inter"', 'sans-serif'],
-        display: ['"Playfair Display"', 'Georgia', 'serif'],
+        display: ['"Space Grotesk"', '"Inter"', 'sans-serif'],
       }
     },
   },

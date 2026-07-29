@@ -1,9 +1,10 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 
 const Hero = () => {
   const containerRef = useRef(null);
+  const [isShifted, setIsShifted] = useState(false);
   
   useGSAP(() => {
     const tl = gsap.timeline();
@@ -31,7 +32,7 @@ const Hero = () => {
 
   return (
     <section ref={containerRef} id="home" className="relative min-h-[85vh] pt-44 md:pt-52 pb-32 md:pb-40 flex items-center justify-center text-center bg-[#F9FAFB] overflow-hidden">
-      <div className="relative z-10 w-full max-w-4xl px-6 mx-auto">
+      <div className="relative z-10 w-full max-w-6xl px-6 mx-auto">
         
         {/* Monospaced Tag */}
         <div className="hero-tag mb-8 inline-block">
@@ -40,12 +41,92 @@ const Hero = () => {
           </span>
         </div>
 
-        {/* Un-distorted Editorial Display Headline (Playfair Display font - Natural Aspect Ratio) */}
-        <h1 className="hero-headline text-4xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-display font-bold tracking-tight text-gray-900 mb-8 leading-[1.08] mx-auto">
-          VICHAR AAKAR <br /> SAAKAAR BAAZAAR
-        </h1>
+        {/* Powerful Laser Clip-Path Wipe & State-Shifting Headline */}
+        <div 
+          className="hero-headline cursor-pointer select-none mb-12 font-display font-bold uppercase text-4xl sm:text-6xl md:text-7xl lg:text-[6.25rem] leading-[1.04] tracking-tight"
+          onMouseEnter={() => setIsShifted(true)}
+          onMouseLeave={() => setIsShifted(false)}
+        >
+          {/* Line 1: VICHAR & AAKAR */}
+          <div className="flex justify-center items-center gap-x-4 md:gap-x-10 mb-3">
+            
+            {/* VICHAR: Dual Layer Sweep */}
+            <div className="relative inline-block">
+              {/* Base Outlined Layer */}
+              <span className="text-transparent [-webkit-text-stroke:2.5px_#111827]">
+                VICHAR
+              </span>
+              {/* Top Solid Layer (Sweeps out on shift) */}
+              <span 
+                className="absolute inset-0 text-gray-900 overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.87,0,0.13,1)]"
+                style={{
+                  clipPath: isShifted ? 'polygon(100% 0, 100% 0, 100% 100%, 100% 100%)' : 'polygon(0 0, 100% 0, 100% 100%, 0 100%)'
+                }}
+              >
+                VICHAR
+              </span>
+            </div>
 
-        {/* Strictly Constrained Sub-headline (max-w-xl for clean 2-line wrap) */}
+            {/* AAKAR: Dual Layer Sweep + Scaled */}
+            <div className="relative inline-block transform scale-110">
+              {/* Base Outlined Layer */}
+              <span className="text-transparent [-webkit-text-stroke:2.5px_#111827]">
+                AAKAR
+              </span>
+              {/* Top Solid Layer (Sweeps in on shift) */}
+              <span 
+                className="absolute inset-0 text-gray-900 overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.87,0,0.13,1)]"
+                style={{
+                  clipPath: isShifted ? 'polygon(0 0, 100% 0, 100% 100%, 0 100%)' : 'polygon(0 0, 0 0, 0 100%, 0 100%)'
+                }}
+              >
+                AAKAR
+              </span>
+            </div>
+
+          </div>
+
+          {/* Line 2: SAAKAAR & BAAZAAR */}
+          <div className="flex justify-center items-center gap-x-4 md:gap-x-10">
+            
+            {/* SAAKAAR: Dual Layer Sweep */}
+            <div className="relative inline-block">
+              {/* Base Outlined Layer */}
+              <span className="text-transparent [-webkit-text-stroke:2.5px_#111827]">
+                SAAKAAR
+              </span>
+              {/* Top Solid Layer (Sweeps out on shift) */}
+              <span 
+                className="absolute inset-0 text-gray-900 overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.87,0,0.13,1)]"
+                style={{
+                  clipPath: isShifted ? 'polygon(100% 0, 100% 0, 100% 100%, 100% 100%)' : 'polygon(0 0, 100% 0, 100% 100%, 0 100%)'
+                }}
+              >
+                SAAKAAR
+              </span>
+            </div>
+
+            {/* BAAZAAR: Dual Layer Sweep + Scaled */}
+            <div className="relative inline-block transform scale-110">
+              {/* Base Outlined Layer */}
+              <span className="text-transparent [-webkit-text-stroke:2.5px_#111827]">
+                BAAZAAR
+              </span>
+              {/* Top Solid Layer (Sweeps in on shift) */}
+              <span 
+                className="absolute inset-0 text-gray-900 overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.87,0,0.13,1)]"
+                style={{
+                  clipPath: isShifted ? 'polygon(0 0, 100% 0, 100% 100%, 0 100%)' : 'polygon(0 0, 0 0, 0 100%, 0 100%)'
+                }}
+              >
+                BAAZAAR
+              </span>
+            </div>
+
+          </div>
+        </div>
+
+        {/* Sub-headline */}
         <p className="hero-subtext text-base sm:text-lg md:text-xl text-gray-600 mb-10 font-medium max-w-xl mx-auto font-sans leading-relaxed">
           Igniting the spirit of entrepreneurship and innovation at REC Ambedkar Nagar.
         </p>

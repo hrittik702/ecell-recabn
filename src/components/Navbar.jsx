@@ -27,16 +27,23 @@ const Navbar = () => {
   });
 
   return (
-    <nav ref={navRef} className={`fixed w-full top-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/90 backdrop-blur-md border-b border-gray-200/80 py-4 shadow-2xs' : 'bg-transparent py-6 border-b border-transparent'}`}>
+    <nav ref={navRef} className={`fixed w-full top-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/90 backdrop-blur-md border-b border-gray-200/80 py-3.5 shadow-2xs' : 'bg-transparent py-5 border-b border-transparent'}`}>
       <div className="container mx-auto px-6 flex justify-between items-center max-w-6xl">
-        {/* Navigation Header / Logo */}
-        <a href="#" className="text-xl md:text-2xl font-display font-bold tracking-tight text-gray-900">
-          E-CELL REC ABN
+        {/* Navigation Logo + Text Brand */}
+        <a href="#" className="flex items-center space-x-3 text-gray-900 group">
+          <img 
+            src="/assets/ecel rec abn logo.png" 
+            alt="E-Cell REC ABN Logo" 
+            className="h-9 md:h-11 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+          />
+          <span className="text-xl md:text-2xl font-display font-bold tracking-tight text-gray-900">
+            E-CELL REC ABN
+          </span>
         </a>
         
         {/* Desktop Nav - Perfect Horizontal Alignment */}
         <div className="hidden md:flex items-center space-x-8">
-          {['Home', 'About', 'Events', 'Team', 'Contact'].map((item) => (
+          {['Home', 'About', 'Events', 'Timeline', 'Team', 'Contact'].map((item) => (
             <a key={item} href={`#${item.toLowerCase()}`} className="text-gray-700 hover:text-[#D97706] transition-colors font-sans text-base font-semibold">
               {item}
             </a>
@@ -66,7 +73,7 @@ const Navbar = () => {
       {/* Mobile Nav */}
       {mobileMenuOpen && (
         <div className="md:hidden bg-white border-b border-gray-200 absolute top-full left-0 w-full p-6 flex flex-col items-center space-y-4 shadow-lg">
-          {['Home', 'About', 'Events', 'Team', 'Contact'].map((item) => (
+          {['Home', 'About', 'Events', 'Timeline', 'Team', 'Contact'].map((item) => (
             <a key={item} href={`#${item.toLowerCase()}`} onClick={() => setMobileMenuOpen(false)} className="text-gray-900 hover:text-[#D97706] font-sans font-semibold text-lg">
               {item}
             </a>
