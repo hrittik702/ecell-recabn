@@ -1,7 +1,7 @@
 import React, { useState, useRef, memo } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
-import { Calendar, Target, CheckCircle2, Lightbulb, Clock, Check, ArrowRight } from 'lucide-react';
+import { Calendar, Target, CheckCircle2, Lightbulb, Clock, Check, AlertCircle, Timer, Gauge, FileText, ExternalLink } from 'lucide-react';
 import { timelineData } from '../data/constants';
 
 const getItemStatus = (index) => {
@@ -43,7 +43,7 @@ const TimelineNode = memo(({ item, index, status, isSelected, onClick }) => {
         transform: `translateX(var(--curve-x, 0)) rotateX(var(--curve-rot-x, 0)) rotateY(var(--curve-rot-y, 0))`
       }}
     >
-      {/* 3D Slab Riser Edge (Hidden on mobile via md:block) */}
+      {/* 3D Slab Riser Edge */}
       <div 
         className={`hidden md:block absolute bottom-0 left-0 right-0 h-3 rounded-b-xl transition-colors ${
           isSelected 
@@ -55,7 +55,6 @@ const TimelineNode = memo(({ item, index, status, isSelected, onClick }) => {
         style={{ transform: 'translateY(100%) rotateX(-90deg)', transformOrigin: 'top' }}
       />
 
-      {/* Step Content */}
       <div className="flex items-center space-x-4 z-10 w-full">
         {isCurrent ? (
           <span className="relative flex h-4 w-4 shrink-0 items-center justify-center">
@@ -94,30 +93,12 @@ const Timeline = () => {
   useGSAP(() => {
     gsap.fromTo('.timeline-header',
       { y: 20, opacity: 0 },
-      {
-        y: 0,
-        opacity: 1,
-        duration: 0.6,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: 'top 85%',
-        }
-      }
+      { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out', scrollTrigger: { trigger: containerRef.current, start: 'top 85%' } }
     );
 
     gsap.fromTo('.staircase-wrapper',
       { y: 30, opacity: 0 },
-      {
-        y: 0,
-        opacity: 1,
-        duration: 0.8,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: '.staircase-wrapper',
-          start: 'top 80%',
-        }
-      }
+      { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out', scrollTrigger: { trigger: '.staircase-wrapper', start: 'top 80%' } }
     );
   }, { scope: containerRef });
 
@@ -125,7 +106,6 @@ const Timeline = () => {
   const activeStatus = getItemStatus(selectedIndex);
   const statusConfig = getStatusDetails(activeStatus, activeEvent.date);
 
-  // Responsive CSS for 3D timeline
   const timelineStyle = `
     @media (max-width: 767px) {
       .timeline-node-container > div {
@@ -137,29 +117,25 @@ const Timeline = () => {
   `;
 
   return (
-    <section ref={containerRef} id="timeline" className="py-24 relative z-10 bg-[#F9FAFB] overflow-hidden">
+    <section ref={containerRef} id="timeline" className="py-24 relative z-10 bg-off-white overflow-hidden">
       <style>{timelineStyle}</style>
       <div className="container mx-auto px-6 max-w-6xl">
         
-        {/* Section Header */}
         <div className="timeline-header flex flex-col md:flex-row md:items-end justify-between mb-16">
           <div>
-            <span className="text-xs font-mono font-bold tracking-widest text-gray-500 uppercase border-b border-gray-300 pb-1 mb-3 inline-block">
-              ROADMAP
+            <span className="text-xs font-mono font-bold tracking-widest text-indigo-600 uppercase mb-3 inline-block bg-indigo-50 px-3 py-1 rounded-full border border-indigo-100">
+              Roadmap
             </span>
             <h2 className="text-3xl md:text-5xl font-display font-bold text-gray-900 tracking-tight">NEC 2026 Timeline</h2>
           </div>
-          <p className="text-gray-600 mt-4 md:mt-0 text-base md:text-lg max-w-md font-sans font-medium">
+          <p className="text-gray-600 mt-6 md:mt-0 text-base md:text-lg max-w-md font-sans font-medium text-balance">
             Charting our key milestones through the National Entrepreneurship Challenge.
           </p>
         </div>
 
-        {/* 2-Column Balanced Layout */}
         <div className="staircase-wrapper grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
           
-          {/* Left Column: 3D Perspective Curved Staircase (5 Cols) */}
           <div className="lg:col-span-5 relative md:min-h-[600px] flex items-center justify-center py-4">
-            
             <div className="timeline-node-container w-full max-w-sm relative flex flex-col space-y-4 md:[perspective:1200px] md:[transform-style:preserve-3d]">
               {timelineData.map((item, index) => (
                 <TimelineNode
@@ -172,13 +148,10 @@ const Timeline = () => {
                 />
               ))}
             </div>
-
           </div>
 
-          {/* Right Column: Active Milestone Panel (7 Cols) */}
           <div className="lg:col-span-7 sticky top-24">
-            {/* The 'key' forces a full re-render of this container on change, triggering the fade-slide animation */}
-            <div key={selectedIndex} className="animate-fade-slide bg-white border border-gray-200/80 rounded-2xl p-8 md:p-10 shadow-lg flex flex-col transition-all duration-300 relative overflow-hidden">
+            <div key={selectedIndex} className="animate-fade-slide bg-white border border-gray-200/80 rounded-2xl p-8 md:p-10 shadow-premium flex flex-col transition-all duration-300 relative overflow-hidden">
               
               {activeStatus === 'current' && (
                 <div className="absolute -top-12 -right-12 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -201,8 +174,8 @@ const Timeline = () => {
                 </span>
                 
                 {activeStatus === 'current' && (
-                  <span className="flex items-center text-xs font-sans font-bold text-red-600 bg-red-50 border border-red-100 px-3 py-1.5 rounded-full ml-auto">
-                    <Clock size={14} className="mr-1.5" />
+                  <span className="flex items-center text-xs font-sans font-bold text-red-600 bg-red-50 border border-red-100 px-3 py-1.5 rounded-full ml-auto shadow-sm">
+                    <Clock size={14} className="mr-1.5 animate-pulse" />
                     Urgent
                   </span>
                 )}
@@ -212,9 +185,25 @@ const Timeline = () => {
                 {activeEvent.title}
               </h3>
               
-              <p className="text-gray-600 font-sans text-base leading-relaxed mb-8 font-medium pb-8 border-b border-gray-100">
+              <p className="text-gray-600 font-sans text-base leading-relaxed mb-8 font-medium pb-8 border-b border-gray-100 text-balance">
                 {activeEvent.desc}
               </p>
+
+              {/* --- METADATA GRID --- */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                <div className="bg-gray-50 border border-gray-100 rounded-xl p-4 flex flex-col items-center text-center shadow-sm hover:shadow-md transition-shadow">
+                  <div className="flex items-center text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2"><Gauge size={12} className="mr-1" /> Difficulty</div>
+                  <div className="text-sm font-sans font-bold text-gray-900">{activeEvent.difficulty}</div>
+                </div>
+                <div className="bg-gray-50 border border-gray-100 rounded-xl p-4 flex flex-col items-center text-center shadow-sm hover:shadow-md transition-shadow">
+                  <div className="flex items-center text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2"><Timer size={12} className="mr-1" /> Est. Time</div>
+                  <div className="text-sm font-sans font-bold text-gray-900">{activeEvent.time}</div>
+                </div>
+                <div className="col-span-2 bg-indigo-50/50 border border-indigo-100 rounded-xl p-4 flex flex-col justify-center shadow-sm hover:shadow-md transition-shadow text-center md:text-left">
+                  <div className="flex items-center justify-center md:justify-start text-[10px] font-bold text-indigo-500 uppercase tracking-wider mb-2"><Target size={12} className="mr-1" /> Expected Outcome</div>
+                  <div className="text-sm font-sans font-bold text-indigo-900">{activeEvent.outcome}</div>
+                </div>
+              </div>
 
               {/* --- WHY IT MATTERS --- */}
               <div className="mb-8">
@@ -231,29 +220,55 @@ const Timeline = () => {
               <div className="mb-8">
                 <h4 className="flex items-center text-sm font-bold text-gray-900 uppercase tracking-wider mb-4">
                   <CheckCircle2 size={18} className="text-indigo-600 mr-2" />
-                  What You Need To Do
+                  Checklist
                 </h4>
                 <ul className="space-y-3">
                   {activeEvent.checklist.map((task, i) => (
                     <li key={i} className="flex items-start">
-                      <div className="shrink-0 mt-0.5 w-5 h-5 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center mr-3">
+                      <div className="shrink-0 mt-0.5 w-5 h-5 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center mr-3 shadow-sm">
                         <Check size={12} className="text-emerald-600 font-bold" />
                       </div>
-                      <span className="text-gray-700 font-sans text-sm">{task}</span>
+                      <span className="text-gray-700 font-sans text-sm font-medium">{task}</span>
                     </li>
                   ))}
                 </ul>
               </div>
 
-              {/* --- TIPS BOX --- */}
-              <div className="bg-indigo-50/50 border border-indigo-100 rounded-xl p-5 mt-auto">
-                <h4 className="flex items-center text-xs font-bold text-indigo-900 uppercase tracking-wider mb-2">
-                  <Lightbulb size={16} className="text-indigo-600 mr-2" />
-                  Pro Tip
+              {/* --- RESOURCES --- */}
+              <div className="mb-8 border-t border-gray-100 pt-8">
+                <h4 className="flex items-center text-sm font-bold text-gray-900 uppercase tracking-wider mb-4">
+                  <FileText size={18} className="text-indigo-600 mr-2" />
+                  Resources
                 </h4>
-                <p className="text-indigo-800 font-sans text-sm font-medium leading-relaxed">
-                  {activeEvent.tips}
-                </p>
+                <div className="flex flex-wrap gap-3">
+                  {activeEvent.resources.map((res, i) => (
+                    <a key={i} href="#" className="flex items-center text-xs font-sans font-bold text-indigo-700 bg-white border border-indigo-200 shadow-sm px-3 py-2 rounded-lg hover:bg-indigo-50 hover:border-indigo-300 transition-all">
+                      {res} <ExternalLink size={14} className="ml-2 opacity-60" />
+                    </a>
+                  ))}
+                </div>
+              </div>
+
+              {/* --- ALERTS (Notes & Tips) --- */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-auto">
+                <div className="bg-amber-50/50 border border-amber-200/60 rounded-xl p-4">
+                  <h4 className="flex items-center text-xs font-bold text-amber-900 uppercase tracking-wider mb-2">
+                    <Lightbulb size={14} className="text-amber-600 mr-1.5" />
+                    Pro Tip
+                  </h4>
+                  <p className="text-amber-800 font-sans text-xs font-medium leading-relaxed">
+                    {activeEvent.tips}
+                  </p>
+                </div>
+                <div className="bg-red-50/50 border border-red-200/60 rounded-xl p-4">
+                  <h4 className="flex items-center text-xs font-bold text-red-900 uppercase tracking-wider mb-2">
+                    <AlertCircle size={14} className="text-red-600 mr-1.5" />
+                    Important Note
+                  </h4>
+                  <p className="text-red-800 font-sans text-xs font-medium leading-relaxed">
+                    {activeEvent.notes}
+                  </p>
+                </div>
               </div>
 
             </div>

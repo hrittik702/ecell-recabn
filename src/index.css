@@ -8,17 +8,32 @@
   }
 
   body {
-    @apply m-0 p-0 overflow-x-hidden relative min-h-screen font-sans text-gray-900;
-    background-color: #F9FAFB;
+    @apply antialiased text-gray-800 bg-off-white;
+    text-rendering: optimizeLegibility;
   }
 
   h1, h2, h3, h4, h5, h6 {
     @apply font-bold tracking-tight text-gray-900;
   }
 
+  p {
+    @apply leading-relaxed;
+  }
+
   /* Global Accessibility Focus Ring */
   *:focus-visible {
     @apply outline-none ring-2 ring-indigo-500 ring-offset-2 ring-offset-white;
+  }
+
+  /* Premium Utilities */
+  .glass {
+    @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-premium;
+  }
+  .glass-dark {
+    @apply bg-gray-900/80 backdrop-blur-lg border border-gray-700/50 shadow-premium;
+  }
+  .text-balance {
+    text-wrap: balance;
   }
 
   /* Timeline Content Transition */
