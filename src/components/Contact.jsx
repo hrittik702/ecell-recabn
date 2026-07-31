@@ -102,8 +102,9 @@ const Contact = () => {
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5 font-sans">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">Name</label>
+                  <label htmlFor="contact-name" className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">Name</label>
                   <input 
+                    id="contact-name"
                     type="text" 
                     placeholder="Your full name" 
                     value={formData.name}
@@ -113,8 +114,9 @@ const Contact = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">Email</label>
+                  <label htmlFor="contact-email" className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">Email</label>
                   <input 
+                    id="contact-email"
                     type="email" 
                     placeholder="name@company.com" 
                     value={formData.email}
@@ -124,8 +126,9 @@ const Contact = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">Message</label>
+                  <label htmlFor="contact-message" className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">Message</label>
                   <textarea 
+                    id="contact-message"
                     placeholder="How can we help you?" 
                     rows="4" 
                     value={formData.message}

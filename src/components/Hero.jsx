@@ -4,7 +4,6 @@ import { useGSAP } from '@gsap/react';
 
 const Hero = () => {
   const containerRef = useRef(null);
-  const [isShifted, setIsShifted] = useState(false);
   
   useGSAP(() => {
     const tl = gsap.timeline();
@@ -41,9 +40,7 @@ const Hero = () => {
         
         {/* Muted White Headline with Minimal Drop Shadow for Contrast */}
         <div 
-          className="hero-headline cursor-pointer select-none mb-8 font-display font-bold uppercase text-3xl sm:text-5xl md:text-6xl lg:text-[5.5rem] leading-[1.04] tracking-tight text-[#F4F4F6] drop-shadow-[0_2px_8px_rgba(0,0,0,0.75)]"
-          onMouseEnter={() => setIsShifted(true)}
-          onMouseLeave={() => setIsShifted(false)}
+          className="hero-headline cursor-pointer select-none mb-8 font-display font-bold uppercase text-3xl sm:text-5xl md:text-6xl lg:text-[5.5rem] leading-[1.04] tracking-tight text-[#F4F4F6] drop-shadow-[0_2px_8px_rgba(0,0,0,0.75)] group"
         >
           {/* Line 1: VICHAR & AAKAR */}
           <div className="flex justify-center items-center gap-x-4 md:gap-x-10 mb-2">
@@ -54,10 +51,8 @@ const Hero = () => {
                 VICHAR
               </span>
               <span 
-                className="absolute inset-0 text-[#F4F4F6] overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.87,0,0.13,1)]"
-                style={{
-                  clipPath: isShifted ? 'polygon(100% 0, 100% 0, 100% 100%, 100% 100%)' : 'polygon(0 0, 100% 0, 100% 100%, 0 100%)'
-                }}
+                aria-hidden="true"
+                className="absolute inset-0 text-[#F4F4F6] overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.87,0,0.13,1)] [clip-path:polygon(0_0,100%_0,100%_100%,0_100%)] group-hover:[clip-path:polygon(100%_0,100%_0,100%_100%,100%_100%)]"
               >
                 VICHAR
               </span>
@@ -69,10 +64,8 @@ const Hero = () => {
                 AAKAR
               </span>
               <span 
-                className="absolute inset-0 text-[#F4F4F6] overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.87,0,0.13,1)]"
-                style={{
-                  clipPath: isShifted ? 'polygon(0 0, 100% 0, 100% 100%, 0 100%)' : 'polygon(0 0, 0 0, 0 100%, 0 100%)'
-                }}
+                aria-hidden="true"
+                className="absolute inset-0 text-[#F4F4F6] overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.87,0,0.13,1)] [clip-path:polygon(0_0,0_0,0_100%,0_100%)] group-hover:[clip-path:polygon(0_0,100%_0,100%_100%,0_100%)]"
               >
                 AAKAR
               </span>
@@ -89,10 +82,8 @@ const Hero = () => {
                 SAAKAAR
               </span>
               <span 
-                className="absolute inset-0 text-[#F4F4F6] overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.87,0,0.13,1)]"
-                style={{
-                  clipPath: isShifted ? 'polygon(100% 0, 100% 0, 100% 100%, 100% 100%)' : 'polygon(0 0, 100% 0, 100% 100%, 0 100%)'
-                }}
+                aria-hidden="true"
+                className="absolute inset-0 text-[#F4F4F6] overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.87,0,0.13,1)] [clip-path:polygon(0_0,100%_0,100%_100%,0_100%)] group-hover:[clip-path:polygon(100%_0,100%_0,100%_100%,100%_100%)]"
               >
                 SAAKAAR
               </span>
@@ -104,10 +95,8 @@ const Hero = () => {
                 BAAZAAR
               </span>
               <span 
-                className="absolute inset-0 text-[#F4F4F6] overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.87,0,0.13,1)]"
-                style={{
-                  clipPath: isShifted ? 'polygon(0 0, 100% 0, 100% 100%, 0 100%)' : 'polygon(0 0, 0 0, 0 100%, 0 100%)'
-                }}
+                aria-hidden="true"
+                className="absolute inset-0 text-[#F4F4F6] overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.87,0,0.13,1)] [clip-path:polygon(0_0,0_0,0_100%,0_100%)] group-hover:[clip-path:polygon(0_0,100%_0,100%_100%,0_100%)]"
               >
                 BAAZAAR
               </span>

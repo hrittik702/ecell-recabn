@@ -9,8 +9,17 @@ const Navbar = () => {
   const navRef = useRef(null);
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 30);
-    window.addEventListener('scroll', handleScroll);
+    let ticking = false;
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setScrolled(window.scrollY > 30);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -83,8 +92,9 @@ const Navbar = () => {
 
         {/* Mobile Toggle */}
         <button 
-          className={`md:hidden focus:outline-none ${scrolled ? 'text-gray-900' : 'text-[#F4F4F6]'}`} 
-          aria-label="Toggle navigation menu"
+          className={`md:hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-500 rounded-md p-1 ${scrolled ? 'text-gray-900' : 'text-[#F4F4F6]'}`} 
+          aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+          aria-expanded={mobileMenuOpen}
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         >
           {mobileMenuOpen ? <X size={26} /> : <Menu size={26} />}

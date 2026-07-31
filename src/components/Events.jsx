@@ -2,34 +2,7 @@ import React, { useRef } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
-
-const events = [
-  {
-    id: 1,
-    date: 'DEC 10–12, 2025',
-    title: 'NEC Finals | Advance Track — IIT Bombay',
-    description: 'Proudly represented REC Ambedkar Nagar at the National Entrepreneurship Challenge (NEC) at IIT Bombay. Secured Rank 104 out of 4,000+ national teams, Top-5 in Fish Tank, and Finalist in Corporate Duel & Deciphering the Labyrinth.',
-    tag: 'NATIONAL MILESTONE',
-    image: '/assets/nec-2026.png',
-    gridClass: 'bento-item-large'
-  },
-  {
-    id: 2,
-    date: 'FEB 15, 2026',
-    title: 'E-Summit 2026',
-    description: 'The flagship entrepreneurship summit bringing together founders, investors, and students for networking and pitching.',
-    tag: 'UPCOMING SUMMIT',
-    gridClass: ''
-  },
-  {
-    id: 3,
-    date: 'MAR 10, 2026',
-    title: 'Startup Expo & Pitch',
-    description: 'Showcasing student startups and innovations to early adopters and angel networks.',
-    tag: 'EXPOSITION',
-    gridClass: ''
-  }
-];
+import { eventsData as events } from '../data/constants';
 
 const Events = () => {
   const containerRef = useRef(null);
@@ -84,8 +57,12 @@ const Events = () => {
         
         {/* Bento Grid */}
         <div className="events-grid bento-grid">
-          {events.map((event) => (
-            <div key={event.id} className={`event-card bg-white border border-gray-200/80 rounded-xl p-8 md:p-10 flex flex-col justify-between shadow-2xs hover:shadow-md transition-all duration-300 group ${event.gridClass}`}>
+          {events.map((event) => {
+            const CardWrapper = event.link ? 'a' : 'article';
+            const linkProps = event.link ? { href: event.link, target: '_blank', rel: 'noreferrer' } : {};
+
+            return (
+            <CardWrapper key={event.id} {...linkProps} className={`event-card block bg-white border border-gray-200/80 rounded-xl p-8 md:p-10 flex flex-col justify-between shadow-2xs hover:shadow-md transition-all duration-300 group ${event.gridClass}`}>
               
               {/* Top Row: High-Contrast Date Tag & NAKED Arrow Icon */}
               <div>
@@ -97,6 +74,7 @@ const Events = () => {
                   <ArrowUpRight 
                     size={24} 
                     className="text-gray-400 group-hover:text-gray-900 transform group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-200" 
+                    aria-hidden="true"
                   />
                 </div>
 
@@ -109,7 +87,6 @@ const Events = () => {
                       loading="lazy"
                       decoding="async"
                       className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" 
-                      onError={(e) => { e.target.src = '/assets/nec%202026.png'; }}
                     />
                   </div>
                 )}
@@ -128,8 +105,8 @@ const Events = () => {
                 </div>
               </div>
 
-            </div>
-          ))}
+            </CardWrapper>
+          )})}
         </div>
       </div>
     </section>

@@ -1,22 +1,8 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, memo } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
-import { ArrowRight, Calendar } from 'lucide-react';
-
-const timelineData = [
-  { date: 'JUN 28', isoDate: '2026-06-28', title: 'Head Start & Preliminary Launch', desc: 'Official kickoff of NEC tasks for participating college E-Cells across India.' },
-  { date: 'JUL 31', isoDate: '2026-07-31', title: 'Registration & Task Phase 1', desc: 'Closing of pan-India registrations across 600+ colleges and initial submission.' },
-  { date: 'AUG 02', isoDate: '2026-08-02', title: 'Preliminary Task Deadline', desc: 'Submission deadline for foundational E-Cell structure tasks.' },
-  { date: 'AUG 03', isoDate: '2026-08-03', title: 'Mentor Allotment & Ignite Propel', desc: 'Assignment of industry mentors and rollout of advanced track goals.' },
-  { date: 'SEP 14', isoDate: '2026-09-14', title: 'Ignite Propel Task Deadline', desc: 'Evaluation of mid-tier execution milestones and startup mentorship.' },
-  { date: 'SEP 15', isoDate: '2026-09-15', title: 'Venture Quest Task Launch', desc: 'Launch of final stage incubation and business model validation tasks.' },
-  { date: 'SEP 27', isoDate: '2026-09-27', title: 'Incentive Claiming Starts', desc: 'Review of task accomplishments and initial scoring verification.' },
-  { date: 'OCT 06', isoDate: '2026-10-06', title: 'Incentive Claiming Deadline', desc: 'Final submission cutoff for all incentive documentation.' },
-  { date: 'OCT 16', isoDate: '2026-10-16', title: 'Venture Quest Task Deadline', desc: 'Final submission of comprehensive E-Cell annual impact reports.' },
-  { date: 'OCT 22', isoDate: '2026-10-22', title: 'Final Leaderboard Publication', desc: 'Publication of national rankings ahead of finalist selection.' },
-  { date: 'OCT 24', isoDate: '2026-10-24', title: 'Finalist Announcement', desc: 'Shortlisting of top national E-Cells for the IIT Bombay finals.' },
-  { date: 'DEC 10–12', isoDate: '2026-12-10', title: 'NEC Finals at E-Summit 2026', desc: 'Grand finale at IIT Bombay (Advance Track) — Ranked #104 Nationally.' }
-];
+import { Calendar, Target, CheckCircle2, Lightbulb, Clock, Check, ArrowRight } from 'lucide-react';
+import { timelineData } from '../data/constants';
 
 const getItemStatus = (index) => {
   if (index === 0) return 'past';
@@ -24,10 +10,86 @@ const getItemStatus = (index) => {
   return 'future';
 };
 
+const getStatusDetails = (status, date) => {
+  if (status === 'past') return { color: 'bg-gray-100 text-gray-600', dot: 'bg-gray-400', label: 'Completed' };
+  if (status === 'current') return { color: 'bg-emerald-50 text-emerald-700 border border-emerald-200', dot: 'bg-emerald-500', label: 'Active Stage' };
+  return { color: 'bg-amber-50 text-amber-700 border border-amber-200', dot: 'bg-amber-500', label: 'Upcoming' };
+};
+
+const TimelineNode = memo(({ item, index, status, isSelected, onClick }) => {
+  const isPast = status === 'past';
+  const isCurrent = status === 'current';
+
+  // Contained S-Curve trajectory
+  const sProgress = index / (timelineData.length - 1);
+  const sCurveX = -Math.sin(sProgress * Math.PI * 2) * 60;
+
+  return (
+    <div
+      onClick={() => onClick(index)}
+      className={`relative cursor-pointer transition-all duration-300 group rounded-xl p-4 md:p-5 flex items-center justify-between border-t border-l border-r md:[transform-style:preserve-3d] shadow-sm hover:shadow-xl hover:scale-[1.02] hover:-translate-y-1 ${
+        isSelected
+          ? 'bg-white border-2 border-indigo-600 text-gray-900 shadow-md z-30'
+          : isCurrent
+          ? 'bg-white border-2 border-emerald-500 text-gray-900 z-20 hover:border-indigo-400'
+          : isPast
+          ? 'bg-gray-50 border-gray-200/60 text-gray-500 opacity-75 hover:opacity-100 hover:bg-white hover:border-indigo-300'
+          : 'bg-white border-gray-200 text-gray-800 hover:border-indigo-300'
+      }`}
+      style={{
+        '--curve-x': `${sCurveX}px`,
+        '--curve-rot-x': '20deg',
+        '--curve-rot-y': `${sCurveX * 0.08}deg`,
+        transform: `translateX(var(--curve-x, 0)) rotateX(var(--curve-rot-x, 0)) rotateY(var(--curve-rot-y, 0))`
+      }}
+    >
+      {/* 3D Slab Riser Edge (Hidden on mobile via md:block) */}
+      <div 
+        className={`hidden md:block absolute bottom-0 left-0 right-0 h-3 rounded-b-xl transition-colors ${
+          isSelected 
+            ? 'bg-indigo-900 border-t border-indigo-800' 
+            : isCurrent 
+            ? 'bg-emerald-600' 
+            : 'bg-gray-200 border-t border-gray-300 group-hover:bg-indigo-100'
+        }`}
+        style={{ transform: 'translateY(100%) rotateX(-90deg)', transformOrigin: 'top' }}
+      />
+
+      {/* Step Content */}
+      <div className="flex items-center space-x-4 z-10 w-full">
+        {isCurrent ? (
+          <span className="relative flex h-4 w-4 shrink-0 items-center justify-center">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+          </span>
+        ) : (
+          <span className={`w-3 h-3 shrink-0 rounded-full transition-colors ${
+            isSelected ? 'bg-indigo-600' : isPast ? 'bg-gray-300 group-hover:bg-indigo-400' : 'bg-gray-800 group-hover:bg-indigo-500'
+          }`} />
+        )}
+
+        <div className="flex flex-col">
+          <span className={`text-xs font-mono font-bold uppercase tracking-wider mb-1 transition-colors ${
+            isSelected ? 'text-indigo-600' : isCurrent ? 'text-emerald-600 font-bold' : 'text-gray-500 group-hover:text-indigo-500'
+          }`}>
+            {item.date}
+          </span>
+
+          <span className={`text-sm md:text-base font-sans font-bold leading-tight transition-colors ${
+            isSelected ? 'text-gray-900' : 'text-gray-700 group-hover:text-gray-900'
+          }`}>
+            {item.title}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+});
+TimelineNode.displayName = 'TimelineNode';
+
 const Timeline = () => {
   const containerRef = useRef(null);
   const [selectedIndex, setSelectedIndex] = useState(1);
-  const [hoveredIndex, setHoveredIndex] = useState(null);
 
   useGSAP(() => {
     gsap.fromTo('.timeline-header',
@@ -59,12 +121,24 @@ const Timeline = () => {
     );
   }, { scope: containerRef });
 
-  const activeIndex = hoveredIndex !== null ? hoveredIndex : selectedIndex;
-  const activeEvent = timelineData[activeIndex];
-  const activeStatus = getItemStatus(activeIndex);
+  const activeEvent = timelineData[selectedIndex];
+  const activeStatus = getItemStatus(selectedIndex);
+  const statusConfig = getStatusDetails(activeStatus, activeEvent.date);
+
+  // Responsive CSS for 3D timeline
+  const timelineStyle = `
+    @media (max-width: 767px) {
+      .timeline-node-container > div {
+        --curve-x: 0px !important;
+        --curve-rot-x: 0deg !important;
+        --curve-rot-y: 0deg !important;
+      }
+    }
+  `;
 
   return (
     <section ref={containerRef} id="timeline" className="py-24 relative z-10 bg-[#F9FAFB] overflow-hidden">
+      <style>{timelineStyle}</style>
       <div className="container mx-auto px-6 max-w-6xl">
         
         {/* Section Header */}
@@ -80,148 +154,106 @@ const Timeline = () => {
           </p>
         </div>
 
-        {/* 2-Column Balanced Layout (Reversed Staircase Order Top-to-Bottom) */}
-        <div className="staircase-wrapper grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+        {/* 2-Column Balanced Layout */}
+        <div className="staircase-wrapper grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
           
-          {/* Left Column: 3D Perspective Curved Staircase (6 Cols) */}
-          <div className="lg:col-span-6 relative min-h-[540px] flex items-center justify-center py-4">
+          {/* Left Column: 3D Perspective Curved Staircase (5 Cols) */}
+          <div className="lg:col-span-5 relative md:min-h-[600px] flex items-center justify-center py-4">
             
-            {/* Reversed Order Container: Step #1 at Top down to Step #12 at Bottom */}
-            <div className="w-full max-w-md relative flex flex-col space-y-3.5 [perspective:1200px] [transform-style:preserve-3d]">
-              {timelineData.map((item, index) => {
-                const status = getItemStatus(index);
-                const isPast = status === 'past';
-                const isCurrent = status === 'current';
-                const isHovered = hoveredIndex === index;
-                const isPinned = selectedIndex === index && hoveredIndex === null;
-
-                // Contained S-Curve trajectory (Max 60px curve for clean column separation)
-                const sProgress = index / (timelineData.length - 1);
-                const sCurveX = -Math.sin(sProgress * Math.PI * 2) * 60;
-
-                return (
-                  <div
-                    key={index}
-                    onMouseEnter={() => setHoveredIndex(index)}
-                    onMouseLeave={() => setHoveredIndex(null)}
-                    onClick={() => setSelectedIndex(index)}
-                    className={`relative cursor-pointer transition-all duration-300 group rounded-lg p-3 md:p-3.5 flex items-center justify-between border-t border-l border-r [transform-style:preserve-3d] ${
-                      isHovered
-                        ? 'bg-gray-900 text-white border-gray-900 shadow-2xl z-40 -translate-y-2 scale-[1.04]'
-                        : isPinned
-                        ? 'bg-white border-2 border-gray-900 text-gray-900 shadow-md z-30'
-                        : isCurrent
-                        ? 'bg-white border-2 border-emerald-500 text-gray-900 z-20 shadow-sm'
-                        : isPast
-                        ? 'bg-gray-100/80 border-gray-200/60 text-gray-400 opacity-60 hover:opacity-100'
-                        : 'bg-white border-gray-200/80 text-gray-800 shadow-2xs hover:border-gray-400'
-                    }`}
-                    style={{
-                      transform: `translateX(${sCurveX}px) rotateX(20deg) rotateY(${sCurveX * 0.08}deg) ${
-                        isHovered ? 'translateZ(20px)' : ''
-                      }`,
-                    }}
-                  >
-                    {/* 3D Slab Riser Edge */}
-                    <div 
-                      className={`absolute bottom-0 left-0 right-0 h-3 rounded-b-lg transition-colors ${
-                        isHovered 
-                          ? 'bg-gray-950 border-t border-gray-800' 
-                          : isCurrent 
-                          ? 'bg-emerald-600' 
-                          : 'bg-gray-200 border-t border-gray-300'
-                      }`}
-                      style={{ transform: 'translateY(100%) rotateX(-90deg)', transformOrigin: 'top' }}
-                    />
-
-                    {/* Step Content */}
-                    <div className="flex items-center space-x-3 z-10">
-                      {isCurrent ? (
-                        <span className="relative flex h-3.5 w-3.5 items-center justify-center">
-                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                          <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-                        </span>
-                      ) : (
-                        <span className={`w-2 h-2 rounded-full ${
-                          isHovered ? 'bg-emerald-400' : isPast ? 'bg-gray-300' : 'bg-gray-800'
-                        }`} />
-                      )}
-
-                      <span className={`text-xs font-mono font-bold uppercase tracking-wider ${
-                        isHovered ? 'text-emerald-400' : isCurrent ? 'text-emerald-600 font-bold' : 'text-gray-500'
-                      }`}>
-                        {item.date}
-                      </span>
-
-                      <span className="text-sm font-sans font-bold truncate max-w-[150px] sm:max-w-[200px]">
-                        {item.title}
-                      </span>
-                    </div>
-
-                    {/* Milestone Number Tag */}
-                    <span className={`text-[10px] font-mono px-2 py-0.5 rounded font-bold z-10 ${
-                      isHovered ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-500'
-                    }`}>
-                      #{index + 1}
-                    </span>
-
-                  </div>
-                );
-              })}
+            <div className="timeline-node-container w-full max-w-sm relative flex flex-col space-y-4 md:[perspective:1200px] md:[transform-style:preserve-3d]">
+              {timelineData.map((item, index) => (
+                <TimelineNode
+                  key={index}
+                  item={item}
+                  index={index}
+                  status={getItemStatus(index)}
+                  isSelected={selectedIndex === index}
+                  onClick={setSelectedIndex}
+                />
+              ))}
             </div>
 
           </div>
 
-          {/* Right Column: Active Milestone Panel (6 Cols) */}
-          <div className="lg:col-span-6">
-            <div className="bg-white border border-gray-200/80 rounded-xl p-8 md:p-10 shadow-md min-h-[420px] flex flex-col justify-between transition-all duration-300 relative overflow-hidden">
+          {/* Right Column: Active Milestone Panel (7 Cols) */}
+          <div className="lg:col-span-7 sticky top-24">
+            {/* The 'key' forces a full re-render of this container on change, triggering the fade-slide animation */}
+            <div key={selectedIndex} className="animate-fade-slide bg-white border border-gray-200/80 rounded-2xl p-8 md:p-10 shadow-lg flex flex-col transition-all duration-300 relative overflow-hidden">
               
               {activeStatus === 'current' && (
-                <div className="absolute -top-12 -right-12 w-36 h-36 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
+                <div className="absolute -top-12 -right-12 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
               )}
+              
+              {/* --- HEADER --- */}
+              <div className="flex flex-wrap items-center gap-3 mb-6">
+                <span className={`text-xs font-sans font-bold uppercase px-3 py-1.5 rounded-full flex items-center shadow-sm ${statusConfig.color}`}>
+                  {activeStatus === 'current' ? (
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping mr-2 inline-block" />
+                  ) : (
+                    <span className={`w-2 h-2 rounded-full ${statusConfig.dot} mr-2 inline-block`} />
+                  )}
+                  {statusConfig.label}
+                </span>
 
-              <div>
-                {/* Header Badge */}
-                <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-100">
-                  <span className={`text-xs font-mono font-bold tracking-widest uppercase px-3 py-1 rounded-full ${
-                    activeStatus === 'current'
-                      ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center space-x-1.5'
-                      : activeStatus === 'past'
-                      ? 'bg-gray-100 text-gray-500'
-                      : 'bg-gray-900 text-white'
-                  }`}>
-                    {activeStatus === 'current' && <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping inline-block mr-1.5" />}
-                    {activeStatus === 'current' ? 'ACTIVE STAGE' : activeStatus === 'past' ? 'COMPLETED' : 'UPCOMING'}
+                <span className="flex items-center text-xs font-mono font-bold text-gray-500 bg-gray-100 px-3 py-1.5 rounded-full border border-gray-200">
+                  <Calendar size={14} className="mr-1.5" />
+                  {activeEvent.date}
+                </span>
+                
+                {activeStatus === 'current' && (
+                  <span className="flex items-center text-xs font-sans font-bold text-red-600 bg-red-50 border border-red-100 px-3 py-1.5 rounded-full ml-auto">
+                    <Clock size={14} className="mr-1.5" />
+                    Urgent
                   </span>
+                )}
+              </div>
 
-                  <span className="text-xs font-mono font-bold text-gray-500">
-                    MILESTONE #{activeIndex + 1} OF 12
-                  </span>
-                </div>
+              <h3 className="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-4 leading-tight">
+                {activeEvent.title}
+              </h3>
+              
+              <p className="text-gray-600 font-sans text-base leading-relaxed mb-8 font-medium pb-8 border-b border-gray-100">
+                {activeEvent.desc}
+              </p>
 
-                {/* Date Highlight */}
-                <div className="flex items-center space-x-2 text-gray-500 mb-3">
-                  <Calendar size={16} />
-                  <span className="text-sm font-mono font-bold tracking-wider uppercase text-gray-700">
-                    {activeEvent.date}
-                  </span>
-                </div>
-
-                {/* Event Title */}
-                <h3 className="text-2xl md:text-4xl font-display font-bold text-gray-900 mb-4 leading-tight">
-                  {activeEvent.title}
-                </h3>
-
-                {/* Event Description */}
-                <p className="text-gray-600 font-sans text-base leading-relaxed mb-6 font-medium">
-                  {activeEvent.desc}
+              {/* --- WHY IT MATTERS --- */}
+              <div className="mb-8">
+                <h4 className="flex items-center text-sm font-bold text-gray-900 uppercase tracking-wider mb-3">
+                  <Target size={18} className="text-indigo-600 mr-2" />
+                  Why this matters
+                </h4>
+                <p className="text-gray-600 font-sans text-sm leading-relaxed">
+                  {activeEvent.whyItMatters}
                 </p>
               </div>
 
-              {/* Footer Guidance */}
-              <div className="pt-6 border-t border-gray-100 flex items-center justify-between text-xs font-mono font-medium text-gray-400">
-                <span>Select any milestone to view details</span>
-                <ArrowRight size={16} className="text-gray-400" />
+              {/* --- WHAT YOU NEED TO DO --- */}
+              <div className="mb-8">
+                <h4 className="flex items-center text-sm font-bold text-gray-900 uppercase tracking-wider mb-4">
+                  <CheckCircle2 size={18} className="text-indigo-600 mr-2" />
+                  What You Need To Do
+                </h4>
+                <ul className="space-y-3">
+                  {activeEvent.checklist.map((task, i) => (
+                    <li key={i} className="flex items-start">
+                      <div className="shrink-0 mt-0.5 w-5 h-5 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center mr-3">
+                        <Check size={12} className="text-emerald-600 font-bold" />
+                      </div>
+                      <span className="text-gray-700 font-sans text-sm">{task}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* --- TIPS BOX --- */}
+              <div className="bg-indigo-50/50 border border-indigo-100 rounded-xl p-5 mt-auto">
+                <h4 className="flex items-center text-xs font-bold text-indigo-900 uppercase tracking-wider mb-2">
+                  <Lightbulb size={16} className="text-indigo-600 mr-2" />
+                  Pro Tip
+                </h4>
+                <p className="text-indigo-800 font-sans text-sm font-medium leading-relaxed">
+                  {activeEvent.tips}
+                </p>
               </div>
 
             </div>

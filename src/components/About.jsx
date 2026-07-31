@@ -1,13 +1,8 @@
 import React, { useRef } from 'react';
-import { Award, ShieldCheck, TrendingUp, Trophy } from 'lucide-react';
+import { Award, Trophy } from 'lucide-react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
-
-const mentors = [
-  { name: "Prof. Dhananjay Singh", role: "Director, REC Ambedkar Nagar", tag: "Institutional Patron" },
-  { name: "Dr. Sudhakar Tripathi", role: "Professor In-Charge (Incubation)", tag: "Faculty Advisor" },
-  { name: "Mr. Ajit Kumar Rai", role: "Manager, Incubation Center", tag: "Incubation Manager" },
-];
+import { mentors } from '../data/constants';
 
 const About = () => {
   const containerRef = useRef(null);
@@ -91,18 +86,18 @@ const About = () => {
           </div>
 
           {/* Stat 1 - National Rank */}
-          <div className="about-card bg-white border border-gray-200/80 rounded-xl p-8 flex flex-col items-center justify-center text-center shadow-2xs hover:shadow-md transition-all duration-300">
+          <a href="https://www.ecell.in/nec/" target="_blank" rel="noreferrer" className="about-card block bg-white border border-gray-200/80 rounded-xl p-8 flex flex-col items-center justify-center text-center shadow-2xs hover:shadow-md transition-all duration-300">
             <Trophy size={28} className="text-gray-800 mb-3" />
             <h4 className="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-1 tracking-tight">#104</h4>
             <p className="text-gray-600 text-xs font-bold uppercase tracking-widest font-sans">Rank Out of 4,000+ (IIT Bombay NEC)</p>
-          </div>
+          </a>
 
           {/* Stat 2 - Fish Tank Top 5 */}
-          <div className="about-card bg-white border border-gray-200/80 rounded-xl p-8 flex flex-col items-center justify-center text-center shadow-2xs hover:shadow-md transition-all duration-300">
+          <a href="https://www.ecell.in/nec/" target="_blank" rel="noreferrer" className="about-card block bg-white border border-gray-200/80 rounded-xl p-8 flex flex-col items-center justify-center text-center shadow-2xs hover:shadow-md transition-all duration-300">
             <Award size={28} className="text-gray-800 mb-3" />
             <h4 className="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-1 tracking-tight">Top 5</h4>
             <p className="text-gray-600 text-xs font-bold uppercase tracking-widest font-sans">Fish Tank National Finalist</p>
-          </div>
+          </a>
 
         </div>
 
