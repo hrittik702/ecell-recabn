@@ -10,7 +10,7 @@ const events = [
     title: 'NEC Finals | Advance Track — IIT Bombay',
     description: 'Proudly represented REC Ambedkar Nagar at the National Entrepreneurship Challenge (NEC) at IIT Bombay. Secured Rank 104 out of 4,000+ national teams, Top-5 in Fish Tank, and Finalist in Corporate Duel & Deciphering the Labyrinth.',
     tag: 'NATIONAL MILESTONE',
-    image: '/assets/nec 2026.png',
+    image: '/assets/nec-2026.png',
     gridClass: 'bento-item-large'
   },
   {
@@ -109,6 +109,7 @@ const Events = () => {
                       loading="lazy"
                       decoding="async"
                       className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" 
+                      onError={(e) => { e.target.src = '/assets/nec%202026.png'; }}
                     />
                   </div>
                 )}

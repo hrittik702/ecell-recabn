@@ -32,9 +32,10 @@ const Navbar = () => {
         {/* Navigation Logo + Text Brand */}
         <a href="#" className="flex items-center space-x-3 group">
           <img 
-            src="/assets/ecel rec abn logo.png" 
+            src="/assets/ecell-logo.png" 
             alt="E-Cell REC ABN Logo" 
             className="h-9 md:h-11 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+            onError={(e) => { e.target.src = '/assets/ecel%20rec%20abn%20logo.png'; }}
           />
           <span className={`text-xl md:text-2xl font-display font-bold tracking-tight transition-colors ${scrolled ? 'text-gray-900' : 'text-[#F4F4F6]'}`}>
             E-CELL REC ABN
