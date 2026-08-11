@@ -4,9 +4,18 @@ import { useGSAP } from '@gsap/react';
 import { Calendar, Target, CheckCircle2, Lightbulb, Clock, Check, AlertCircle, Timer, Gauge, FileText, ExternalLink } from 'lucide-react';
 import { timelineData } from '../data/constants';
 
+const calculateActiveIndex = () => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const index = timelineData.findIndex(item => new Date(item.isoDate) >= today);
+  return index !== -1 ? index : timelineData.length - 1;
+};
+
+const ACTIVE_STEP_INDEX = calculateActiveIndex();
+
 const getItemStatus = (index) => {
-  if (index === 0) return 'past';
-  if (index === 1) return 'current'; // July 31 active stage
+  if (index < ACTIVE_STEP_INDEX) return 'past';
+  if (index === ACTIVE_STEP_INDEX) return 'current';
   return 'future';
 };
 
@@ -88,7 +97,7 @@ TimelineNode.displayName = 'TimelineNode';
 
 const Timeline = () => {
   const containerRef = useRef(null);
-  const [selectedIndex, setSelectedIndex] = useState(1);
+  const [selectedIndex, setSelectedIndex] = useState(ACTIVE_STEP_INDEX);
 
   useGSAP(() => {
     gsap.fromTo('.timeline-header',
@@ -234,42 +243,7 @@ const Timeline = () => {
                 </ul>
               </div>
 
-              {/* --- RESOURCES --- */}
-              <div className="mb-8 border-t border-gray-100 pt-8">
-                <h4 className="flex items-center text-sm font-bold text-gray-900 uppercase tracking-wider mb-4">
-                  <FileText size={18} className="text-indigo-600 mr-2" />
-                  Resources
-                </h4>
-                <div className="flex flex-wrap gap-3">
-                  {activeEvent.resources.map((res, i) => (
-                    <a key={i} href="#" className="flex items-center text-xs font-sans font-bold text-indigo-700 bg-white border border-indigo-200 shadow-sm px-3 py-2 rounded-lg hover:bg-indigo-50 hover:border-indigo-300 transition-all">
-                      {res} <ExternalLink size={14} className="ml-2 opacity-60" />
-                    </a>
-                  ))}
-                </div>
-              </div>
-
-              {/* --- ALERTS (Notes & Tips) --- */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-auto">
-                <div className="bg-amber-50/50 border border-amber-200/60 rounded-xl p-4">
-                  <h4 className="flex items-center text-xs font-bold text-amber-900 uppercase tracking-wider mb-2">
-                    <Lightbulb size={14} className="text-amber-600 mr-1.5" />
-                    Pro Tip
-                  </h4>
-                  <p className="text-amber-800 font-sans text-xs font-medium leading-relaxed">
-                    {activeEvent.tips}
-                  </p>
-                </div>
-                <div className="bg-red-50/50 border border-red-200/60 rounded-xl p-4">
-                  <h4 className="flex items-center text-xs font-bold text-red-900 uppercase tracking-wider mb-2">
-                    <AlertCircle size={14} className="text-red-600 mr-1.5" />
-                    Important Note
-                  </h4>
-                  <p className="text-red-800 font-sans text-xs font-medium leading-relaxed">
-                    {activeEvent.notes}
-                  </p>
-                </div>
-              </div>
+              {/* Sections removed for conciseness */}
 
             </div>
           </div>

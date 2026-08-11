@@ -25,7 +25,6 @@ function App() {
         <Events />
         <Timeline />
         <Team />
-        <Contact />
       </main>
       <Footer />
     </div>

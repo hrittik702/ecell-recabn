@@ -1,5 +1,5 @@
-import React, { useRef } from 'react';
-import { Award, Trophy, Lightbulb, Users, Coins, Rocket, Building2, Globe2, Target } from 'lucide-react';
+import React, { useRef, useState } from 'react';
+import { Award, Trophy, Lightbulb, Users, Coins, Rocket, Building2, Globe2, Target, Volume2, VolumeX } from 'lucide-react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { mentors } from '../data/constants';
@@ -19,6 +19,19 @@ const PipelineStep = ({ icon: Icon, title, desc, isLast }) => (
 
 const About = () => {
   const containerRef = useRef(null);
+  const videoRef = useRef(null);
+  const [isMuted, setIsMuted] = useState(true);
+
+  const toggleMute = () => {
+    if (videoRef.current && videoRef.current.contentWindow) {
+      const command = isMuted ? 'unMute' : 'mute';
+      videoRef.current.contentWindow.postMessage(
+        JSON.stringify({ event: 'command', func: command, args: [] }),
+        '*'
+      );
+      setIsMuted(!isMuted);
+    }
+  };
 
   useGSAP(() => {
     gsap.fromTo('.about-header', 
@@ -46,20 +59,20 @@ const About = () => {
       <div className="container mx-auto px-6 max-w-6xl">
         
         {/* Section Header */}
-        <div className="about-header flex flex-col md:flex-row md:items-end justify-between mb-16">
-          <div>
+        <div className="about-header flex flex-col md:flex-row md:items-end justify-between mb-12 gap-8">
+          <div className="max-w-2xl">
             <span className="text-xs font-mono font-bold tracking-widest text-indigo-600 uppercase mb-3 inline-block bg-indigo-50 px-3 py-1 rounded-full border border-indigo-100">
-              Who We Are
+              About Us
             </span>
-            <h2 className="text-3xl md:text-5xl font-display font-bold text-gray-900 tracking-tight">Fostering the next generation of builders.</h2>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold text-gray-900 tracking-tight">Fostering the next generation of builders.</h2>
           </div>
-          <p className="text-gray-600 mt-6 md:mt-0 text-base md:text-lg max-w-md font-sans font-medium text-balance">
+          <p className="text-gray-600 mt-6 md:mt-0 text-base md:text-lg max-w-sm font-sans font-medium text-balance">
             We bridge the gap between student innovation and market execution, backed by real-world mentorship.
           </p>
         </div>
         
         {/* Bento Box Layout */}
-        <div className="bento-grid grid grid-cols-1 md:grid-cols-12 gap-6 mb-24">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 mb-16">
           
           {/* Main Mission Card - Large */}
           <div className="about-card md:col-span-8 bg-white border border-gray-200/80 rounded-3xl p-8 md:p-12 flex flex-col justify-between shadow-premium transition-all duration-300 hover:shadow-premium-hover hover:-translate-y-1 relative overflow-hidden group">
@@ -87,10 +100,51 @@ const About = () => {
             </div>
           </div>
 
+          {/* Welcome Video Card - Full Width */}
+          <div className="about-card md:col-span-12 bg-white border border-gray-200/80 rounded-3xl p-6 md:p-8 shadow-premium transition-all duration-300 hover:shadow-premium-hover">
+            <div className="flex flex-col md:flex-row gap-8 items-center">
+              <div className="w-full md:w-1/2 flex-1 rounded-2xl overflow-hidden shadow-sm border border-gray-100 aspect-video relative group/video">
+                <div className="absolute inset-0 bg-indigo-600/10 opacity-0 group-hover/video:opacity-100 transition-opacity duration-300 pointer-events-none z-10" />
+                <iframe 
+                  ref={videoRef}
+                  className="absolute inset-0 w-full h-full relative z-0 pointer-events-none"
+                  src="https://www.youtube.com/embed/VtlmAhrgK24?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&loop=1&playlist=VtlmAhrgK24&enablejsapi=1" 
+                  title="E-Cell Freshie Intro Task" 
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                  allowFullScreen
+                ></iframe>
+                
+                {/* Custom Mute/Unmute Toggle */}
+                <button 
+                  onClick={toggleMute}
+                  className="absolute bottom-4 right-4 z-20 w-10 h-10 rounded-full bg-black/40 backdrop-blur-md text-white flex items-center justify-center hover:bg-black/60 hover:scale-110 transition-all duration-300 border border-white/20"
+                  aria-label="Toggle Mute"
+                >
+                  {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
+                </button>
+              </div>
+              <div className="w-full md:w-1/2 md:pr-4">
+                <span className="text-xs font-mono font-bold tracking-widest text-indigo-600 uppercase mb-3 inline-block bg-indigo-50 px-3 py-1 rounded-full border border-indigo-100">
+                  Campus Outreach
+                </span>
+                <h3 className="text-2xl md:text-3xl font-display font-bold text-gray-900 mb-4">
+                  Welcome to the Entrepreneurial Journey
+                </h3>
+                <p className="text-gray-600 leading-relaxed text-base font-sans font-medium text-balance mb-6">
+                  Take a look at how we introduce the vibrant culture of entrepreneurship to our first-year students. This is where the journey of ideation, creation, and building the future begins at REC Ambedkar Nagar.
+                </p>
+                <a href="https://youtu.be/VtlmAhrgK24?si=aGghO_3CvHffHwoQ" target="_blank" rel="noreferrer" className="inline-flex items-center space-x-2 text-indigo-600 font-bold hover:text-indigo-700 transition-colors">
+                  <span>Watch on YouTube</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+
         </div>
 
         {/* The Pipeline (Idea -> Startup) */}
-        <div className="pipeline-container bg-white border border-gray-200/80 rounded-3xl p-10 md:p-16 shadow-sm mb-24 text-center">
+        <div className="pipeline-container bg-white border border-gray-200/80 rounded-3xl p-10 md:p-16 shadow-sm mb-16 text-center">
           <h3 className="text-2xl md:text-3xl font-display font-bold text-gray-900 mb-2">The Innovation Pipeline</h3>
           <p className="text-gray-500 font-sans mb-12">How we transform student ideas into market-ready startups.</p>
           
@@ -103,7 +157,7 @@ const About = () => {
         </div>
 
         {/* National Framework Bento */}
-        <div className="mb-24">
+        <div className="mb-16">
           <div className="mb-10 text-center md:text-left">
             <span className="text-xs font-mono font-bold tracking-widest text-indigo-600 uppercase mb-3 inline-block bg-indigo-50 px-3 py-1 rounded-full border border-indigo-100">
               National Framework

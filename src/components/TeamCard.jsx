@@ -1,6 +1,20 @@
 import React, { useState } from 'react';
 import { Instagram, Linkedin, Globe, User } from 'lucide-react';
 
+const getRoleDescription = (role) => {
+  const r = role.toLowerCase();
+  if (r.includes('corporate') || r.includes('relational')) return "Building strategic partnerships and managing institutional relations.";
+  if (r.includes('event')) return "Orchestrating impactful events and leading public relations.";
+  if (r.includes('media')) return "Driving media presence and crafting compelling digital narratives.";
+  if (r.includes('design')) return "Crafting visually stunning designs and maintaining brand identity.";
+  if (r.includes('tech')) return "Architecting digital solutions and leading technical initiatives.";
+  if (r.includes('operation')) return "Ensuring smooth execution of daily operations and logistics.";
+  if (r.includes('marketing')) return "Strategizing campaigns to boost outreach and engagement.";
+  if (r.includes('outreach')) return "Expanding our network and coordinating external communications.";
+  if (r.includes('former')) return "A guiding force who helped shape the foundation of E-Cell.";
+  return `Leading the ${r.replace(' head', '').replace(' lead', '')} initiatives to drive structural growth.`;
+};
+
 const TeamCard = ({ member }) => {
   const [imageError, setImageError] = useState(false);
 
@@ -64,7 +78,7 @@ const TeamCard = ({ member }) => {
         
         {/* Short Description - Expands on hover */}
         <p className="text-xs text-gray-500 font-medium leading-relaxed opacity-0 max-h-0 group-hover:opacity-100 group-hover:max-h-20 group-hover:mt-2 transition-all duration-500 ease-smooth">
-          Leading the {member.role.toLowerCase()} initiatives to drive structural growth and foster innovation across the campus.
+          {getRoleDescription(member.role)}
         </p>
       </div>
     </div>

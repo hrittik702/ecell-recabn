@@ -95,7 +95,7 @@ const Events = () => {
                     }`}>
                       {event.tag}
                     </span>
-                    <h3 className={`${isLarge ? 'text-3xl md:text-[44px]' : 'text-2xl md:text-3xl'} font-display font-extrabold mb-4 leading-tight`}>
+                    <h3 className={`${isLarge ? 'text-3xl md:text-[44px]' : 'text-2xl md:text-3xl'} font-display font-extrabold mb-4 leading-tight ${event.image ? 'text-white drop-shadow-md' : 'text-gray-900'}`}>
                       {event.title}
                     </h3>
                     <div className={event.image ? 'backdrop-blur-[2px] rounded-lg -mx-2 px-2' : ''}>

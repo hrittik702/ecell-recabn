@@ -2,8 +2,11 @@ import { useState, useEffect, useRef } from 'react';
 import { Menu, X, Instagram, Linkedin } from 'lucide-react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
+import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 
-const NAV_ITEMS = ['Home', 'About', 'Events', 'Timeline', 'Team', 'Contact'];
+gsap.registerPlugin(ScrollToPlugin);
+
+const NAV_ITEMS = ['Home', 'About', 'Events', 'Timeline', 'Team'];
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -35,7 +38,7 @@ const Navbar = () => {
           setActiveSection(entry.target.id || 'home');
         }
       });
-    }, { threshold: 0.4, rootMargin: '-10% 0px -40% 0px' });
+    }, { threshold: 0, rootMargin: '-40% 0px -40% 0px' });
 
     NAV_ITEMS.forEach((item) => {
       const sectionId = item.toLowerCase();
@@ -45,6 +48,20 @@ const Navbar = () => {
 
     return () => observer.disconnect();
   }, []);
+
+  const handleNavClick = (e, sectionId) => {
+    e.preventDefault();
+    const section = document.getElementById(sectionId);
+    if (section) {
+      gsap.to(window, {
+        duration: 1,
+        scrollTo: { y: section.offsetTop - 80, autoKill: false },
+        ease: 'power3.inOut'
+      });
+      if (mobileMenuOpen) setMobileMenuOpen(false);
+    }
+  };
+
 
   useGSAP(() => {
     gsap.fromTo(navRef.current, {
@@ -64,7 +81,7 @@ const Navbar = () => {
       className={`fixed w-full top-0 z-50 transition-all duration-300 ease-out ${
         scrolled 
           ? 'bg-white/85 backdrop-blur-[18px] border-b border-gray-200/50 py-3 md:py-4 shadow-[0_8px_32px_rgba(0,0,0,0.08)]' 
-          : 'bg-[#0a0a0a]/[0.08] backdrop-blur-[4px] py-5 md:py-6 border-b-0 shadow-none'
+          : 'bg-transparent py-5 md:py-6 border-b-0 shadow-none'
       }`}
     >
       <div className="container mx-auto px-6 lg:px-10 flex justify-between items-center max-w-7xl">
@@ -93,7 +110,8 @@ const Navbar = () => {
             return (
               <a 
                 key={item} 
-                href={`#${sectionId}`} 
+                href={`#${sectionId}`}
+                onClick={(e) => handleNavClick(e, sectionId)}
                 className={`relative px-4 py-2 font-sans text-sm font-semibold rounded-full transition-all duration-300 ease-out outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 ${
                   scrolled 
                     ? isActive ? 'text-indigo-600 bg-indigo-50/80 shadow-sm' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100/50' 
@@ -162,7 +180,7 @@ const Navbar = () => {
               <a 
                 key={item} 
                 href={`#${sectionId}`} 
-                onClick={() => setMobileMenuOpen(false)} 
+                onClick={(e) => handleNavClick(e, sectionId)} 
                 className={`px-4 py-3 rounded-xl font-sans font-semibold text-base transition-colors ${
                   isActive ? 'text-indigo-600 bg-indigo-50' : 'text-gray-700 hover:bg-gray-50'
                 }`}

@@ -80,15 +80,15 @@ const Hero = () => {
   }, { scope: containerRef });
 
   return (
-    <section ref={containerRef} id="home" className="relative min-h-screen flex flex-col items-center justify-center pt-24 pb-12 overflow-hidden [perspective:1000px]">
+    <section ref={containerRef} id="home" className="relative min-h-screen flex flex-col items-center justify-end pt-32 pb-24 md:pb-32 overflow-hidden [perspective:1000px]">
       
       {/* Parallax Background Asset */}
       <div className="absolute inset-0 z-0 overflow-hidden bg-charcoal">
-        <img 
+        {/* <img 
           src="/assets/hero-bg.jpg" 
           alt="E-Cell REC Ambedkar Nagar" 
           className="hero-bg w-full h-[120%] object-cover object-[75%_20%] opacity-100 scale-105"
-        />
+        /> */}
         {/* Premium Layered Gradient Overlay */}
         <div 
           className="absolute inset-0"
@@ -98,22 +98,16 @@ const Hero = () => {
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-indigo-600/20 rounded-full blur-[120px] pointer-events-none mix-blend-screen" />
       </div>
 
-      <div className="relative z-10 w-full max-w-5xl px-6 mx-auto flex flex-col items-center text-center mt-12 md:mt-20">
+      <div className="relative z-10 w-full max-w-5xl px-6 mx-auto flex flex-col items-center text-center mt-12 md:mt-auto">
         
-        {/* Animated Badge */}
-        <div className="hero-badge mb-8 inline-flex items-center px-4 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-md text-gray-300 text-sm font-mono font-semibold tracking-wider">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 mr-2 animate-pulse"></span>
-          Recruiting for 2026 Batch
-        </div>
-
         {/* Premium Typography Headline */}
         <h1 
-          className="font-display font-bold text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] leading-[1.1] tracking-tight text-white mb-8 max-w-4xl [transform-style:preserve-3d]"
+          className="font-display font-bold text-5xl sm:text-6xl md:text-7xl lg:text-[6rem] leading-[1.1] tracking-tight text-white mb-8 max-w-4xl [transform-style:preserve-3d]"
           style={{ textShadow: '0 2px 10px rgba(0,0,0,0.25)' }}
         >
-          <div className="hero-title-line">We transform ideas</div>
+          <div className="hero-title-line">Vichar Aakar</div>
           <div className="hero-title-line text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 drop-shadow-sm">
-            into successful startups.
+            Sakar Bazar
           </div>
         </h1>
 
@@ -128,10 +122,10 @@ const Hero = () => {
         {/* CTA Buttons */}
         <div className="hero-actions flex flex-col sm:flex-row items-center gap-4 mb-20 w-full sm:w-auto">
           <a 
-            href="#contact" 
+            href="#about" 
             className="w-full sm:w-auto px-8 py-4 rounded-xl bg-white text-gray-900 font-sans font-bold text-base hover:bg-gray-50 transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center group"
           >
-            Join E-Cell
+            Discover More
             <ArrowRight size={18} className="ml-2 group-hover:translate-x-1 transition-transform" />
           </a>
           <a 
