@@ -213,7 +213,7 @@ export const currentTeam = [
   // { id: 8, name: "Anant Awasthi", role: "Outreach Coord.", image: "/assets/anant-sir.jpg", linkedin: "https://www.linkedin.com/in/anant-awasthi", instagram: "https://www.instagram.com/hrittik_india/" },
   { id: 9, name: "Smriti Maurya", role: "Design Head", image: "/assets/smriti.png", linkedin: "https://www.linkedin.com/in/smriti-maurya-9bb96b383", instagram: "https://www.instagram.com/hrittik_india/" },
   { id: 10, name: "Harsh Shukla", role: "Technical Head", image: "/assets/harsh.jpg", linkedin: "https://www.linkedin.com/in/harsh-shukla-7b1a40329", instagram: "https://www.instagram.com/hrittik_india/" },
-  { id: 11, name: "Arpita Prakash", role: "Operational Head", image: "/assets/arpita.png", linkedin: "https://www.linkedin.com/in/arpita-prakash-369493336", instagram: "https://www.instagram.com/hrittik_india/" },
+  // { id: 11, name: "Arpita Prakash", role: "Operational Head", image: "/assets/arpita.png", linkedin: "https://www.linkedin.com/in/arpita-prakash-369493336", instagram: "https://www.instagram.com/hrittik_india/" },
   { id: 12, name: "Mohammad Asif", role: "PR Executive", image: "/assets/asif.jpg", linkedin: "https://www.linkedin.com/in/x-asif", instagram: "https://www.instagram.com/hrittik_india/" },
   { id: 13, name: "Hrittik Maurya", role: "Marketing Head", image: "/assets/hrittik-editor.jpg", linkedin: "https://www.linkedin.com/in/hrittik-maurya", portfolio: "https://portfolio-hrittik.vercel.app/" }
 ];
