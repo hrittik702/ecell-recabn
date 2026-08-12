@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Award, Trophy, Lightbulb, Users, Coins, Rocket, Building2, Globe2, Target, Volume2, VolumeX } from 'lucide-react';
+import { Award, Trophy, Lightbulb, Users, Coins, Rocket, Building2, Globe2, Target, Volume2, VolumeX, Play, Pause } from 'lucide-react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { mentors } from '../data/constants';
@@ -21,8 +21,10 @@ const About = () => {
   const containerRef = useRef(null);
   const videoRef = useRef(null);
   const [isMuted, setIsMuted] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(false);
 
-  const toggleMute = () => {
+  const toggleMute = (e) => {
+    e.stopPropagation();
     if (videoRef.current && videoRef.current.contentWindow) {
       const command = isMuted ? 'unMute' : 'mute';
       videoRef.current.contentWindow.postMessage(
@@ -30,6 +32,17 @@ const About = () => {
         '*'
       );
       setIsMuted(!isMuted);
+    }
+  };
+
+  const togglePlay = () => {
+    if (videoRef.current && videoRef.current.contentWindow) {
+      const command = isPlaying ? 'pauseVideo' : 'playVideo';
+      videoRef.current.contentWindow.postMessage(
+        JSON.stringify({ event: 'command', func: command, args: [] }),
+        '*'
+      );
+      setIsPlaying(!isPlaying);
     }
   };
 
@@ -103,21 +116,29 @@ const About = () => {
           {/* Welcome Video Card - Full Width */}
           <div className="about-card md:col-span-12 bg-white/60 dark:bg-dark-card/40 backdrop-blur-3xl border border-white/60 dark:border-white/10 rounded-3xl p-6 md:p-8 shadow-premium dark:shadow-premium-dark transition-all duration-300 hover:shadow-premium-hover dark:hover:shadow-premium-dark-hover">
             <div className="flex flex-col md:flex-row gap-8 items-center">
-              <div className="w-full md:w-1/2 flex-1 rounded-2xl overflow-hidden shadow-sm border border-gray-100 dark:border-white/5 aspect-video relative group/video">
-                <div className="absolute inset-0 bg-indigo-600/10 opacity-0 group-hover/video:opacity-100 transition-opacity duration-300 pointer-events-none z-10" />
+              <div 
+                className="w-full md:w-1/2 flex-1 rounded-2xl overflow-hidden shadow-sm border border-gray-100 dark:border-white/5 aspect-video relative group/video cursor-pointer"
+                onClick={togglePlay}
+              >
+                <div className={`absolute inset-0 bg-black/30 transition-opacity duration-300 pointer-events-none z-10 flex items-center justify-center ${isPlaying ? 'opacity-0 group-hover/video:opacity-100' : 'opacity-100'}`}>
+                  <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm border border-white/40 flex items-center justify-center text-white shadow-lg transition-transform duration-300 group-hover/video:scale-110">
+                    {isPlaying ? <Pause size={32} /> : <Play size={32} className="ml-1" />}
+                  </div>
+                </div>
                 <iframe 
                   ref={videoRef}
                   className="absolute inset-0 w-full h-full relative z-0 pointer-events-none"
-                  src="https://www.youtube.com/embed/VtlmAhrgK24?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&loop=1&playlist=VtlmAhrgK24&enablejsapi=1" 
+                  src="https://www.youtube.com/embed/VtlmAhrgK24?autoplay=0&mute=1&controls=0&modestbranding=1&rel=0&loop=1&playlist=VtlmAhrgK24&enablejsapi=1" 
                   title="E-Cell Freshie Intro Task" 
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                   allowFullScreen
+                  loading="lazy"
                 ></iframe>
                 
                 {/* Custom Mute/Unmute Toggle */}
                 <button 
                   onClick={toggleMute}
-                  className="absolute bottom-4 right-4 z-20 w-10 h-10 rounded-full bg-black/40 backdrop-blur-md text-white flex items-center justify-center hover:bg-black/60 hover:scale-110 transition-all duration-300 border border-white/20"
+                  className="absolute bottom-4 right-4 z-20 w-10 h-10 rounded-full bg-black/60 backdrop-blur-md text-white flex items-center justify-center hover:bg-black/80 hover:scale-110 transition-all duration-300 border border-white/20"
                   aria-label="Toggle Mute"
                 >
                   {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}

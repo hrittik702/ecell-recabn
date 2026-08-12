@@ -24,7 +24,7 @@ const StatCounter = ({ endValue, suffix, label, delay }) => {
 
   return (
     <div ref={counterRef} className="flex flex-col items-center">
-      <div className="text-3xl md:text-4xl font-display font-bold text-white mb-1">
+      <div className="text-2xl md:text-4xl font-display font-bold text-white mb-1">
         {value}{suffix}
       </div>
       <div className="text-xs md:text-sm font-sans font-semibold text-gray-400 uppercase tracking-widest">
@@ -80,7 +80,7 @@ const Hero = () => {
   }, { scope: containerRef });
 
   return (
-    <section ref={containerRef} id="home" className="relative min-h-screen flex flex-col items-center justify-end pt-32 pb-24 md:pb-32 overflow-hidden [perspective:1000px]">
+    <section ref={containerRef} id="home" className="relative min-h-screen flex flex-col items-center justify-end pt-32 pb-24 md:pb-32 overflow-hidden md:[perspective:1000px]">
       
       {/* Parallax Background Asset */}
       <div className="absolute inset-0 z-0 overflow-hidden bg-charcoal dark:bg-transparent">
@@ -93,14 +93,14 @@ const Hero = () => {
         <div className="hidden dark:block absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-dark-bg/90" />
         
         {/* Radial Glow */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-indigo-600/20 rounded-full blur-[120px] pointer-events-none mix-blend-screen" />
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[400px] h-[400px] md:w-[800px] md:h-[800px] bg-indigo-600/20 rounded-full blur-[80px] md:blur-[120px] pointer-events-none md:mix-blend-screen" />
       </div>
 
       <div className="relative z-10 w-full max-w-5xl px-6 mx-auto flex flex-col items-center text-center mt-12 md:mt-auto">
         
         {/* Premium Typography Headline */}
         <h1 
-          className="font-display font-bold text-5xl sm:text-6xl md:text-7xl lg:text-[6rem] leading-[1.1] tracking-tight text-white mb-8 max-w-4xl [transform-style:preserve-3d]"
+          className="font-display font-bold text-5xl sm:text-6xl md:text-7xl lg:text-[6rem] leading-[1.1] tracking-tight text-white mb-8 max-w-4xl md:[transform-style:preserve-3d]"
           style={{ textShadow: '0 2px 10px rgba(0,0,0,0.25)' }}
         >
           <div className="hero-title-line">Vichar Aakar</div>
@@ -118,7 +118,7 @@ const Hero = () => {
         </p>
 
         {/* CTA Buttons */}
-        <div className="hero-actions flex flex-col sm:flex-row items-center gap-4 mb-20 w-full sm:w-auto">
+        <div className="hero-actions flex flex-col sm:flex-row items-center gap-4 mb-12 md:mb-20 w-full sm:w-auto">
           <a 
             href="#about" 
             className="w-full sm:w-auto px-8 py-4 rounded-xl bg-white text-gray-900 font-sans font-bold text-base hover:bg-gray-50 transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center group"
@@ -128,7 +128,7 @@ const Hero = () => {
           </a>
           <a 
             href="#timeline" 
-            className="w-full sm:w-auto px-8 py-4 rounded-xl bg-white/10 backdrop-blur-md border border-white text-white font-sans font-bold text-base hover:bg-white/20 transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-0.5 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center"
+            className="w-full sm:w-auto px-8 py-4 rounded-xl bg-white/10 md:backdrop-blur-md border border-white text-white font-sans font-bold text-base hover:bg-white/20 transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-0.5 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center"
           >
             Explore Timeline
           </a>

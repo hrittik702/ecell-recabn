@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ExternalLink, CheckCircle2, AlertCircle, Calendar, User, Target } from 'lucide-react';
 import { tasksData } from '../data/tasksData';
 
-const TABS = ['Preliminary', 'Ignite Propel', 'Comprehensive'];
+const TABS = ['Ignite Propel', 'Comprehensive'];
 
 const Tasks = () => {
   const [activeTab, setActiveTab] = useState('Ignite Propel');

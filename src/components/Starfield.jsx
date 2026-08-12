@@ -21,8 +21,10 @@ const Starfield = () => {
     canvas.width = width;
     canvas.height = height;
 
+    const isMobile = width < 768;
+    const STAR_COUNT = isMobile ? 60 : 160;
+
     // Stars
-    const STAR_COUNT = 160;
     const stars = Array.from({ length: STAR_COUNT }, () => ({
       x: Math.random() * width,
       y: Math.random() * height,
@@ -48,107 +50,147 @@ const Starfield = () => {
 
     // Nebula glow spots
     const nebulae = [
-      { x: width * 0.15, y: height * 0.25, radius: 250, color: 'rgba(88, 28, 135, 0.04)' },
-      { x: width * 0.8, y: height * 0.6, radius: 300, color: 'rgba(67, 56, 202, 0.03)' },
-      { x: width * 0.5, y: height * 0.85, radius: 200, color: 'rgba(124, 58, 237, 0.025)' },
+      { x: 0.15, y: 0.25, radius: 250, color: 'rgba(88, 28, 135, 0.04)' },
+      { x: 0.8, y: 0.6, radius: 300, color: 'rgba(67, 56, 202, 0.03)' },
+      { x: 0.5, y: 0.85, radius: 200, color: 'rgba(124, 58, 237, 0.025)' },
     ];
+
+    let nebulaCanvas = document.createElement('canvas');
+    let nebulaCtx = nebulaCanvas.getContext('2d');
+    
+    const preRenderNebulae = (w, h) => {
+      nebulaCanvas.width = w;
+      nebulaCanvas.height = h;
+      nebulaCtx.clearRect(0, 0, w, h);
+      nebulae.forEach(n => {
+        const nx = w * n.x;
+        const ny = h * n.y;
+        const gradient = nebulaCtx.createRadialGradient(nx, ny, 0, nx, ny, n.radius);
+        gradient.addColorStop(0, n.color);
+        gradient.addColorStop(1, 'transparent');
+        nebulaCtx.fillStyle = gradient;
+        nebulaCtx.fillRect(nx - n.radius, ny - n.radius, n.radius * 2, n.radius * 2);
+      });
+    };
+
+    preRenderNebulae(width, height);
 
     let time = 0;
     let lastShootingStarTime = 0;
+    let isVisible = document.visibilityState === 'visible';
+    let isRunning = false;
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const render = () => {
+      if (!isVisible && !prefersReducedMotion) {
+        isRunning = false;
+        return;
+      }
+      
       ctx.clearRect(0, 0, width, height);
-      time += 1;
+      if (!prefersReducedMotion) {
+        time += 1;
+      }
 
-      // Draw nebulae
-      nebulae.forEach(n => {
-        const gradient = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.radius);
-        gradient.addColorStop(0, n.color);
-        gradient.addColorStop(1, 'transparent');
-        ctx.fillStyle = gradient;
-        ctx.fillRect(n.x - n.radius, n.y - n.radius, n.radius * 2, n.radius * 2);
-      });
+      // Draw pre-rendered nebulae
+      ctx.drawImage(nebulaCanvas, 0, 0);
 
       // Draw stars with twinkling
-      ctx.shadowBlur = 1;
-      ctx.shadowColor = 'white';
       stars.forEach(star => {
-        const twinkle = Math.sin(time * star.twinkleSpeed + star.twinkleOffset);
+        const twinkle = prefersReducedMotion ? 0 : Math.sin(time * star.twinkleSpeed + star.twinkleOffset);
         const opacity = star.baseOpacity + twinkle * 0.25;
         ctx.beginPath();
         ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(255, 255, 255, ${Math.max(0.05, Math.min(1, opacity))})`;
         ctx.fill();
       });
-      ctx.shadowBlur = 0; // Reset shadow for shooting stars
 
-      // Spawn shooting stars occasionally
-      if (time - lastShootingStarTime > 300 + Math.random() * 400) {
-        spawnShootingStar();
-        lastShootingStarTime = time;
-      }
+      if (!prefersReducedMotion) {
+        // Spawn shooting stars occasionally
+        if (time - lastShootingStarTime > 300 + Math.random() * 400) {
+          spawnShootingStar();
+          lastShootingStarTime = time;
+        }
 
-      // Draw shooting stars
-      for (let i = shootingStars.length - 1; i >= 0; i--) {
-        const s = shootingStars[i];
-        const tailX = s.x - Math.cos(s.angle) * s.length;
-        const tailY = s.y - Math.sin(s.angle) * s.length;
+        // Draw shooting stars
+        for (let i = shootingStars.length - 1; i >= 0; i--) {
+          const s = shootingStars[i];
+          const tailX = s.x - Math.cos(s.angle) * s.length;
+          const tailY = s.y - Math.sin(s.angle) * s.length;
 
-        const gradient = ctx.createLinearGradient(tailX, tailY, s.x, s.y);
-        gradient.addColorStop(0, `rgba(255, 255, 255, 0)`);
-        gradient.addColorStop(1, `rgba(255, 255, 255, ${s.opacity * 0.7})`);
+          const gradient = ctx.createLinearGradient(tailX, tailY, s.x, s.y);
+          gradient.addColorStop(0, `rgba(255, 255, 255, 0)`);
+          gradient.addColorStop(1, `rgba(255, 255, 255, ${s.opacity * 0.7})`);
 
-        ctx.beginPath();
-        ctx.moveTo(tailX, tailY);
-        ctx.lineTo(s.x, s.y);
-        ctx.strokeStyle = gradient;
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
+          ctx.beginPath();
+          ctx.moveTo(tailX, tailY);
+          ctx.lineTo(s.x, s.y);
+          ctx.strokeStyle = gradient;
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
 
-        // Small bright head
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, 1.5, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255, 255, 255, ${s.opacity})`;
-        ctx.fill();
+          // Small bright head
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, 1.5, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255, 255, 255, ${s.opacity})`;
+          ctx.fill();
 
-        s.x += Math.cos(s.angle) * s.speed;
-        s.y += Math.sin(s.angle) * s.speed;
-        s.opacity -= s.decay;
+          s.x += Math.cos(s.angle) * s.speed;
+          s.y += Math.sin(s.angle) * s.speed;
+          s.opacity -= s.decay;
 
-        if (s.opacity <= 0 || s.x > width + 50 || s.y > height + 50) {
-          shootingStars.splice(i, 1);
+          if (s.opacity <= 0 || s.x > width + 50 || s.y > height + 50) {
+            shootingStars.splice(i, 1);
+          }
         }
       }
 
-      animationRef.current = requestAnimationFrame(render);
+      if (!prefersReducedMotion) {
+        animationRef.current = requestAnimationFrame(render);
+        isRunning = true;
+      }
     };
 
     render();
 
+    let resizeTimeout;
     const handleResize = () => {
-      width = window.innerWidth;
-      height = window.innerHeight;
-      canvas.width = width;
-      canvas.height = height;
-      // Redistribute stars
-      stars.forEach(star => {
-        star.x = Math.random() * width;
-        star.y = Math.random() * height;
-      });
-      // Reposition nebulae
-      nebulae[0].x = width * 0.15;
-      nebulae[0].y = height * 0.25;
-      nebulae[1].x = width * 0.8;
-      nebulae[1].y = height * 0.6;
-      nebulae[2].x = width * 0.5;
-      nebulae[2].y = height * 0.85;
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = width;
+        canvas.height = height;
+        
+        preRenderNebulae(width, height);
+
+        stars.forEach(star => {
+          star.x = Math.random() * width;
+          star.y = Math.random() * height;
+        });
+
+        if (prefersReducedMotion || !isRunning) {
+          render();
+        }
+      }, 200);
+    };
+
+    const handleVisibilityChange = () => {
+      isVisible = document.visibilityState === 'visible';
+      if (isVisible && !isRunning && !prefersReducedMotion) {
+        render();
+      }
     };
 
     window.addEventListener('resize', handleResize);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
 
     return () => {
+      clearTimeout(resizeTimeout);
       cancelAnimationFrame(animationRef.current);
       window.removeEventListener('resize', handleResize);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, [isDark]);
 

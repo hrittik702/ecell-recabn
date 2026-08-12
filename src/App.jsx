@@ -1,9 +1,7 @@
-import { useEffect } from 'react';
+import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
 import Navbar from './components/Navbar';
-import Home from './pages/Home';
-import Tasks from './pages/Tasks';
 import Footer from './components/Footer';
 import MouseFollower from './components/MouseFollower';
 import Starfield from './components/Starfield';
@@ -13,6 +11,9 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
+const Home = lazy(() => import('./pages/Home'));
+const Tasks = lazy(() => import('./pages/Tasks'));
+
 function App() {
   return (
     <ThemeProvider>
@@ -21,10 +22,12 @@ function App() {
           <Starfield />
           <MouseFollower />
           <Navbar />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/tasks" element={<Tasks />} />
-          </Routes>
+          <Suspense fallback={<div className="flex items-center justify-center min-h-screen text-gray-500 dark:text-gray-400">Loading...</div>}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/tasks" element={<Tasks />} />
+            </Routes>
+          </Suspense>
           <Footer />
         </div>
       </Router>
@@ -33,4 +36,3 @@ function App() {
 }
 
 export default App;
-
