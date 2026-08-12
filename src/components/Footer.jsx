@@ -71,7 +71,7 @@ const Footer = () => {
   };
 
   return (
-    <footer ref={containerRef} id="contact" className="bg-charcoal text-white pt-16 pb-8 relative z-10 font-sans border-t border-gray-800 overflow-hidden min-h-[50vh] flex flex-col justify-center">
+    <footer ref={containerRef} id="contact" className="bg-charcoal dark:bg-dark-bg text-white pt-16 pb-8 relative z-10 font-sans border-t border-gray-800 dark:border-white/10 overflow-hidden min-h-[50vh] flex flex-col justify-center">
       
       {/* Background glow */}
       <div className="absolute top-0 left-1/2 w-full max-w-3xl h-px bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent -translate-x-1/2" />

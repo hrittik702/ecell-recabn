@@ -12,8 +12,16 @@
     text-rendering: optimizeLegibility;
   }
 
+  .dark body {
+    @apply text-gray-100 bg-dark-bg;
+  }
+
   h1, h2, h3, h4, h5, h6 {
     @apply font-bold tracking-tight text-gray-900;
+  }
+
+  .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
+    @apply text-white;
   }
 
   p {
@@ -23,6 +31,10 @@
   /* Global Accessibility Focus Ring */
   *:focus-visible {
     @apply outline-none ring-2 ring-indigo-500 ring-offset-2 ring-offset-white;
+  }
+
+  .dark *:focus-visible {
+    @apply ring-offset-dark-bg;
   }
 
   /* Premium Utilities */
@@ -60,6 +72,10 @@
     will-change: transform, opacity;
   }
 
+  .dark .glass-panel {
+    @apply bg-dark-card border-white/10 shadow-premium-dark;
+  }
+
   /* Bento Grid Utilities */
   .bento-grid {
     @apply grid grid-cols-1 md:grid-cols-3 md:grid-rows-2 gap-6;
@@ -86,5 +102,9 @@
     filter: none !important;
     border: none !important;
     z-index: 9999 !important;
+  }
+
+  .dark .mousefollower {
+    background-color: #ffffff !important;
   }
 }

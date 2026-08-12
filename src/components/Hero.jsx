@@ -83,17 +83,15 @@ const Hero = () => {
     <section ref={containerRef} id="home" className="relative min-h-screen flex flex-col items-center justify-end pt-32 pb-24 md:pb-32 overflow-hidden [perspective:1000px]">
       
       {/* Parallax Background Asset */}
-      <div className="absolute inset-0 z-0 overflow-hidden bg-charcoal">
-        {/* <img 
-          src="/assets/hero-bg.jpg" 
-          alt="E-Cell REC Ambedkar Nagar" 
-          className="hero-bg w-full h-[120%] object-cover object-[75%_20%] opacity-100 scale-105"
-        /> */}
-        {/* Premium Layered Gradient Overlay */}
+      <div className="absolute inset-0 z-0 overflow-hidden bg-charcoal dark:bg-transparent">
+        {/* Premium Layered Gradient Overlay (Light Mode Only) */}
         <div 
-          className="absolute inset-0"
+          className="absolute inset-0 dark:hidden"
           style={{ background: 'linear-gradient(180deg, rgba(8,12,24,0.18) 0%, rgba(8,12,24,0.22) 35%, rgba(8,12,24,0.45) 100%)' }}
         />
+        {/* Subtle bottom gradient to blend into next section in dark mode */}
+        <div className="hidden dark:block absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-dark-bg/90" />
+        
         {/* Radial Glow */}
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-indigo-600/20 rounded-full blur-[120px] pointer-events-none mix-blend-screen" />
       </div>
