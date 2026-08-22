@@ -135,8 +135,18 @@ const Team = () => {
         {/* Team Grid */}
         <div className="min-h-[600px]">
           {loading ? (
-            <div className="flex justify-center items-center h-64">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+                <div key={i} className="bg-white/40 dark:bg-dark-card/40 backdrop-blur-md rounded-2xl p-6 border border-white/50 dark:border-white/5 animate-pulse flex flex-col items-center">
+                  <div className="w-24 h-24 rounded-full bg-gray-200/60 dark:bg-white/10 mb-5"></div>
+                  <div className="h-5 w-32 bg-gray-200/60 dark:bg-white/10 rounded-full mb-3"></div>
+                  <div className="h-4 w-24 bg-gray-200/60 dark:bg-white/10 rounded-full mb-6"></div>
+                  <div className="flex gap-3">
+                    <div className="w-8 h-8 rounded-full bg-gray-200/60 dark:bg-white/10"></div>
+                    <div className="w-8 h-8 rounded-full bg-gray-200/60 dark:bg-white/10"></div>
+                  </div>
+                </div>
+              ))}
             </div>
           ) : (
             <>

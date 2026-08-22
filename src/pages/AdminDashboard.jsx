@@ -492,9 +492,16 @@ const AdminDashboard = () => {
 
               <div className="overflow-x-auto">
                 {loading ? (
-                  <div className="p-12 flex flex-col items-center justify-center text-gray-500 dark:text-gray-400">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 mb-4"></div>
-                    <p className="font-medium">Loading members...</p>
+                  <div className="w-full min-w-[600px]">
+                    <div className="h-10 bg-gray-50/50 dark:bg-dark-surface/50 border-b border-gray-200/50 dark:border-white/10 w-full"></div>
+                    {[1, 2, 3, 4, 5].map(i => (
+                      <div key={i} className="flex items-center gap-4 px-4 py-4 border-b border-gray-100 dark:border-white/5 w-full animate-pulse bg-white/20 dark:bg-transparent">
+                        <div className="w-8 h-8 rounded-full bg-gray-200/60 dark:bg-white/10 shrink-0"></div>
+                        <div className="h-4 bg-gray-200/60 dark:bg-white/10 rounded w-1/4"></div>
+                        <div className="h-4 bg-gray-200/60 dark:bg-white/10 rounded w-1/3 ml-auto"></div>
+                        <div className="h-6 w-16 bg-gray-200/60 dark:bg-white/10 rounded ml-auto"></div>
+                      </div>
+                    ))}
                   </div>
                 ) : currentMembersList.length === 0 ? (
                   <div className="p-12 text-center text-gray-500 dark:text-gray-400 font-medium">No active team members found.</div>
@@ -849,12 +856,19 @@ const AdminDashboard = () => {
               </div>
             </div>
 
-            <div className="overflow-x-auto p-5 md:p-6">
-              {loading ? (
-                <div className="p-12 flex flex-col items-center justify-center text-gray-500 dark:text-gray-400">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 mb-4"></div>
-                </div>
-              ) : tasks.length === 0 ? (
+              <div className="overflow-x-auto p-5 md:p-6">
+                {loading ? (
+                  <div className="w-full min-w-[600px]">
+                    <div className="h-10 bg-gray-50/50 dark:bg-dark-surface/50 border-b border-gray-200/50 dark:border-white/10 w-full mb-2"></div>
+                    {[1, 2, 3, 4].map(i => (
+                      <div key={i} className="flex items-center gap-4 px-4 py-4 border-b border-gray-100 dark:border-white/5 w-full animate-pulse">
+                        <div className="h-4 bg-gray-200/60 dark:bg-white/10 rounded w-1/4"></div>
+                        <div className="h-4 bg-gray-200/60 dark:bg-white/10 rounded w-1/3 ml-auto"></div>
+                        <div className="h-6 w-20 bg-gray-200/60 dark:bg-white/10 rounded ml-auto"></div>
+                      </div>
+                    ))}
+                  </div>
+                ) : tasks.length === 0 ? (
                 <div className="p-12 text-center text-gray-500 dark:text-gray-400 font-medium">No tasks assigned yet.</div>
               ) : (
                 <div className="space-y-4">

@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { updateUserProfile, getTasksForUser, updateTaskStatus } from '../firebase/db';
-import { signOut } from 'firebase/auth';
+import { signOut, updatePassword } from 'firebase/auth';
 import { auth } from '../firebase/firebase';
 import { useNavigate } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
-import { LogOut, Save, User, Camera, X, ClipboardList, CheckCircle, Edit2, Upload, Instagram, Linkedin } from 'lucide-react';
+import { LogOut, Save, User, Camera, X, ClipboardList, CheckCircle, Edit2, Upload, Instagram, Linkedin, Key } from 'lucide-react';
 import Cropper from 'react-easy-crop';
 import { getCroppedImg } from '../utils/cropImage';
 
@@ -14,6 +14,8 @@ const Profile = () => {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [passwordForm, setPasswordForm] = useState({ newPassword: '', confirmPassword: '' });
   const [tasks, setTasks] = useState([]);
   const [loadingTasks, setLoadingTasks] = useState(false);
   
@@ -159,6 +161,34 @@ const Profile = () => {
     }
   };
 
+  const handlePasswordChange = async (e) => {
+    e.preventDefault();
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      toast.error('Passwords do not match');
+      return;
+    }
+    if (passwordForm.newPassword.length < 6) {
+      toast.error('Password must be at least 6 characters');
+      return;
+    }
+    
+    setIsChangingPassword(true);
+    try {
+      await updatePassword(auth.currentUser, passwordForm.newPassword);
+      toast.success('Password updated successfully!');
+      setPasswordForm({ newPassword: '', confirmPassword: '' });
+    } catch (error) {
+      console.error(error);
+      if (error.code === 'auth/requires-recent-login') {
+        toast.error('Please log out and log back in to change your password.', { duration: 5000 });
+      } else {
+        toast.error('Failed to update password');
+      }
+    } finally {
+      setIsChangingPassword(false);
+    }
+  };
+
   if (authLoading) {
     return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
   }
@@ -206,7 +236,7 @@ const Profile = () => {
         
         {/* Left Column: Profile Settings (span 5) */}
         <div className="lg:col-span-5 space-y-6">
-          <div className="bg-white/60 dark:bg-dark-card/40 backdrop-blur-3xl rounded-3xl shadow-premium dark:shadow-premium-dark overflow-hidden border border-white/60 dark:border-white/10 transition-all duration-500 hover:shadow-premium-hover dark:hover:shadow-premium-dark-hover h-full">
+          <div className="bg-white/60 dark:bg-dark-card/40 backdrop-blur-3xl rounded-3xl shadow-premium dark:shadow-premium-dark overflow-hidden border border-white/60 dark:border-white/10 transition-all duration-500 hover:shadow-premium-hover dark:hover:shadow-premium-dark-hover">
             
             <div className="p-6 md:p-8">
               
@@ -415,6 +445,60 @@ const Profile = () => {
               </form>
             </div>
           </div>
+
+          {/* Password Change Card */}
+          <div className="bg-white/60 dark:bg-dark-card/40 backdrop-blur-3xl rounded-3xl shadow-premium dark:shadow-premium-dark overflow-hidden border border-white/60 dark:border-white/10 transition-all duration-500 hover:shadow-premium-hover dark:hover:shadow-premium-dark-hover">
+            <div className="p-6 md:p-8">
+              <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-200/50 dark:border-white/10">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-indigo-50 dark:bg-indigo-500/10 rounded-lg border border-indigo-100 dark:border-indigo-500/20 text-indigo-600 dark:text-indigo-400">
+                    <Key size={18} />
+                  </div>
+                  <h3 className="text-lg font-display font-bold text-gray-900 dark:text-white">Change Password</h3>
+                </div>
+              </div>
+
+              <form onSubmit={handlePasswordChange} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-bold mb-1.5 text-gray-700 dark:text-gray-300 font-sans uppercase tracking-wide">New Password</label>
+                  <input
+                    type="password"
+                    value={passwordForm.newPassword}
+                    onChange={(e) => setPasswordForm(prev => ({ ...prev, newPassword: e.target.value }))}
+                    placeholder="••••••••"
+                    required
+                    minLength={6}
+                    className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 dark:border-white/10 bg-white/50 dark:bg-dark-surface/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none transition-all backdrop-blur-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold mb-1.5 text-gray-700 dark:text-gray-300 font-sans uppercase tracking-wide">Confirm Password</label>
+                  <input
+                    type="password"
+                    value={passwordForm.confirmPassword}
+                    onChange={(e) => setPasswordForm(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                    placeholder="••••••••"
+                    required
+                    minLength={6}
+                    className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 dark:border-white/10 bg-white/50 dark:bg-dark-surface/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none transition-all backdrop-blur-sm"
+                  />
+                </div>
+                
+                <button
+                  type="submit"
+                  disabled={isChangingPassword || !passwordForm.newPassword}
+                  className="w-full flex justify-center items-center gap-2 px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-sans font-bold text-sm rounded-xl transition-all duration-300 disabled:opacity-70 shadow-sm mt-2"
+                >
+                  {isChangingPassword ? (
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  ) : (
+                    'Update Password'
+                  )}
+                </button>
+              </form>
+            </div>
+          </div>
+
         </div>
 
         {/* Right Column: Tasks (span 7) */}
@@ -433,8 +517,21 @@ const Profile = () => {
             
             <div className="p-5 md:p-6 flex-1 overflow-y-auto">
               {loadingTasks ? (
-                <div className="flex justify-center items-center h-48">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {[1, 2, 3, 4].map((i) => (
+                    <div key={i} className="bg-white/40 dark:bg-dark-surface/40 border border-gray-100 dark:border-white/5 p-5 rounded-xl animate-pulse flex flex-col">
+                      <div className="flex justify-between items-start gap-3 mb-4">
+                        <div className="h-5 bg-gray-200/60 dark:bg-white/10 rounded w-3/4"></div>
+                        <div className="h-5 bg-gray-200/60 dark:bg-white/10 rounded w-16"></div>
+                      </div>
+                      <div className="h-3 bg-gray-200/60 dark:bg-white/10 rounded w-full mb-2"></div>
+                      <div className="h-3 bg-gray-200/60 dark:bg-white/10 rounded w-5/6 mb-6"></div>
+                      <div className="flex justify-between items-center pt-3 border-t border-gray-100 dark:border-white/5 mt-auto">
+                        <div className="h-3 bg-gray-200/60 dark:bg-white/10 rounded w-12"></div>
+                        <div className="h-4 bg-gray-200/60 dark:bg-white/10 rounded w-20"></div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               ) : tasks.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-48 text-gray-500 dark:text-gray-400">
