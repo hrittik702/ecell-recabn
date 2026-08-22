@@ -8,6 +8,8 @@ import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 
 gsap.registerPlugin(ScrollToPlugin);
 
+import { useAuth } from '../context/AuthContext';
+
 const NAV_ITEMS = ['Home', 'About', 'Events', 'Timeline', 'Team'];
 
 const Navbar = () => {
@@ -16,6 +18,7 @@ const Navbar = () => {
   const [activeSection, setActiveSection] = useState('home');
   const navRef = useRef(null);
   const { isDark, toggleTheme } = useTheme();
+  const { currentUser, userData } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const isHomePage = location.pathname === '/';
@@ -95,7 +98,7 @@ const Navbar = () => {
           : 'bg-transparent py-5 md:py-6 border-b-0 shadow-none'
       }`}
     >
-      <div className="container mx-auto px-6 lg:px-10 flex justify-between items-center max-w-7xl">
+      <div className="container mx-auto px-4 flex justify-between items-center max-w-7xl">
         
         {/* Navigation Logo */}
         <Link to="/" className="flex items-center space-x-3 group outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded-lg">
@@ -133,24 +136,10 @@ const Navbar = () => {
               </a>
             );
           })}
-          
-          <Link 
-            to="/tasks"
-            onClick={() => { if (mobileMenuOpen) setMobileMenuOpen(false); }}
-            className={`relative px-4 py-2 font-sans text-sm font-bold rounded-full transition-all duration-300 ease-out outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 ${
-              !isHomePage 
-                ? 'text-indigo-600 bg-indigo-50/80 shadow-sm dark:text-indigo-400 dark:bg-indigo-500/15' 
-                : scrolled
-                  ? 'text-gray-600 hover:text-gray-900 hover:bg-gray-100/50 dark:text-gray-400 dark:hover:text-white dark:hover:bg-white/10'
-                  : 'text-gray-200 hover:text-white hover:bg-white/10 hover:shadow-[0_0_15px_rgba(255,255,255,0.1)]'
-            }`}
-          >
-            Tasks
-          </Link>
 
           {/* Vertical Divider & Social Icons */}
           <div className={`flex items-center space-x-3 border-l pl-4 lg:pl-6 ml-2 lg:ml-4 h-6 transition-colors duration-300 ${
-            scrolled ? 'border-white/50 dark:border-white/10' : 'border-white/20'
+            scrolled ? 'border-gray-200 dark:border-white/10' : 'border-white/20'
           }`}>
             <button 
               onClick={toggleTheme} 
@@ -183,6 +172,35 @@ const Navbar = () => {
             >
               <Linkedin size={18} />
             </a>
+          </div>
+
+          {/* Profile / Login */}
+          <div className="pl-4 ml-2 flex items-center">
+            {currentUser ? (
+              <Link 
+                to="/profile" 
+                className="w-9 h-9 rounded-full overflow-hidden border-2 border-indigo-200 dark:border-indigo-500/50 hover:border-indigo-500 dark:hover:border-indigo-400 transition-colors block shadow-sm group bg-white dark:bg-dark-surface"
+              >
+                {userData?.profileImage ? (
+                  <img src={userData.profileImage} alt={userData?.name || "Profile"} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
+                ) : (
+                  <div className="w-full h-full bg-indigo-50 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-bold flex items-center justify-center font-sans text-sm">
+                     {userData?.name ? userData.name.charAt(0).toUpperCase() : 'U'}
+                  </div>
+                )}
+              </Link>
+            ) : (
+              <Link 
+                to="/login"
+                className={`relative px-5 py-2 font-sans text-sm font-bold rounded-full transition-all duration-300 ease-out outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 border border-transparent shadow-sm hover:shadow-md ${
+                  scrolled
+                    ? 'text-white bg-indigo-600 hover:bg-indigo-700'
+                    : 'text-white bg-white/20 hover:bg-white/30 backdrop-blur-md border-white/30'
+                }`}
+              >
+                Login
+              </Link>
+            )}
           </div>
         </div>
 
@@ -236,13 +254,11 @@ const Navbar = () => {
           })}
           
           <Link 
-            to="/tasks"
+            to={currentUser ? "/profile" : "/login"}
             onClick={() => setMobileMenuOpen(false)}
-            className={`px-4 py-3 rounded-xl font-sans font-semibold text-base transition-colors ${
-              !isHomePage ? 'text-indigo-600 bg-indigo-50 dark:text-indigo-400 dark:bg-indigo-500/15' : 'text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-white/10'
-            }`}
+            className="px-4 py-3 rounded-xl font-sans font-semibold text-base transition-colors bg-indigo-600 text-white hover:bg-indigo-700 text-center shadow-md mt-2"
           >
-            Tasks
+            {currentUser ? 'Portal' : 'Login'}
           </Link>
 
           <div className="flex space-x-4 px-4 pt-4 mt-2 border-t border-gray-100 dark:border-white/10 w-full">

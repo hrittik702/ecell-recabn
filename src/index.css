@@ -93,19 +93,33 @@
     @apply md:row-span-2;
   }
 
-  /* Non-blurred #111 Custom Mouse Follower */
+  /* Custom Mouse Follower */
   .mousefollower {
-    width: 10px !important;
-    height: 10px !important;
-    background-color: #111111 !important;
-    border-radius: 50% !important;
-    filter: none !important;
-    border: none !important;
-    z-index: 9999 !important;
+    width: 10px;
+    height: 10px;
+    background-color: #111111;
+    border-radius: 50%;
+    z-index: 9999;
+    pointer-events: none;
+    transition: background-color 0.3s ease;
   }
 
   .dark .mousefollower {
-    background-color: #ffffff !important;
+    background-color: #ffffff;
+  }
+
+  /* Custom Scrollbar for Dropdowns */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 dark:bg-gray-600 rounded-full;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-400 dark:bg-gray-500;
   }
 }
 

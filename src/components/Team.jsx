@@ -1,28 +1,85 @@
-import React, { useRef, useState, useMemo } from 'react';
+import React, { useRef, useState, useMemo, useEffect } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import TeamCard from './TeamCard';
-import { currentTeam, passoutSeniors } from '../data/constants';
+import { getAllTeamMembers } from '../firebase/db';
 
 const Team = () => {
   const containerRef = useRef(null);
   const [activeFilter, setActiveFilter] = useState('all');
+  const [teamMembers, setTeamMembers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTeam = async () => {
+      try {
+        const members = await getAllTeamMembers();
+        
+        // Map Firestore fields to match what TeamCard expects
+        // Also filter out any admin accounts so they stay hidden
+        const mappedMembers = members
+          .filter(m => {
+            const role = (m.role || '').toLowerCase();
+            const systemRole = (m.systemRole || '').toLowerCase();
+            return role !== 'admin' && systemRole !== 'admin';
+          })
+          .map(m => ({
+            ...m,
+            image: m.profileImage || m.image // support both
+          }))
+          .sort((a, b) => {
+            const yearDiff = parseInt(b.year || 0) - parseInt(a.year || 0);
+            if (yearDiff !== 0) return yearDiff;
+            return (a.name || '').localeCompare(b.name || '');
+          });
+        
+        setTeamMembers(mappedMembers);
+      } catch (error) {
+        console.error("Failed to load team members:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchTeam();
+  }, []);
+
+  // Split into current, passout, and former based on year
+  const { currentTeam, passoutSeniors, formerMembers } = useMemo(() => {
+    const current = [];
+    const passout = [];
+    const former = [];
+    
+    teamMembers.forEach(member => {
+      const yearStr = String(member.year || '').toLowerCase();
+      const y = parseInt(member.year);
+      
+      if (member.status === 'former' || y === 6 || yearStr.includes('former')) {
+        former.push(member);
+      } else if (y === 5 || yearStr.includes('passout') || yearStr.includes('alumni')) {
+        passout.push(member);
+      } else {
+        current.push(member);
+      }
+    });
+    
+    return { currentTeam: current, passoutSeniors: passout, formerMembers: former };
+  }, [teamMembers]);
 
   // Filter logic based on roles
   const filteredTeam = useMemo(() => {
-    if (activeFilter === 'all') return { current: currentTeam, passout: passoutSeniors };
-    if (activeFilter === 'former') return { current: [], passout: passoutSeniors };
+    if (activeFilter === 'all') return { current: currentTeam, passout: passoutSeniors, former: formerMembers };
+    if (activeFilter === 'former') return { current: [], passout: [], former: formerMembers };
     
     const filteredCurrent = currentTeam.filter(member => {
-      const role = member.role.toLowerCase();
-      if (activeFilter === 'executive') return role.includes('head') || role.includes('coord');
+      const role = (member.role || '').toLowerCase();
+      if (activeFilter === 'executive') return role.includes('head') || role.includes('coord') || role.includes('president');
       if (activeFilter === 'media') return role.includes('pr') || role.includes('media') || role.includes('marketing');
-      if (activeFilter === 'technical') return role.includes('technical') || role.includes('design');
+      if (activeFilter === 'technical') return role.includes('technical') || role.includes('design') || role.includes('tech');
       return true;
     });
 
-    return { current: filteredCurrent, passout: [] };
-  }, [activeFilter]);
+    return { current: filteredCurrent, passout: [], former: [] };
+  }, [activeFilter, currentTeam, passoutSeniors, formerMembers]);
 
   useGSAP(() => {
     gsap.fromTo('.team-header',
@@ -77,32 +134,60 @@ const Team = () => {
         
         {/* Team Grid */}
         <div className="min-h-[600px]">
-          {filteredTeam.current.length > 0 && (
-            <div className="mb-16 animate-fade-in">
-              <div className="mb-6 flex items-center">
-                <h3 className="text-xl md:text-2xl font-display font-bold text-gray-900 dark:text-white mr-4">Current Team</h3>
-                <div className="flex-1 h-px bg-gray-200/80 dark:bg-white/10" />
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {filteredTeam.current.map((member) => (
-                  <TeamCard key={`current-${member.id}`} member={member} />
-                ))}
-              </div>
+          {loading ? (
+            <div className="flex justify-center items-center h-64">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
             </div>
-          )}
+          ) : (
+            <>
+              {filteredTeam.current.length > 0 && (
+                <div className="mb-16 animate-fade-in">
+                  <div className="mb-6 flex items-center">
+                    <h3 className="text-xl md:text-2xl font-display font-bold text-gray-900 dark:text-white mr-4">Current Team</h3>
+                    <div className="flex-1 h-px bg-gray-200/80 dark:bg-white/10" />
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    {filteredTeam.current.map((member) => (
+                      <TeamCard key={`current-${member.id}`} member={member} />
+                    ))}
+                  </div>
+                </div>
+              )}
 
-          {filteredTeam.passout.length > 0 && (
-            <div className="animate-fade-in">
-              <div className="mb-6 flex items-center">
-                <h3 className="text-xl md:text-2xl font-display font-bold text-gray-900 dark:text-white mr-4">Passout Seniors</h3>
-                <div className="flex-1 h-px bg-gray-200/80 dark:bg-white/10" />
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {filteredTeam.passout.map((member) => (
-                  <TeamCard key={`former-${member.id}`} member={member} />
-                ))}
-              </div>
-            </div>
+              {filteredTeam.passout.length > 0 && (
+                <div className="mb-16 animate-fade-in">
+                  <div className="mb-6 flex items-center">
+                    <h3 className="text-xl md:text-2xl font-display font-bold text-gray-900 dark:text-white mr-4">Passout Seniors</h3>
+                    <div className="flex-1 h-px bg-gray-200/80 dark:bg-white/10" />
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    {filteredTeam.passout.map((member) => (
+                      <TeamCard key={`passout-${member.id}`} member={member} />
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {filteredTeam.former.length > 0 && (
+                <div className="animate-fade-in">
+                  <div className="mb-6 flex items-center">
+                    <h3 className="text-xl md:text-2xl font-display font-bold text-gray-900 dark:text-white mr-4">Former Members</h3>
+                    <div className="flex-1 h-px bg-gray-200/80 dark:bg-white/10" />
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    {filteredTeam.former.map((member) => (
+                      <TeamCard key={`former-${member.id}`} member={member} />
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {filteredTeam.current.length === 0 && filteredTeam.passout.length === 0 && filteredTeam.former.length === 0 && (
+                <div className="text-center text-gray-500 py-12">
+                  No team members found for this category.
+                </div>
+              )}
+            </>
           )}
         </div>
 

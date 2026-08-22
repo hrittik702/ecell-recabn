@@ -1,0 +1,30 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Function to check if the logged-in user is an admin
+    function isAdmin() {
+      // Check if the user document exists and has the admin role
+      return request.auth != null && 
+             exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+             (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' || 
+              get(/databases/$(database)/documents/users/$(request.auth.uid)).data.systemRole == 'admin');
+    }
+
+    // Function to check if the user is modifying their own document
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+
+    match /users/{userId} {
+      // Anyone can view the team profiles (required for the main website)
+      allow read: if true;
+      
+      // Only an admin can create or delete team member documents
+      allow create, delete: if isAdmin();
+      
+      // A member can update their own document, or an admin can update any document
+      allow update: if isAdmin() || isOwner(userId);
+    }
+  }
+}
