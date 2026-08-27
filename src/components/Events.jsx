@@ -58,6 +58,7 @@ const Events = () => {
                       src={event.image} 
                       alt={event.title} 
                       loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-cover opacity-90 transition-transform duration-700 ease-smooth group-hover:scale-105" 
                     />
                     {/* Left-to-Right Gradient Overlay */}

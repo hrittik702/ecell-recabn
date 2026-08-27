@@ -1,206 +1,182 @@
-import React, { useRef, useState, useMemo, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
-import TeamCard from './TeamCard';
+import TeamCard from './team/TeamCard';
+import ConstellationDivider from './team/ConstellationDivider';
 import { getAllTeamMembers } from '../firebase/db';
+import {
+  ecellMembers as defaultEcellMembers,
+  alumniTeam as defaultAlumniTeam
+} from '../data/constants';
+
+const sortByYearAndRank = (list) => {
+  return [...list].sort((a, b) => {
+    const yearA = parseInt(a.year || 0);
+    const yearB = parseInt(b.year || 0);
+    if (yearB !== yearA) return yearB - yearA; // 4th Year -> 3rd Year -> 2nd Year -> 1st Year
+    return (a.name || '').localeCompare(b.name || '');
+  });
+};
 
 const Team = () => {
   const containerRef = useRef(null);
-  const [activeFilter, setActiveFilter] = useState('all');
-  const [teamMembers, setTeamMembers] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [teamData, setTeamData] = useState({
+    members: sortByYearAndRank(defaultEcellMembers),
+    alumni: sortByYearAndRank(defaultAlumniTeam)
+  });
 
   useEffect(() => {
-    const fetchTeam = async () => {
+    let isMounted = true;
+    const fetchRemoteTeam = async () => {
       try {
-        const members = await getAllTeamMembers();
-        
-        // Map Firestore fields to match what TeamCard expects
-        // Also filter out any admin accounts so they stay hidden
-        const mappedMembers = members
+        const remoteMembers = await getAllTeamMembers();
+        if (!isMounted || !remoteMembers || remoteMembers.length === 0) return;
+
+        const members = [];
+        const alumni = [];
+
+        remoteMembers
           .filter(m => {
             const role = (m.role || '').toLowerCase();
-            const systemRole = (m.systemRole || '').toLowerCase();
-            return role !== 'admin' && systemRole !== 'admin';
+            const sysRole = (m.systemRole || '').toLowerCase();
+            return role !== 'admin' && sysRole !== 'admin';
           })
-          .map(m => ({
-            ...m,
-            image: m.profileImage || m.image // support both
-          }))
-          .sort((a, b) => {
-            const yearDiff = parseInt(b.year || 0) - parseInt(a.year || 0);
-            if (yearDiff !== 0) return yearDiff;
-            return (a.name || '').localeCompare(b.name || '');
+          .forEach(m => {
+            const name = (m.name || '').toLowerCase();
+            const formatted = {
+              ...m,
+              image: m.profileImage || m.image || (name.includes('arpita') ? '/assets/arpita.png' : '')
+            };
+            const role = (m.role || '').toLowerCase();
+            const status = (m.status || '').toLowerCase();
+            const yearStr = String(m.year || '').toLowerCase();
+            const y = parseInt(m.year);
+
+            // Strict Alumni check: only genuine passouts / alumni
+            // (Year >= 5, or status === 'alumni' / 'passout', or founding leaders Khushi / Gunjan)
+            const isGenuineAlumni = 
+              y >= 5 ||
+              y === 6 ||
+              status === 'alumni' ||
+              status === 'passout' ||
+              yearStr.includes('alumni') ||
+              yearStr.includes('passout') ||
+              name.includes('khushi') ||
+              name.includes('gunjan');
+
+            if (isGenuineAlumni) {
+              alumni.push(formatted);
+            } else {
+              // All active 1st, 2nd, 3rd, 4th year members belong to E-Cell Members
+              members.push(formatted);
+            }
           });
-        
-        setTeamMembers(mappedMembers);
-      } catch (error) {
-        console.error("Failed to load team members:", error);
-      } finally {
-        setLoading(false);
+
+        if (members.length > 0 || alumni.length > 0) {
+          setTeamData({
+            members: members.length > 0 ? sortByYearAndRank(members) : sortByYearAndRank(defaultEcellMembers),
+            alumni: alumni.length > 0 ? sortByYearAndRank(alumni) : sortByYearAndRank(defaultAlumniTeam)
+          });
+        }
+      } catch (err) {
+        console.warn("Using curated team records:", err);
       }
     };
-    fetchTeam();
+
+    fetchRemoteTeam();
+    return () => { isMounted = false; };
   }, []);
 
-  // Split into current, passout, and former based on year
-  const { currentTeam, passoutSeniors, formerMembers } = useMemo(() => {
-    const current = [];
-    const passout = [];
-    const former = [];
-    
-    teamMembers.forEach(member => {
-      const yearStr = String(member.year || '').toLowerCase();
-      const y = parseInt(member.year);
-      
-      if (member.status === 'former' || y === 6 || yearStr.includes('former')) {
-        former.push(member);
-      } else if (y === 5 || yearStr.includes('passout') || yearStr.includes('alumni')) {
-        passout.push(member);
-      } else {
-        current.push(member);
-      }
-    });
-    
-    return { currentTeam: current, passoutSeniors: passout, formerMembers: former };
-  }, [teamMembers]);
-
-  // Filter logic based on roles
-  const filteredTeam = useMemo(() => {
-    if (activeFilter === 'all') return { current: currentTeam, passout: passoutSeniors, former: formerMembers };
-    if (activeFilter === 'former') return { current: [], passout: [], former: formerMembers };
-    
-    const filteredCurrent = currentTeam.filter(member => {
-      const role = (member.role || '').toLowerCase();
-      if (activeFilter === 'executive') return role.includes('head') || role.includes('coord') || role.includes('president');
-      if (activeFilter === 'media') return role.includes('pr') || role.includes('media') || role.includes('marketing');
-      if (activeFilter === 'technical') return role.includes('technical') || role.includes('design') || role.includes('tech');
-      return true;
-    });
-
-    return { current: filteredCurrent, passout: [], former: [] };
-  }, [activeFilter, currentTeam, passoutSeniors, formerMembers]);
-
   useGSAP(() => {
-    gsap.fromTo('.team-header',
-      { y: 20, opacity: 0 },
+    gsap.fromTo('.team-main-header',
+      { y: 24, opacity: 0 },
       { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out', scrollTrigger: { trigger: containerRef.current, start: 'top 85%' } }
+    );
+
+    gsap.fromTo('.team-section-block',
+      { y: 30, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.8, stagger: 0.2, ease: 'power3.out', scrollTrigger: { trigger: '.team-section-block', start: 'top 85%' } }
     );
   }, { scope: containerRef });
 
   return (
-    <section ref={containerRef} id="team" className="py-24 relative z-10 bg-off-white dark:bg-transparent overflow-hidden">
-      
-      {/* Decorative Blob */}
-      <div className="absolute top-40 left-0 w-[400px] h-[400px] bg-purple-50 dark:bg-purple-500/5 rounded-full blur-3xl opacity-60 -z-10 -translate-x-1/2" />
+    <section ref={containerRef} id="team" className="py-24 md:py-32 relative z-10 bg-off-white dark:bg-transparent overflow-hidden">
+      {/* Subtle Atmospheric Ambient Glow */}
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-white/[0.02] dark:bg-white/[0.03] rounded-full blur-[140px] pointer-events-none -z-10" />
 
       <div className="container mx-auto px-6 max-w-6xl">
-        
-        {/* Header */}
-        <div className="team-header flex flex-col md:flex-row md:items-end justify-between mb-12">
+        {/* Section Master Header */}
+        <div className="team-main-header flex flex-col md:flex-row md:items-end justify-between mb-16 md:mb-20 gap-6 border-b border-gray-200/80 dark:border-white/10 pb-8">
           <div>
-            <span className="text-xs font-mono font-bold tracking-widest text-indigo-600 dark:text-indigo-400 uppercase mb-3 inline-block bg-indigo-50 dark:bg-indigo-500/10 px-3 py-1 rounded-full border border-indigo-100 dark:border-indigo-500/20">
-              People
+            <span className="text-xs font-mono font-bold tracking-widest text-zinc-700 dark:text-zinc-300 uppercase mb-3 inline-block bg-gray-100 dark:bg-white/[0.06] px-3 py-1 rounded-full border border-gray-200 dark:border-white/10">
+              Community & Leadership
             </span>
-            <h2 className="text-3xl md:text-5xl font-display font-bold text-gray-900 dark:text-white tracking-tight">Meet the Team</h2>
+            <h2 className="text-3xl md:text-5xl lg:text-6xl font-display font-bold text-gray-900 dark:text-white tracking-tight">
+              The Team
+            </h2>
           </div>
-          <p className="text-gray-600 dark:text-gray-300 mt-6 md:mt-0 text-base md:text-lg max-w-md font-sans font-medium text-balance">
-            The dedicated individuals behind E-Cell REC Ambedkar Nagar—our student leaders, creators, and alumni.
+          <p className="text-gray-600 dark:text-gray-300 text-base md:text-lg max-w-md font-sans font-medium text-balance">
+            The builders, organizers, and innovators driving the entrepreneurial ecosystem at REC Ambedkar Nagar.
           </p>
         </div>
 
-        {/* Premium Pill-based Filters */}
-        <div className="flex flex-wrap items-center gap-2 mb-12">
-          {[
-            { id: 'all', label: 'All Members' },
-            { id: 'executive', label: 'Executive' },
-            { id: 'media', label: 'Media & PR' },
-            { id: 'technical', label: 'Technical & Design' },
-            { id: 'former', label: 'Former Members' }
-          ].map((filter) => (
-            <button
-              key={filter.id}
-              onClick={() => setActiveFilter(filter.id)}
-              className={`px-5 py-2.5 rounded-full text-sm font-sans font-bold transition-all duration-300 outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 ${
-                activeFilter === filter.id 
-                  ? 'bg-gray-900 text-white shadow-md' 
-                  : 'bg-white/60 backdrop-blur-3xl border border-white/50 text-gray-600 hover:bg-gray-50 hover:text-gray-900 hover:border-gray-300 dark:bg-dark-card dark:border-white/10 dark:text-gray-400 dark:hover:bg-dark-surface dark:hover:text-white dark:hover:border-white/20'
-              }`}
-            >
-              {filter.label}
-            </button>
-          ))}
-        </div>
-        
-        {/* Team Grid */}
-        <div className="min-h-[600px]">
-          {loading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-                <div key={i} className="bg-white/40 dark:bg-dark-card/40 backdrop-blur-md rounded-2xl p-6 border border-white/50 dark:border-white/5 animate-pulse flex flex-col items-center">
-                  <div className="w-24 h-24 rounded-full bg-gray-200/60 dark:bg-white/10 mb-5"></div>
-                  <div className="h-5 w-32 bg-gray-200/60 dark:bg-white/10 rounded-full mb-3"></div>
-                  <div className="h-4 w-24 bg-gray-200/60 dark:bg-white/10 rounded-full mb-6"></div>
-                  <div className="flex gap-3">
-                    <div className="w-8 h-8 rounded-full bg-gray-200/60 dark:bg-white/10"></div>
-                    <div className="w-8 h-8 rounded-full bg-gray-200/60 dark:bg-white/10"></div>
-                  </div>
-                </div>
-              ))}
+        {/* ========================================================= */}
+        {/* 01. E-CELL MEMBERS (ALL ACTIVE MEMBERS RANKED BY YEAR)     */}
+        {/* ========================================================= */}
+        <div className="team-section-block mb-16 md:mb-20">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 md:mb-10 gap-4">
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-xs font-mono font-bold tracking-widest text-zinc-600 dark:text-zinc-400 uppercase">
+                  01 / TEAM
+                </span>
+                <span className="w-1.5 h-1.5 rounded-full bg-zinc-400 dark:bg-zinc-300" />
+              </div>
+              <h3 className="text-2xl md:text-3xl lg:text-4xl font-display font-bold text-gray-900 dark:text-white tracking-tight">
+                E-Cell Members
+              </h3>
             </div>
-          ) : (
-            <>
-              {filteredTeam.current.length > 0 && (
-                <div className="mb-16 animate-fade-in">
-                  <div className="mb-6 flex items-center">
-                    <h3 className="text-xl md:text-2xl font-display font-bold text-gray-900 dark:text-white mr-4">Current Team</h3>
-                    <div className="flex-1 h-px bg-gray-200/80 dark:bg-white/10" />
-                  </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                    {filteredTeam.current.map((member) => (
-                      <TeamCard key={`current-${member.id}`} member={member} />
-                    ))}
-                  </div>
-                </div>
-              )}
+            <p className="text-sm md:text-base text-gray-500 dark:text-gray-400 font-sans max-w-md font-medium">
+              The student leaders, developers, and coordinators powering initiatives across our ecosystem.
+            </p>
+          </div>
 
-              {filteredTeam.passout.length > 0 && (
-                <div className="mb-16 animate-fade-in">
-                  <div className="mb-6 flex items-center">
-                    <h3 className="text-xl md:text-2xl font-display font-bold text-gray-900 dark:text-white mr-4">Passout Seniors</h3>
-                    <div className="flex-1 h-px bg-gray-200/80 dark:bg-white/10" />
-                  </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                    {filteredTeam.passout.map((member) => (
-                      <TeamCard key={`passout-${member.id}`} member={member} />
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {filteredTeam.former.length > 0 && (
-                <div className="animate-fade-in">
-                  <div className="mb-6 flex items-center">
-                    <h3 className="text-xl md:text-2xl font-display font-bold text-gray-900 dark:text-white mr-4">Former Members</h3>
-                    <div className="flex-1 h-px bg-gray-200/80 dark:bg-white/10" />
-                  </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                    {filteredTeam.former.map((member) => (
-                      <TeamCard key={`former-${member.id}`} member={member} />
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {filteredTeam.current.length === 0 && filteredTeam.passout.length === 0 && filteredTeam.former.length === 0 && (
-                <div className="text-center text-gray-500 py-12">
-                  No team members found for this category.
-                </div>
-              )}
-            </>
-          )}
+          {/* Members Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-6">
+            {teamData.members.map((member) => (
+              <TeamCard key={`member-${member.id || member.name}`} member={member} isAlumni={false} />
+            ))}
+          </div>
         </div>
 
+        {/* Constellation Divider */}
+        <ConstellationDivider />
+
+        {/* ========================================================= */}
+        {/* 02. ALUMNI (THE FOUNDATION & PASSOUT SENIORS)             */}
+        {/* ========================================================= */}
+        <div className="team-section-block">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 md:mb-10 gap-4">
+            <div>
+              <span className="text-xs font-mono font-bold tracking-widest text-amber-700 dark:text-amber-400/90 uppercase mb-2 inline-block">
+                02 / ALUMNI
+              </span>
+              <h3 className="text-2xl md:text-3xl lg:text-4xl font-display font-bold text-gray-900 dark:text-white tracking-tight">
+                The Foundation
+              </h3>
+            </div>
+            <p className="text-sm md:text-base text-gray-500 dark:text-gray-400 font-sans max-w-md font-medium">
+              Honoring the past leaders and mentors who shaped the foundation of E-Cell REC ABN.
+            </p>
+          </div>
+
+          {/* Alumni Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-6">
+            {teamData.alumni.map((member) => (
+              <TeamCard key={`alumni-${member.id || member.name}`} member={member} isAlumni={true} />
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );

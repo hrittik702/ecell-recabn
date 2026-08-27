@@ -42,7 +42,7 @@ const TimelineNode = memo(({ item, index, status, isSelected, onClick }) => {
           : isCurrent
           ? 'bg-white/60 backdrop-blur-3xl border-2 border-emerald-500 text-gray-900 z-20 hover:border-indigo-400 dark:bg-dark-card dark:text-white dark:hover:border-indigo-500/30'
           : isPast
-          ? 'bg-gray-50 border-white/50/60 text-gray-500 opacity-75 hover:opacity-100 hover:bg-white hover:border-indigo-300 dark:bg-dark-card/50 dark:border-white/5 dark:hover:bg-dark-surface dark:hover:border-indigo-500/30 dark:text-gray-400'
+          ? 'bg-gray-50 border-gray-200/60 text-gray-500 opacity-75 hover:opacity-100 hover:bg-white hover:border-indigo-300 dark:bg-dark-card/50 dark:border-white/5 dark:hover:bg-dark-surface dark:hover:border-indigo-500/30 dark:text-gray-400'
           : 'bg-white/60 backdrop-blur-3xl border-white/50 text-gray-800 hover:border-indigo-300 dark:bg-dark-card dark:border-white/10 dark:text-gray-300 dark:hover:bg-dark-surface dark:hover:border-indigo-500/30'
       }`}
       style={{

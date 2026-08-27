@@ -4,10 +4,11 @@ import { updateUserProfile, getTasksForUser, updateTaskStatus } from '../firebas
 import { signOut, updatePassword } from 'firebase/auth';
 import { auth } from '../firebase/firebase';
 import { useNavigate } from 'react-router-dom';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import { LogOut, Save, User, Camera, X, ClipboardList, CheckCircle, Edit2, Upload, Instagram, Linkedin, Key } from 'lucide-react';
 import Cropper from 'react-easy-crop';
 import { getCroppedImg } from '../utils/cropImage';
+import { normalizeLinkedInUrl, normalizeInstagramUrl } from '../utils/socialLinks';
 
 const Profile = () => {
   const { currentUser, userData, loading: authLoading, updateUserData } = useAuth();
@@ -99,8 +100,14 @@ const Profile = () => {
 
     setIsSubmitting(true);
     try {
-      await updateUserProfile(currentUser.uid, formData);
-      if (updateUserData) updateUserData(formData);
+      const cleanedData = {
+        ...formData,
+        linkedin: normalizeLinkedInUrl(formData.linkedin),
+        instagram: normalizeInstagramUrl(formData.instagram)
+      };
+      await updateUserProfile(currentUser.uid, cleanedData);
+      if (updateUserData) updateUserData(cleanedData);
+      setFormData(cleanedData);
       toast.success('Profile updated successfully!');
       setIsEditing(false);
     } catch (error) {
@@ -197,14 +204,6 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen pt-28 pb-12 px-4 max-w-7xl mx-auto relative z-10">
-      <Toaster 
-        position="top-right" 
-        containerStyle={{
-          top: 100,
-          right: 20,
-        }}
-      />
-      
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
           <span className="text-xs font-mono font-bold tracking-widest text-indigo-600 dark:text-indigo-400 uppercase mb-3 inline-block bg-indigo-50 dark:bg-indigo-500/10 px-3 py-1 rounded-full border border-indigo-100 dark:border-indigo-500/20">
@@ -395,21 +394,21 @@ const Profile = () => {
                     <div className="md:col-span-2 pt-2">
                       <label className="block text-xs font-bold mb-3 text-gray-700 dark:text-gray-300 font-sans uppercase tracking-wide">Social Connect</label>
                       <div className="flex gap-3">
-                        {formData.linkedin ? (
-                          <a href={formData.linkedin.startsWith('http') ? formData.linkedin : `https://linkedin.com/in/${formData.linkedin}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-500/20 hover:bg-blue-100 dark:hover:bg-blue-500/20 transition-colors text-sm font-bold">
+                        {normalizeLinkedInUrl(formData.linkedin) ? (
+                          <a href={normalizeLinkedInUrl(formData.linkedin)} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-500/20 hover:bg-blue-100 dark:hover:bg-blue-500/20 transition-colors text-sm font-bold">
                             <Linkedin size={16} />
                             LinkedIn
                           </a>
                         ) : null}
                         
-                        {formData.instagram ? (
-                          <a href={formData.instagram.startsWith('http') ? formData.instagram : `https://instagram.com/${formData.instagram.replace('@', '')}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 rounded-lg bg-pink-50 dark:bg-pink-500/10 text-pink-600 dark:text-pink-400 border border-pink-100 dark:border-pink-500/20 hover:bg-pink-100 dark:hover:bg-pink-500/20 transition-colors text-sm font-bold">
+                        {normalizeInstagramUrl(formData.instagram) ? (
+                          <a href={normalizeInstagramUrl(formData.instagram)} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 rounded-lg bg-pink-50 dark:bg-pink-500/10 text-pink-600 dark:text-pink-400 border border-pink-100 dark:border-pink-500/20 hover:bg-pink-100 dark:hover:bg-pink-500/20 transition-colors text-sm font-bold">
                             <Instagram size={16} />
                             Instagram
                           </a>
                         ) : null}
 
-                        {!formData.linkedin && !formData.instagram && (
+                        {!normalizeLinkedInUrl(formData.linkedin) && !normalizeInstagramUrl(formData.instagram) && (
                           <div className="text-sm text-gray-500 dark:text-gray-400 italic px-1">No social links added. Click Edit to add them.</div>
                         )}
                       </div>

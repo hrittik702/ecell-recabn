@@ -204,25 +204,32 @@ export const eventsData = [
   }
 ];
 
-export const currentTeam = [
-  { id: 1, name: "Sanskriti Singh", role: "Corporate Head", image: "/assets/sanskriti-maam.jpg", linkedin: "https://www.linkedin.com/in/sanskriti-singh-63b165236", instagram: "https://www.instagram.com/hrittik_india/" },
-  { id: 2, name: "Hemant Verma", role: "Event & PR Head", image: "/assets/hemant-sir.jpg", linkedin: "https://www.linkedin.com/in/hemant-verma-278282288", instagram: "https://www.instagram.com/hrittik_india/" },
-  { id: 3, name: "Hariprakash Yadav", role: "Corporate Head", image: "/assets/hariprakash-sir.jpg", linkedin: "https://www.linkedin.com/in/hariprakash-yadav-a617a72a9", instagram: "https://www.instagram.com/hrittik_india/" },
-  { id: 4, name: "Saurabh Singh", role: "Media Head", image: "/assets/saurabh-sir.jpg", linkedin: "https://www.linkedin.com/in/saurabh-singh-7096a9296", instagram: "https://www.instagram.com/hrittik_india/" },
-  { id: 5, name: "Smriti Maurya", role: "Event & PR Head", image: "/assets/smriti.png", linkedin: "https://www.linkedin.com/in/smriti-maurya-9bb96b383", instagram: "https://www.instagram.com/hrittik_india/" },
-  { id: 6, name: "Hrittik Maurya", role: "Event & PR Head", image: "/assets/hrittik-editor.jpg", linkedin: "https://www.linkedin.com/in/hrittik-maurya", portfolio: "https://portfolio-hrittik.vercel.app/" },
-  { id: 7, name: "Harsh Shukla", role: "Corporate & Relational Head", image: "/assets/harsh.jpg", linkedin: "https://www.linkedin.com/in/harsh-shukla-7b1a40329", instagram: "https://www.instagram.com/hrittik_india/" },
-  { id: 8, name: "Md. Asif", role: "Corporate & Relational Head", image: "/assets/asif.jpg", linkedin: "https://www.linkedin.com/in/x-asif", instagram: "https://www.instagram.com/hrittik_india/" },
-  { id: 9, name: "Neha Verma", role: "Media Lead", image: "", linkedin: "#", instagram: "#" },
-  { id: 10, name: "Tamanna Baroniya", role: "Design Lead", image: "", linkedin: "#", instagram: "#" },
-  { id: 11, name: "Kabya Patel", role: "Operational Lead", image: "", linkedin: "#", instagram: "#" },
-  { id: 12, name: "Vaibhav Agrahari", role: "Web-Tech Lead", image: "", linkedin: "#", instagram: "#" },
-  { id: 13, name: "Vivek Kumar Sonkar", role: "Marketing Lead", image: "", linkedin: "#", instagram: "#" },
-  { id: 14, name: "Adarsh Bhargav", role: "Web-Tech Lead", image: "", linkedin: "#", instagram: "#" },
-  { id: 15, name: "Abhishek Singh", role: "Outreach Coordinator", image: "", linkedin: "#", instagram: "#" }
+export const ecellMembers = [
+  { id: 1, name: "Sanskriti Singh", role: "Corporate Head", department: "Institutional Relations", year: 4, image: "/assets/sanskriti-maam.jpg", linkedin: "https://www.linkedin.com/in/sanskriti-singh-63b165236", instagram: "https://www.instagram.com/hrittik_india/" },
+  { id: 2, name: "Hemant Verma", role: "Event & PR Head", department: "Events & Public Relations", year: 4, image: "/assets/hemant-sir.jpg", linkedin: "https://www.linkedin.com/in/hemant-verma-278282288", instagram: "https://www.instagram.com/hrittik_india/" },
+  { id: 3, name: "Hariprakash Yadav", role: "Corporate Head", department: "Industry & Corporate Connect", year: 4, image: "/assets/hariprakash-sir.jpg", linkedin: "https://www.linkedin.com/in/hariprakash-yadav-a617a72a9", instagram: "https://www.instagram.com/hrittik_india/" },
+  { id: 4, name: "Saurabh Singh", role: "Media Head", department: "Media & Digital Presence", year: 4, image: "/assets/saurabh-sir.jpg", linkedin: "https://www.linkedin.com/in/saurabh-singh-7096a9296", instagram: "https://www.instagram.com/hrittik_india/" },
+  { id: 5, name: "Smriti Maurya", role: "Event & PR Head", department: "Events & Public Relations", year: 4, image: "/assets/smriti.png", linkedin: "https://www.linkedin.com/in/smriti-maurya-9bb96b383", instagram: "https://www.instagram.com/hrittik_india/" },
+  { id: 6, name: "Hrittik Maurya", role: "Event & PR Head", department: "Design & Public Relations", year: 4, image: "/assets/hrittik-editor.jpg", linkedin: "https://www.linkedin.com/in/hrittik-maurya", portfolio: "https://portfolio-hrittik.vercel.app/" },
+  { id: 7, name: "Harsh Shukla", role: "Corporate & Relational Head", department: "Strategic Partnerships", year: 4, image: "/assets/harsh.jpg", linkedin: "https://www.linkedin.com/in/harsh-shukla-7b1a40329", instagram: "https://www.instagram.com/hrittik_india/" },
+  { id: 8, name: "Md. Asif", role: "Corporate & Relational Head", department: "Outreach & Institutional Affairs", year: 4, image: "/assets/asif.jpg", linkedin: "https://www.linkedin.com/in/x-asif", instagram: "https://www.instagram.com/hrittik_india/" },
+  { id: 16, name: "Arpita Prakash", role: "Operational Head", department: "Operations & Management", year: 4, image: "/assets/arpita.png", linkedin: "https://www.linkedin.com/in/arpita-prakash-369493336", instagram: "https://www.instagram.com/hrittik_india/" },
+  { id: 17, name: "Kirti Singh", role: "Events & PR Head", department: "Events & Public Relations", year: 4, image: "", linkedin: "https://www.linkedin.com/in/kirti-singh-233812309", instagram: "https://www.instagram.com/hrittik_india/" },
+  { id: 9, name: "Neha Verma", role: "Media Lead", department: "Media & PR", year: 3, image: "", linkedin: "" },
+  { id: 10, name: "Tamanna Baroniya", role: "Design Lead", department: "UI/UX & Brand Design", year: 3, image: "", linkedin: "" },
+  { id: 11, name: "Kabya Patel", role: "Operational Lead", department: "Operations & Logistics", year: 3, image: "", linkedin: "" },
+  { id: 12, name: "Vaibhav Agrahari", role: "Web-Tech Lead", department: "Web Architecture & Tech", year: 3, image: "", linkedin: "" },
+  { id: 13, name: "Vivek Kumar Sonkar", role: "Marketing Lead", department: "Growth & Campaigns", year: 3, image: "", linkedin: "" },
+  { id: 14, name: "Adarsh Bhargav", role: "Web-Tech Lead", department: "Platform Development", year: 3, image: "", linkedin: "" },
+  { id: 15, name: "Abhishek Singh", role: "Outreach Coordinator", department: "External Communications", year: 2, image: "", linkedin: "" }
 ];
 
-export const passoutSeniors = [
-  { id: 1, name: "Khushi Singh", role: "Former Leader", image: "/assets/khushi-maam.jpg", linkedin: "https://www.linkedin.com/in/khushi-singh-787711255", instagram: "https://www.instagram.com/khushi.24singh/" },
-  { id: 2, name: "Gunjan Pandey", role: "Former Leader", image: "/assets/gunjan-maam.png", linkedin: "https://www.linkedin.com/in/gunjan-pandey-638b53268", instagram: "https://www.instagram.com/hrittik_india/" }
+export const alumniTeam = [
+  { id: 1, name: "Khushi Singh", role: "Former Leader & Convener", department: "Past Leadership", year: 5, image: "/assets/khushi-maam.jpg", linkedin: "https://www.linkedin.com/in/khushi-singh-787711255", instagram: "https://www.instagram.com/khushi.24singh/" },
+  { id: 2, name: "Gunjan Pandey", role: "Former Leader & President", department: "Past Leadership", year: 5, image: "/assets/gunjan-maam.png", linkedin: "https://www.linkedin.com/in/gunjan-pandey-638b53268", instagram: "https://www.instagram.com/hrittik_india/" }
 ];
+
+// Backwards-compatible aliases
+export const currentTeam = ecellMembers;
+export const necTeam = ecellMembers;
+export const passoutSeniors = alumniTeam;

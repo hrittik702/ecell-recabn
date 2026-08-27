@@ -1,18 +1,50 @@
 import React, { useEffect, useState } from 'react';
 import { ExternalLink, CheckCircle2, AlertCircle, Calendar, User, Target } from 'lucide-react';
 import { tasksData } from '../data/tasksData';
+import { getAllTasks } from '../firebase/db';
 
 const TABS = ['Ignite Propel', 'Comprehensive'];
 
 const Tasks = () => {
   const [activeTab, setActiveTab] = useState('Ignite Propel');
+  const [allTasks, setAllTasks] = useState(tasksData);
+  const [loading, setLoading] = useState(false);
 
   // Ensure we start at the top of the page when navigating here
   useEffect(() => {
     window.scrollTo(0, 0);
+
+    let isMounted = true;
+    const fetchLiveTasks = async () => {
+      try {
+        setLoading(true);
+        const remote = await getAllTasks();
+        if (!isMounted || !remote || remote.length === 0) return;
+
+        // Map and merge remote tasks with local catalog
+        const formattedRemote = remote.map(t => ({
+          ...t,
+          category: t.category || 'Ignite Propel',
+          status: t.status === 'completed' ? 'Completed' : 'In Progress'
+        }));
+
+        setAllTasks(prev => {
+          const remoteIds = new Set(formattedRemote.map(r => r.id));
+          const filteredDefaults = prev.filter(d => !remoteIds.has(d.id));
+          return [...formattedRemote, ...filteredDefaults];
+        });
+      } catch (err) {
+        console.warn("Using default curated task list:", err);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+
+    fetchLiveTasks();
+    return () => { isMounted = false; };
   }, []);
 
-  const filteredTasks = tasksData.filter(task => task.category === activeTab);
+  const filteredTasks = allTasks.filter(task => (task.category || 'Ignite Propel') === activeTab);
 
   return (
     <div className="min-h-screen pt-24 md:pt-32 pb-16 md:pb-24 px-4 md:px-6 max-w-7xl mx-auto relative z-10">
@@ -39,7 +71,7 @@ const Tasks = () => {
               onClick={() => setActiveTab(tab)}
               className={`flex-1 sm:flex-none px-4 sm:px-6 py-2 md:py-2.5 rounded-full font-sans font-semibold text-xs sm:text-sm transition-all duration-300 ${
                 activeTab === tab
-                  ? 'bg-blue-500 text-white shadow-md'
+                  ? 'bg-indigo-600 text-white shadow-md'
                   : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100/50 dark:hover:bg-white/5'
               }`}
             >

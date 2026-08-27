@@ -106,7 +106,7 @@ const Navbar = () => {
             src="/assets/ecell-logo.png" 
             alt="E-Cell REC ABN" 
             className="h-8 md:h-10 w-auto object-contain transition-transform duration-500 ease-out group-hover:scale-105"
-            onError={(e) => { e.target.src = '/assets/ecel%20rec%20abn%20logo.png'; }}
+            onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/assets/ecell-logo.png'; }}
           />
           <span className={`text-lg md:text-xl font-display font-bold tracking-tight transition-colors duration-300 ${
             scrolled ? 'text-gray-900 group-hover:text-indigo-600 dark:text-white dark:group-hover:text-indigo-400' : 'text-white group-hover:text-gray-200'

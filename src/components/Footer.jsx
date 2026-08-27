@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import { Mail, MapPin, CheckCircle2, ArrowRight, Instagram, Linkedin, Twitter, Zap } from 'lucide-react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
+import toast from 'react-hot-toast';
 
 const Footer = () => {
   const containerRef = useRef(null);
@@ -47,6 +48,7 @@ const Footer = () => {
       
       if (result.success) {
         setSubmitted(true);
+        toast.success("Message sent successfully!");
         setFormData({ name: '', email: '', message: '' });
         
         // Animate Success State
@@ -61,10 +63,14 @@ const Footer = () => {
 
         setTimeout(() => setSubmitted(false), 5000);
       } else {
-        setSubmitError(result.message || "Failed to send message.");
+        const errorMsg = result.message || "Failed to send message.";
+        setSubmitError(errorMsg);
+        toast.error(errorMsg);
       }
     } catch (error) {
-      setSubmitError("Network error. Please try again later.");
+      const errorMsg = "Network error. Please try again later.";
+      setSubmitError(errorMsg);
+      toast.error(errorMsg);
     } finally {
       setIsSubmitting(false);
     }
@@ -123,8 +129,8 @@ const Footer = () => {
             <ul className="space-y-2.5">
               <li><a href="#about" className="text-gray-400 hover:text-white text-sm transition-colors">About Us</a></li>
               <li><a href="#team" className="text-gray-400 hover:text-white text-sm transition-colors">Our Team</a></li>
-              <li><a href="/incubation" className="text-gray-400 hover:text-white text-sm transition-colors">Incubation</a></li>
-              <li><a href="/startup-guide" className="text-gray-400 hover:text-white text-sm transition-colors">Startup Guide</a></li>
+              <li><a href="#about" className="text-gray-400 hover:text-white text-sm transition-colors flex items-center gap-1.5"><span>Incubation</span><span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-white/10 text-gray-300">Hub</span></a></li>
+              <li><a href="#events" className="text-gray-400 hover:text-white text-sm transition-colors flex items-center gap-1.5"><span>Initiatives</span><span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-white/10 text-gray-300">Live</span></a></li>
             </ul>
           </div>
 

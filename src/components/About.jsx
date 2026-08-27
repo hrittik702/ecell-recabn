@@ -85,7 +85,7 @@ const About = () => {
         </div>
         
         {/* Bento Box Layout */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 mb-16">
+        <div className="bento-grid grid grid-cols-1 md:grid-cols-12 gap-6 mb-16">
           
           {/* Main Mission Card - Large */}
           <div className="about-card md:col-span-8 bg-white/60 dark:bg-dark-card/40 backdrop-blur-3xl border border-white/60 dark:border-white/10 rounded-3xl p-8 md:p-12 flex flex-col justify-between shadow-premium dark:shadow-premium-dark transition-all duration-300 hover:shadow-premium-hover dark:hover:shadow-premium-dark-hover hover:-translate-y-1 relative overflow-hidden group">

@@ -9,7 +9,7 @@ const StatCounter = ({ endValue, suffix, label, delay }) => {
 
   useEffect(() => {
     const obj = { val: 0 };
-    gsap.to(obj, {
+    const tween = gsap.to(obj, {
       val: endValue,
       duration: 2,
       delay: delay,
@@ -20,6 +20,11 @@ const StatCounter = ({ endValue, suffix, label, delay }) => {
       },
       onUpdate: () => setValue(Math.round(obj.val))
     });
+
+    return () => {
+      if (tween.scrollTrigger) tween.scrollTrigger.kill();
+      tween.kill();
+    };
   }, [endValue, delay]);
 
   return (
@@ -83,7 +88,7 @@ const Hero = () => {
     <section ref={containerRef} id="home" className="relative min-h-screen flex flex-col items-center justify-end pt-32 pb-24 md:pb-32 overflow-hidden md:[perspective:1000px]">
       
       {/* Parallax Background Asset */}
-      <div className="absolute inset-0 z-0 overflow-hidden bg-charcoal dark:bg-transparent">
+      <div className="hero-bg absolute inset-0 z-0 overflow-hidden bg-charcoal dark:bg-transparent">
         {/* Premium Layered Gradient Overlay (Light Mode Only) */}
         <div 
           className="absolute inset-0 dark:hidden"
