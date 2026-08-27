@@ -105,6 +105,8 @@ const Navbar = () => {
           <img 
             src="/assets/ecell-logo.png" 
             alt="E-Cell REC ABN" 
+            width="40"
+            height="40"
             className="h-8 md:h-10 w-auto object-contain transition-transform duration-500 ease-out group-hover:scale-105"
             onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/assets/ecell-logo.png'; }}
           />

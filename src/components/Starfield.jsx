@@ -48,11 +48,11 @@ const Starfield = () => {
       });
     };
 
-    // Nebula glow spots
+    // Nebula glow spots (neutral deep space tones)
     const nebulae = [
-      { x: 0.15, y: 0.25, radius: 250, color: 'rgba(88, 28, 135, 0.04)' },
-      { x: 0.8, y: 0.6, radius: 300, color: 'rgba(67, 56, 202, 0.03)' },
-      { x: 0.5, y: 0.85, radius: 200, color: 'rgba(124, 58, 237, 0.025)' },
+      { x: 0.15, y: 0.25, radius: 250, color: 'rgba(30, 41, 59, 0.04)' },
+      { x: 0.8, y: 0.6, radius: 300, color: 'rgba(15, 23, 42, 0.03)' },
+      { x: 0.5, y: 0.85, radius: 200, color: 'rgba(30, 41, 59, 0.025)' },
     ];
 
     let nebulaCanvas = document.createElement('canvas');
@@ -199,7 +199,7 @@ const Starfield = () => {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 z-0 pointer-events-none"
+      className="fixed inset-0 z-0 pointer-events-none will-change-transform"
       style={{ background: '#0a0a0a' }}
     />
   );

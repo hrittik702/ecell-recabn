@@ -1,0 +1,2020 @@
+import {
+  h as Fe,
+  i as Le,
+  j as r,
+  n as _,
+  k as W,
+  a as oe,
+  z as w,
+  u as se,
+  l as Ze,
+} from './index-CcH5wGiM.js';
+import { g as Ue, r as p, b as He } from './vendor-D2pt6NKk.js';
+import { k as Xe, m as Be } from './firebase-NJnrevVg.js';
+import {
+  v as Ge,
+  q as qe,
+  m as Ye,
+  y as Ke,
+  z as Ve,
+  L as ne,
+  I as ae,
+  D as Je,
+  K as Qe,
+  w as $e,
+  x as de,
+  X as et,
+} from './icons-DCkyTIa-.js';
+import './gsap-DsYOaFwG.js';
+var le = !1,
+  D,
+  q,
+  Y,
+  L,
+  Z,
+  xe,
+  U,
+  K,
+  V,
+  J,
+  we,
+  Q,
+  $,
+  ve,
+  ye;
+function x() {
+  if (!le) {
+    le = !0;
+    var o = navigator.userAgent,
+      t =
+        /(?:MSIE.(\d+\.\d+))|(?:(?:Firefox|GranParadiso|Iceweasel).(\d+\.\d+))|(?:Opera(?:.+Version.|.)(\d+\.\d+))|(?:AppleWebKit.(\d+(?:\.\d+)?))|(?:Trident\/\d+\.\d+.*rv:(\d+\.\d+))/.exec(
+          o
+        ),
+      e = /(Mac OS X)|(Windows)|(Linux)/.exec(o);
+    if (
+      ((Q = /\b(iPhone|iP[ao]d)/.exec(o)),
+      ($ = /\b(iP[ao]d)/.exec(o)),
+      (J = /Android/i.exec(o)),
+      (ve = /FBAN\/\w+;/i.exec(o)),
+      (ye = /Mobile/i.exec(o)),
+      (we = !!/Win64/.exec(o)),
+      t)
+    ) {
+      ((D = t[1] ? parseFloat(t[1]) : t[5] ? parseFloat(t[5]) : NaN),
+        D && document && document.documentMode && (D = document.documentMode));
+      var i = /(?:Trident\/(\d+.\d+))/.exec(o);
+      ((xe = i ? parseFloat(i[1]) + 4 : D),
+        (q = t[2] ? parseFloat(t[2]) : NaN),
+        (Y = t[3] ? parseFloat(t[3]) : NaN),
+        (L = t[4] ? parseFloat(t[4]) : NaN),
+        L
+          ? ((t = /(?:Chrome\/(\d+\.\d+))/.exec(o)), (Z = t && t[1] ? parseFloat(t[1]) : NaN))
+          : (Z = NaN));
+    } else D = q = Y = Z = L = NaN;
+    if (e) {
+      if (e[1]) {
+        var s = /(?:Mac OS X (\d+(?:[._]\d+)?))/.exec(o);
+        U = s ? parseFloat(s[1].replace('_', '.')) : !0;
+      } else U = !1;
+      ((K = !!e[2]), (V = !!e[3]));
+    } else U = K = V = !1;
+  }
+}
+var ee = {
+    ie: function () {
+      return x() || D;
+    },
+    ieCompatibilityMode: function () {
+      return x() || xe > D;
+    },
+    ie64: function () {
+      return ee.ie() && we;
+    },
+    firefox: function () {
+      return x() || q;
+    },
+    opera: function () {
+      return x() || Y;
+    },
+    webkit: function () {
+      return x() || L;
+    },
+    safari: function () {
+      return ee.webkit();
+    },
+    chrome: function () {
+      return x() || Z;
+    },
+    windows: function () {
+      return x() || K;
+    },
+    osx: function () {
+      return x() || U;
+    },
+    linux: function () {
+      return x() || V;
+    },
+    iphone: function () {
+      return x() || Q;
+    },
+    mobile: function () {
+      return x() || Q || $ || J || ye;
+    },
+    nativeApp: function () {
+      return x() || ve;
+    },
+    android: function () {
+      return x() || J;
+    },
+    ipad: function () {
+      return x() || $;
+    },
+  },
+  tt = ee,
+  rt = !!(typeof window < 'u' && window.document && window.document.createElement),
+  it = { canUseDOM: rt },
+  ot = it,
+  ke = ot,
+  Ce;
+ke.canUseDOM &&
+  (Ce =
+    document.implementation &&
+    document.implementation.hasFeature &&
+    document.implementation.hasFeature('', '') !== !0);
+/**
+ * Checks if an event is supported in the current execution environment.
+ *
+ * NOTE: This will not work correctly for non-generic events such as `change`,
+ * `reset`, `load`, `error`, and `select`.
+ *
+ * Borrows from Modernizr.
+ *
+ * @param {string} eventNameSuffix Event name, e.g. "click".
+ * @param {?boolean} capture Check if the capture phase is supported.
+ * @return {boolean} True if the event is supported.
+ * @internal
+ * @license Modernizr 3.0.0pre (Custom Build) | MIT
+ */ function st(o, t) {
+  if (!ke.canUseDOM || (t && !('addEventListener' in document))) return !1;
+  var e = 'on' + o,
+    i = e in document;
+  if (!i) {
+    var s = document.createElement('div');
+    (s.setAttribute(e, 'return;'), (i = typeof s[e] == 'function'));
+  }
+  return (
+    !i && Ce && o === 'wheel' && (i = document.implementation.hasFeature('Events.wheel', '3.0')),
+    i
+  );
+}
+var nt = st,
+  at = tt,
+  dt = nt,
+  he = 10,
+  ce = 40,
+  pe = 800;
+function je(o) {
+  var t = 0,
+    e = 0,
+    i = 0,
+    s = 0;
+  return (
+    'detail' in o && (e = o.detail),
+    'wheelDelta' in o && (e = -o.wheelDelta / 120),
+    'wheelDeltaY' in o && (e = -o.wheelDeltaY / 120),
+    'wheelDeltaX' in o && (t = -o.wheelDeltaX / 120),
+    'axis' in o && o.axis === o.HORIZONTAL_AXIS && ((t = e), (e = 0)),
+    (i = t * he),
+    (s = e * he),
+    'deltaY' in o && (s = o.deltaY),
+    'deltaX' in o && (i = o.deltaX),
+    (i || s) && o.deltaMode && (o.deltaMode == 1 ? ((i *= ce), (s *= ce)) : ((i *= pe), (s *= pe))),
+    i && !t && (t = i < 1 ? -1 : 1),
+    s && !e && (e = s < 1 ? -1 : 1),
+    { spinX: t, spinY: e, pixelX: i, pixelY: s }
+  );
+}
+je.getEventType = function () {
+  return at.firefox() ? 'DOMMouseScroll' : dt('wheel') ? 'wheel' : 'mousewheel';
+};
+var lt = je,
+  ht = lt;
+const ct = Ue(ht);
+function I(o) {
+  '@babel/helpers - typeof';
+  return (
+    (I =
+      typeof Symbol == 'function' && typeof Symbol.iterator == 'symbol'
+        ? function (t) {
+            return typeof t;
+          }
+        : function (t) {
+            return t &&
+              typeof Symbol == 'function' &&
+              t.constructor === Symbol &&
+              t !== Symbol.prototype
+              ? 'symbol'
+              : typeof t;
+          }),
+    I(o)
+  );
+}
+function pt(o, t) {
+  if (I(o) != 'object' || !o) return o;
+  var e = o[Symbol.toPrimitive];
+  if (e !== void 0) {
+    var i = e.call(o, t);
+    if (I(i) != 'object') return i;
+    throw new TypeError('@@toPrimitive must return a primitive value.');
+  }
+  return (t === 'string' ? String : Number)(o);
+}
+function ut(o) {
+  var t = pt(o, 'string');
+  return I(t) == 'symbol' ? t : t + '';
+}
+function gt(o, t, e) {
+  return (
+    (t = ut(t)) in o
+      ? Object.defineProperty(o, t, { value: e, enumerable: !0, configurable: !0, writable: !0 })
+      : (o[t] = e),
+    o
+  );
+}
+function ue(o, t) {
+  var e = Object.keys(o);
+  if (Object.getOwnPropertySymbols) {
+    var i = Object.getOwnPropertySymbols(o);
+    (t &&
+      (i = i.filter(function (s) {
+        return Object.getOwnPropertyDescriptor(o, s).enumerable;
+      })),
+      e.push.apply(e, i));
+  }
+  return e;
+}
+function b(o) {
+  for (var t = 1; t < arguments.length; t++) {
+    var e = arguments[t] != null ? arguments[t] : {};
+    t % 2
+      ? ue(Object(e), !0).forEach(function (i) {
+          gt(o, i, e[i]);
+        })
+      : Object.getOwnPropertyDescriptors
+        ? Object.defineProperties(o, Object.getOwnPropertyDescriptors(e))
+        : ue(Object(e)).forEach(function (i) {
+            Object.defineProperty(o, i, Object.getOwnPropertyDescriptor(e, i));
+          });
+  }
+  return o;
+}
+function mt(o, t, e, i, s, a = 0) {
+  const { width: d, height: n } = M(o, t, a),
+    h = Math.min(d, e),
+    c = Math.min(n, i);
+  return h > c * s ? { width: c * s, height: c } : { width: h, height: h / s };
+}
+function ft(o) {
+  return o.width > o.height ? o.width / o.naturalWidth : o.height / o.naturalHeight;
+}
+function A(o, t, e, i, s = 0) {
+  const { width: a, height: d } = M(t.width, t.height, s);
+  return { x: ge(o.x, a, e.width, i), y: ge(o.y, d, e.height, i) };
+}
+function ge(o, t, e, i) {
+  const s = Math.abs((t * i) / 2 - e / 2);
+  return H(o, -s, s);
+}
+function me(o, t) {
+  return Math.sqrt(Math.pow(o.y - t.y, 2) + Math.pow(o.x - t.x, 2));
+}
+function fe(o, t) {
+  return (Math.atan2(t.y - o.y, t.x - o.x) * 180) / Math.PI;
+}
+function bt(o, t, e, i, s, a = 0, d = !0) {
+  const n = d ? xt : wt,
+    h = M(t.width, t.height, a),
+    c = M(t.naturalWidth, t.naturalHeight, a),
+    m = {
+      x: n(100, (((h.width - e.width / s) / 2 - o.x / s) / h.width) * 100),
+      y: n(100, (((h.height - e.height / s) / 2 - o.y / s) / h.height) * 100),
+      width: n(100, ((e.width / h.width) * 100) / s),
+      height: n(100, ((e.height / h.height) * 100) / s),
+    },
+    g = Math.round(n(c.width, (m.width * c.width) / 100)),
+    v = Math.round(n(c.height, (m.height * c.height) / 100)),
+    k =
+      c.width >= c.height * i
+        ? { width: Math.round(v * i), height: v }
+        : { width: g, height: Math.round(g / i) };
+  return {
+    croppedAreaPercentages: m,
+    croppedAreaPixels: b(
+      b({}, k),
+      {},
+      {
+        x: Math.round(n(c.width - k.width, (m.x * c.width) / 100)),
+        y: Math.round(n(c.height - k.height, (m.y * c.height) / 100)),
+      }
+    ),
+  };
+}
+function xt(o, t) {
+  return Math.min(o, Math.max(0, t));
+}
+function wt(o, t) {
+  return t;
+}
+function vt(o, t, e, i, s, a) {
+  const d = M(t.width, t.height, e),
+    n = H((i.width / d.width) * (100 / o.width), s, a);
+  return {
+    crop: {
+      x: (n * d.width) / 2 - i.width / 2 - d.width * n * (o.x / 100),
+      y: (n * d.height) / 2 - i.height / 2 - d.height * n * (o.y / 100),
+    },
+    zoom: n,
+  };
+}
+function yt(o, t, e) {
+  const i = ft(t);
+  return e.height > e.width ? e.height / (o.height * i) : e.width / (o.width * i);
+}
+function kt(o, t, e = 0, i, s, a) {
+  const d = M(t.naturalWidth, t.naturalHeight, e),
+    n = H(yt(o, t, i), s, a),
+    h = i.height > i.width ? i.height / o.height : i.width / o.width;
+  return {
+    crop: { x: ((d.width - o.width) / 2 - o.x) * h, y: ((d.height - o.height) / 2 - o.y) * h },
+    zoom: n,
+  };
+}
+function be(o, t) {
+  return { x: (t.x + o.x) / 2, y: (t.y + o.y) / 2 };
+}
+function Ct(o) {
+  return (o * Math.PI) / 180;
+}
+function M(o, t, e) {
+  const i = Ct(e);
+  return {
+    width: Math.abs(Math.cos(i) * o) + Math.abs(Math.sin(i) * t),
+    height: Math.abs(Math.sin(i) * o) + Math.abs(Math.cos(i) * t),
+  };
+}
+function H(o, t, e) {
+  return Math.min(Math.max(o, t), e);
+}
+function F(...o) {
+  return o
+    .filter((t) => typeof t == 'string' && t.length > 0)
+    .join(' ')
+    .trim();
+}
+var jt = `.reactEasyCrop_Container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  user-select: none;
+  touch-action: none;
+  cursor: move;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.reactEasyCrop_Image,
+.reactEasyCrop_Video {
+  will-change: transform; /* this improves performances and prevent painting issues on iOS Chrome */
+  max-width: unset; /* prevent global img/video reset rules from constraining the cropper media */
+}
+
+.reactEasyCrop_Contain {
+  max-width: 100%;
+  max-height: 100%;
+  margin: auto;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+.reactEasyCrop_Cover_Horizontal {
+  width: 100%;
+  height: auto;
+}
+.reactEasyCrop_Cover_Vertical {
+  width: auto;
+  height: 100%;
+}
+
+.reactEasyCrop_CropArea {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-sizing: border-box;
+  box-shadow: 0 0 0 9999em;
+  color: rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+.reactEasyCrop_CropAreaRound {
+  border-radius: 50%;
+}
+
+.reactEasyCrop_CropAreaGrid::before {
+  content: ' ';
+  box-sizing: border-box;
+  position: absolute;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  top: 0;
+  bottom: 0;
+  left: 33.33%;
+  right: 33.33%;
+  border-top: 0;
+  border-bottom: 0;
+}
+
+.reactEasyCrop_CropAreaGrid::after {
+  content: ' ';
+  box-sizing: border-box;
+  position: absolute;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  top: 33.33%;
+  bottom: 33.33%;
+  left: 0;
+  right: 0;
+  border-left: 0;
+  border-right: 0;
+}
+`;
+const St = 250,
+  Nt = 1,
+  zt = 3,
+  Pt = 1;
+var X = class C extends p.Component {
+  constructor(...t) {
+    (super(...t),
+      (this.cropperRef = p.createRef()),
+      (this.imageRef = p.createRef()),
+      (this.videoRef = p.createRef()),
+      (this.containerPosition = { x: 0, y: 0 }),
+      (this.containerRef = null),
+      (this.styleRef = null),
+      (this.containerRect = null),
+      (this.mediaSize = { width: 0, height: 0, naturalWidth: 0, naturalHeight: 0 }),
+      (this.dragStartPosition = { x: 0, y: 0 }),
+      (this.dragStartCrop = { x: 0, y: 0 }),
+      (this.gestureZoomStart = 0),
+      (this.gestureRotationStart = 0),
+      (this.isTouching = !1),
+      (this.lastPinchDistance = 0),
+      (this.lastPinchRotation = 0),
+      (this.rafDragTimeout = null),
+      (this.rafPinchTimeout = null),
+      (this.wheelTimer = null),
+      (this.resizeEmitTimer = null),
+      (this.currentDoc = typeof document < 'u' ? document : null),
+      (this.currentWindow = typeof window < 'u' ? window : null),
+      (this.resizeObserver = null),
+      (this.previousCropSize = null),
+      (this.isInitialized = !1),
+      (this.dragInteractionSource = null),
+      (this.state = { cropSize: null, hasWheelJustStarted: !1, mediaObjectFit: void 0 }),
+      (this.initResizeObserver = () => {
+        if (typeof window.ResizeObserver > 'u' || !this.containerRef) return;
+        let e = !0;
+        ((this.resizeObserver = new window.ResizeObserver((i) => {
+          if (e) {
+            e = !1;
+            return;
+          }
+          this.computeSizes({ isResizeTriggered: !0 });
+        })),
+          this.resizeObserver.observe(this.containerRef));
+      }),
+      (this.onWindowResize = () => {
+        this.computeSizes({ isResizeTriggered: !0 });
+      }),
+      (this.preventZoomSafari = (e) => e.preventDefault()),
+      (this.cleanEvents = () => {
+        this.currentDoc &&
+          (this.currentDoc.removeEventListener('mousemove', this.onMouseMove),
+          this.currentDoc.removeEventListener('mouseup', this.onDragStopped),
+          this.currentDoc.removeEventListener('touchmove', this.onTouchMove),
+          this.currentDoc.removeEventListener('touchend', this.onDragStopped),
+          this.currentDoc.removeEventListener('gesturechange', this.onGestureChange),
+          this.currentDoc.removeEventListener('gestureend', this.onGestureEnd),
+          this.currentDoc.removeEventListener('scroll', this.onScroll));
+      }),
+      (this.clearScrollEvent = () => {
+        (this.containerRef && this.containerRef.removeEventListener('wheel', this.onWheel),
+          this.wheelTimer && clearTimeout(this.wheelTimer));
+      }),
+      (this.onMediaLoad = () => {
+        const e = this.computeSizes();
+        (e &&
+          ((this.previousCropSize = e),
+          this.emitCropData(),
+          this.setInitialCrop(e),
+          (this.isInitialized = !0)),
+          this.props.onMediaLoaded && this.props.onMediaLoaded(this.mediaSize));
+      }),
+      (this.setInitialCrop = (e) => {
+        if (this.props.initialCroppedAreaPercentages) {
+          const { crop: i, zoom: s } = vt(
+            this.props.initialCroppedAreaPercentages,
+            this.mediaSize,
+            this.props.rotation,
+            e,
+            this.props.minZoom,
+            this.props.maxZoom
+          );
+          (this.props.onCropChange(i), this.props.onZoomChange && this.props.onZoomChange(s));
+        } else if (this.props.initialCroppedAreaPixels) {
+          const { crop: i, zoom: s } = kt(
+            this.props.initialCroppedAreaPixels,
+            this.mediaSize,
+            this.props.rotation,
+            e,
+            this.props.minZoom,
+            this.props.maxZoom
+          );
+          (this.props.onCropChange(i), this.props.onZoomChange && this.props.onZoomChange(s));
+        }
+      }),
+      (this.computeSizes = ({ isResizeTriggered: e = !1 } = {}) => {
+        const i = this.imageRef.current || this.videoRef.current;
+        if (i && this.containerRef) {
+          var s, a, d, n, h, c;
+          ((this.containerRect = this.containerRef.getBoundingClientRect()),
+            this.saveContainerPosition());
+          const m = this.containerRect.width / this.containerRect.height,
+            g =
+              ((s = this.imageRef.current) === null || s === void 0 ? void 0 : s.naturalWidth) ||
+              ((a = this.videoRef.current) === null || a === void 0 ? void 0 : a.videoWidth) ||
+              0,
+            v =
+              ((d = this.imageRef.current) === null || d === void 0 ? void 0 : d.naturalHeight) ||
+              ((n = this.videoRef.current) === null || n === void 0 ? void 0 : n.videoHeight) ||
+              0,
+            k = i.offsetWidth < g || i.offsetHeight < v,
+            S = g / v;
+          let N;
+          if (k)
+            switch (this.state.mediaObjectFit) {
+              default:
+              case 'contain':
+                N =
+                  m > S
+                    ? { width: this.containerRect.height * S, height: this.containerRect.height }
+                    : { width: this.containerRect.width, height: this.containerRect.width / S };
+                break;
+              case 'horizontal-cover':
+                N = { width: this.containerRect.width, height: this.containerRect.width / S };
+                break;
+              case 'vertical-cover':
+                N = { width: this.containerRect.height * S, height: this.containerRect.height };
+                break;
+            }
+          else N = { width: i.offsetWidth, height: i.offsetHeight };
+          ((this.mediaSize = b(b({}, N), {}, { naturalWidth: g, naturalHeight: v })),
+            this.props.setMediaSize && this.props.setMediaSize(this.mediaSize));
+          const y = this.props.cropSize
+            ? this.props.cropSize
+            : mt(
+                this.mediaSize.width,
+                this.mediaSize.height,
+                this.containerRect.width,
+                this.containerRect.height,
+                this.props.aspect,
+                this.props.rotation
+              );
+          return (
+            (((h = this.state.cropSize) === null || h === void 0 ? void 0 : h.height) !==
+              y.height ||
+              ((c = this.state.cropSize) === null || c === void 0 ? void 0 : c.width) !==
+                y.width) &&
+              this.props.onCropSizeChange &&
+              this.props.onCropSizeChange(y),
+            this.setState({ cropSize: y }, () =>
+              this.recomputeCropPosition({ isResizeTriggered: e })
+            ),
+            this.props.setCropSize && this.props.setCropSize(y),
+            y
+          );
+        }
+      }),
+      (this.saveContainerPosition = () => {
+        if (this.containerRef) {
+          const e = this.containerRef.getBoundingClientRect();
+          this.containerPosition = { x: e.left, y: e.top };
+        }
+      }),
+      (this.onMouseDown = (e) => {
+        this.currentDoc &&
+          (e.preventDefault(),
+          this.currentDoc.addEventListener('mousemove', this.onMouseMove),
+          this.currentDoc.addEventListener('mouseup', this.onDragStopped),
+          this.saveContainerPosition(),
+          this.onDragStart(C.getMousePoint(e), 'mouse'));
+      }),
+      (this.onMouseMove = (e) => this.onDrag(C.getMousePoint(e))),
+      (this.onScroll = (e) => {
+        this.currentDoc && (e.preventDefault(), this.saveContainerPosition());
+      }),
+      (this.onTouchStart = (e) => {
+        this.currentDoc &&
+          ((this.isTouching = !0),
+          !(this.props.onTouchRequest && !this.props.onTouchRequest(e)) &&
+            (this.currentDoc.addEventListener('touchmove', this.onTouchMove, { passive: !1 }),
+            this.currentDoc.addEventListener('touchend', this.onDragStopped),
+            this.saveContainerPosition(),
+            e.touches.length === 2
+              ? this.onPinchStart(e)
+              : e.touches.length === 1 &&
+                this.onDragStart(C.getTouchPoint(e.touches[0]), 'touch')));
+      }),
+      (this.onTouchMove = (e) => {
+        (e.preventDefault(),
+          e.touches.length === 2
+            ? this.onPinchMove(e)
+            : e.touches.length === 1 && this.onDrag(C.getTouchPoint(e.touches[0])));
+      }),
+      (this.onGestureStart = (e) => {
+        this.currentDoc &&
+          (e.preventDefault(),
+          this.currentDoc.addEventListener('gesturechange', this.onGestureChange),
+          this.currentDoc.addEventListener('gestureend', this.onGestureEnd),
+          (this.gestureZoomStart = this.props.zoom),
+          (this.gestureRotationStart = this.props.rotation));
+      }),
+      (this.onGestureChange = (e) => {
+        if ((e.preventDefault(), this.isTouching)) return;
+        const i = C.getMousePoint(e),
+          s = this.gestureZoomStart - 1 + e.scale;
+        if ((this.setNewZoom(s, i, { shouldUpdatePosition: !0 }), this.props.onRotationChange)) {
+          const a = this.gestureRotationStart + e.rotation;
+          this.props.onRotationChange(a);
+        }
+      }),
+      (this.onGestureEnd = (e) => {
+        this.cleanEvents();
+      }),
+      (this.onDragStart = ({ x: e, y: i }, s) => {
+        var a, d;
+        ((this.dragStartPosition = { x: e, y: i }),
+          (this.dragStartCrop = b({}, this.props.crop)),
+          (this.dragInteractionSource = s),
+          (a = (d = this.props).onInteractionStart) === null ||
+            a === void 0 ||
+            a.call(d, { source: s }));
+      }),
+      (this.onDrag = ({ x: e, y: i }) => {
+        this.currentWindow &&
+          (this.rafDragTimeout && this.currentWindow.cancelAnimationFrame(this.rafDragTimeout),
+          (this.rafDragTimeout = this.currentWindow.requestAnimationFrame(() => {
+            if (!this.state.cropSize || e === void 0 || i === void 0) return;
+            const s = e - this.dragStartPosition.x,
+              a = i - this.dragStartPosition.y,
+              d = { x: this.dragStartCrop.x + s, y: this.dragStartCrop.y + a },
+              n = this.props.restrictPosition
+                ? A(d, this.mediaSize, this.state.cropSize, this.props.zoom, this.props.rotation)
+                : d;
+            this.props.onCropChange(n);
+          })));
+      }),
+      (this.onDragStopped = () => {
+        var e, i, s;
+        ((this.isTouching = !1),
+          this.cleanEvents(),
+          this.emitCropData(),
+          (e = (i = this.props).onInteractionEnd) === null ||
+            e === void 0 ||
+            e.call(i, {
+              source: (s = this.dragInteractionSource) !== null && s !== void 0 ? s : 'mouse',
+            }),
+          (this.dragInteractionSource = null));
+      }),
+      (this.onWheel = (e) => {
+        if (!this.currentWindow || (this.props.onWheelRequest && !this.props.onWheelRequest(e)))
+          return;
+        e.preventDefault();
+        const i = C.getMousePoint(e),
+          { pixelY: s } = ct(e),
+          a = this.props.zoom - (s * this.props.zoomSpeed) / 200;
+        (this.setNewZoom(a, i, { shouldUpdatePosition: !0 }),
+          this.state.hasWheelJustStarted ||
+            this.setState({ hasWheelJustStarted: !0 }, () => {
+              var d, n;
+              return (d = (n = this.props).onInteractionStart) === null || d === void 0
+                ? void 0
+                : d.call(n, { source: 'wheel' });
+            }),
+          this.wheelTimer && clearTimeout(this.wheelTimer),
+          (this.wheelTimer = this.currentWindow.setTimeout(
+            () =>
+              this.setState({ hasWheelJustStarted: !1 }, () => {
+                var d, n;
+                return (d = (n = this.props).onInteractionEnd) === null || d === void 0
+                  ? void 0
+                  : d.call(n, { source: 'wheel' });
+              }),
+            250
+          )));
+      }),
+      (this.getPointOnContainer = ({ x: e, y: i }, s) => {
+        if (!this.containerRect) throw new Error('The Cropper is not mounted');
+        return {
+          x: this.containerRect.width / 2 - (e - s.x),
+          y: this.containerRect.height / 2 - (i - s.y),
+        };
+      }),
+      (this.getPointOnMedia = ({ x: e, y: i }) => {
+        const { crop: s, zoom: a } = this.props;
+        return { x: (e + s.x) / a, y: (i + s.y) / a };
+      }),
+      (this.setNewZoom = (e, i, { shouldUpdatePosition: s = !0 } = {}) => {
+        if (!this.state.cropSize || !this.props.onZoomChange) return;
+        const a = H(e, this.props.minZoom, this.props.maxZoom);
+        if (s) {
+          const d = this.getPointOnContainer(i, this.containerPosition),
+            n = this.getPointOnMedia(d),
+            h = { x: n.x * a - d.x, y: n.y * a - d.y },
+            c = this.props.restrictPosition
+              ? A(h, this.mediaSize, this.state.cropSize, a, this.props.rotation)
+              : h;
+          this.props.onCropChange(c);
+        }
+        this.props.onZoomChange(a);
+      }),
+      (this.getCropData = () =>
+        this.state.cropSize
+          ? bt(
+              this.props.restrictPosition
+                ? A(
+                    this.props.crop,
+                    this.mediaSize,
+                    this.state.cropSize,
+                    this.props.zoom,
+                    this.props.rotation
+                  )
+                : this.props.crop,
+              this.mediaSize,
+              this.state.cropSize,
+              this.getAspect(),
+              this.props.zoom,
+              this.props.rotation,
+              this.props.restrictPosition
+            )
+          : null),
+      (this.emitCropData = () => {
+        this.resizeEmitTimer && (clearTimeout(this.resizeEmitTimer), (this.resizeEmitTimer = null));
+        const e = this.getCropData();
+        if (!e) return;
+        const { croppedAreaPercentages: i, croppedAreaPixels: s } = e;
+        (this.props.onCropComplete && this.props.onCropComplete(i, s),
+          this.props.onCropAreaChange && this.props.onCropAreaChange(i, s));
+      }),
+      (this.emitCropAreaChange = () => {
+        const e = this.getCropData();
+        if (!e) return;
+        const { croppedAreaPercentages: i, croppedAreaPixels: s } = e;
+        this.props.onCropAreaChange && this.props.onCropAreaChange(i, s);
+      }),
+      (this.recomputeCropPosition = ({ isResizeTriggered: e = !1 } = {}) => {
+        var i, s;
+        if (!this.state.cropSize) return;
+        let a = this.props.crop;
+        if (
+          this.isInitialized &&
+          !((i = this.previousCropSize) === null || i === void 0) &&
+          i.width &&
+          !((s = this.previousCropSize) === null || s === void 0) &&
+          s.height &&
+          (Math.abs(this.previousCropSize.width - this.state.cropSize.width) > 1e-6 ||
+            Math.abs(this.previousCropSize.height - this.state.cropSize.height) > 1e-6)
+        ) {
+          const n = this.state.cropSize.width / this.previousCropSize.width,
+            h = this.state.cropSize.height / this.previousCropSize.height;
+          a = { x: this.props.crop.x * n, y: this.props.crop.y * h };
+        }
+        const d = this.props.restrictPosition
+          ? A(a, this.mediaSize, this.state.cropSize, this.props.zoom, this.props.rotation)
+          : a;
+        ((this.previousCropSize = this.state.cropSize),
+          this.props.onCropChange(d),
+          e ? this.debouncedEmitCropData() : this.emitCropData());
+      }),
+      (this.debouncedEmitCropData = () => {
+        this.currentWindow &&
+          (this.resizeEmitTimer && clearTimeout(this.resizeEmitTimer),
+          (this.resizeEmitTimer = this.currentWindow.setTimeout(() => {
+            this.emitCropData();
+          }, St)));
+      }),
+      (this.onKeyDown = (e) => {
+        const { crop: i, onCropChange: s, keyboardStep: a, zoom: d, rotation: n } = this.props;
+        let h = a;
+        if (!this.state.cropSize) return;
+        e.shiftKey && (h *= 0.2);
+        let c = b({}, i);
+        switch (e.key) {
+          case 'ArrowUp':
+            ((c.y -= h), e.preventDefault());
+            break;
+          case 'ArrowDown':
+            ((c.y += h), e.preventDefault());
+            break;
+          case 'ArrowLeft':
+            ((c.x -= h), e.preventDefault());
+            break;
+          case 'ArrowRight':
+            ((c.x += h), e.preventDefault());
+            break;
+          default:
+            return;
+        }
+        if (
+          (this.props.restrictPosition && (c = A(c, this.mediaSize, this.state.cropSize, d, n)),
+          !e.repeat)
+        ) {
+          var m, g;
+          (m = (g = this.props).onInteractionStart) === null ||
+            m === void 0 ||
+            m.call(g, { source: 'keyboard' });
+        }
+        s(c);
+      }),
+      (this.onKeyUp = (e) => {
+        var i, s;
+        switch (e.key) {
+          case 'ArrowUp':
+          case 'ArrowDown':
+          case 'ArrowLeft':
+          case 'ArrowRight':
+            e.preventDefault();
+            break;
+          default:
+            return;
+        }
+        (this.emitCropData(),
+          (i = (s = this.props).onInteractionEnd) === null ||
+            i === void 0 ||
+            i.call(s, { source: 'keyboard' }));
+      }));
+  }
+  componentDidMount() {
+    !this.currentDoc ||
+      !this.currentWindow ||
+      (this.containerRef &&
+        (this.containerRef.ownerDocument && (this.currentDoc = this.containerRef.ownerDocument),
+        this.currentDoc.defaultView && (this.currentWindow = this.currentDoc.defaultView),
+        this.initResizeObserver(),
+        typeof window.ResizeObserver > 'u' &&
+          this.currentWindow.addEventListener('resize', this.onWindowResize),
+        this.props.zoomWithScroll &&
+          this.containerRef.addEventListener('wheel', this.onWheel, { passive: !1 }),
+        this.containerRef.addEventListener('gesturestart', this.onGestureStart)),
+      this.currentDoc.addEventListener('scroll', this.onScroll),
+      this.props.disableAutomaticStylesInjection ||
+        ((this.styleRef = this.currentDoc.createElement('style')),
+        this.styleRef.setAttribute('type', 'text/css'),
+        this.props.nonce && this.styleRef.setAttribute('nonce', this.props.nonce),
+        (this.styleRef.innerHTML = jt),
+        this.currentDoc.head.appendChild(this.styleRef)),
+      this.imageRef.current && this.imageRef.current.complete && this.onMediaLoad(),
+      this.props.setImageRef && this.props.setImageRef(this.imageRef),
+      this.props.setVideoRef && this.props.setVideoRef(this.videoRef),
+      this.props.setCropperRef && this.props.setCropperRef(this.cropperRef));
+  }
+  componentWillUnmount() {
+    var t;
+    if (!(!this.currentDoc || !this.currentWindow)) {
+      if (
+        (typeof window.ResizeObserver > 'u' &&
+          this.currentWindow.removeEventListener('resize', this.onWindowResize),
+        (t = this.resizeObserver) === null || t === void 0 || t.disconnect(),
+        this.resizeEmitTimer && clearTimeout(this.resizeEmitTimer),
+        this.containerRef &&
+          this.containerRef.removeEventListener('gesturestart', this.preventZoomSafari),
+        this.styleRef)
+      ) {
+        var e;
+        (e = this.styleRef.parentNode) === null || e === void 0 || e.removeChild(this.styleRef);
+      }
+      (this.cleanEvents(), this.props.zoomWithScroll && this.clearScrollEvent());
+    }
+  }
+  componentDidUpdate(t) {
+    var e, i, s, a, d, n, h, c;
+    if (
+      (t.rotation !== this.props.rotation
+        ? (this.computeSizes(), this.recomputeCropPosition())
+        : t.aspect !== this.props.aspect
+          ? this.computeSizes()
+          : t.objectFit !== this.props.objectFit
+            ? this.computeSizes()
+            : t.zoom !== this.props.zoom
+              ? this.recomputeCropPosition()
+              : ((e = t.cropSize) === null || e === void 0 ? void 0 : e.height) !==
+                    ((i = this.props.cropSize) === null || i === void 0 ? void 0 : i.height) ||
+                  ((s = t.cropSize) === null || s === void 0 ? void 0 : s.width) !==
+                    ((a = this.props.cropSize) === null || a === void 0 ? void 0 : a.width)
+                ? this.computeSizes()
+                : (((d = t.crop) === null || d === void 0 ? void 0 : d.x) !==
+                    ((n = this.props.crop) === null || n === void 0 ? void 0 : n.x) ||
+                    ((h = t.crop) === null || h === void 0 ? void 0 : h.y) !==
+                      ((c = this.props.crop) === null || c === void 0 ? void 0 : c.y)) &&
+                  this.emitCropAreaChange(),
+      t.zoomWithScroll !== this.props.zoomWithScroll &&
+        this.containerRef &&
+        (this.props.zoomWithScroll
+          ? this.containerRef.addEventListener('wheel', this.onWheel, { passive: !1 })
+          : this.clearScrollEvent()),
+      t.video !== this.props.video)
+    ) {
+      var m;
+      (m = this.videoRef.current) === null || m === void 0 || m.load();
+    }
+    const g = this.getObjectFit();
+    g !== this.state.mediaObjectFit && this.setState({ mediaObjectFit: g }, this.computeSizes);
+  }
+  getAspect() {
+    const { cropSize: t, aspect: e } = this.props;
+    return t ? t.width / t.height : e;
+  }
+  getObjectFit() {
+    if (this.props.objectFit === 'cover') {
+      if ((this.imageRef.current || this.videoRef.current) && this.containerRef) {
+        var t, e, i, s;
+        this.containerRect = this.containerRef.getBoundingClientRect();
+        const a = this.containerRect.width / this.containerRect.height;
+        return (((t = this.imageRef.current) === null || t === void 0 ? void 0 : t.naturalWidth) ||
+          ((e = this.videoRef.current) === null || e === void 0 ? void 0 : e.videoWidth) ||
+          0) /
+          (((i = this.imageRef.current) === null || i === void 0 ? void 0 : i.naturalHeight) ||
+            ((s = this.videoRef.current) === null || s === void 0 ? void 0 : s.videoHeight) ||
+            0) <
+          a
+          ? 'horizontal-cover'
+          : 'vertical-cover';
+      }
+      return 'horizontal-cover';
+    }
+    return this.props.objectFit;
+  }
+  onPinchStart(t) {
+    const e = C.getTouchPoint(t.touches[0]),
+      i = C.getTouchPoint(t.touches[1]);
+    ((this.lastPinchDistance = me(e, i)),
+      (this.lastPinchRotation = fe(e, i)),
+      this.onDragStart(be(e, i), 'touch'));
+  }
+  onPinchMove(t) {
+    if (!this.currentDoc || !this.currentWindow) return;
+    const e = C.getTouchPoint(t.touches[0]),
+      i = C.getTouchPoint(t.touches[1]),
+      s = be(e, i);
+    (this.onDrag(s),
+      this.rafPinchTimeout && this.currentWindow.cancelAnimationFrame(this.rafPinchTimeout),
+      (this.rafPinchTimeout = this.currentWindow.requestAnimationFrame(() => {
+        const a = me(e, i),
+          d = this.props.zoom * (a / this.lastPinchDistance);
+        (this.setNewZoom(d, s, { shouldUpdatePosition: !1 }), (this.lastPinchDistance = a));
+        const n = fe(e, i),
+          h = this.props.rotation + (n - this.lastPinchRotation);
+        (this.props.onRotationChange && this.props.onRotationChange(h),
+          (this.lastPinchRotation = n));
+      })));
+  }
+  render() {
+    var t;
+    const {
+        image: e,
+        video: i,
+        mediaProps: s,
+        cropperProps: a,
+        transform: d,
+        crop: { x: n, y: h },
+        rotation: c,
+        zoom: m,
+        cropShape: g,
+        showGrid: v,
+        roundCropAreaPixels: k,
+        style: { containerStyle: S, cropAreaStyle: N, mediaStyle: y },
+        classes: { containerClassName: f, cropAreaClassName: R, mediaClassName: j },
+      } = this.props,
+      z = (t = this.state.mediaObjectFit) !== null && t !== void 0 ? t : this.getObjectFit();
+    return p.createElement(
+      'div',
+      {
+        onMouseDown: this.onMouseDown,
+        onTouchStart: this.onTouchStart,
+        ref: (E) => (this.containerRef = E),
+        'data-testid': 'container',
+        style: S,
+        className: F('reactEasyCrop_Container', f),
+      },
+      e
+        ? p.createElement(
+            'img',
+            b(
+              b(
+                {
+                  alt: '',
+                  className: F(
+                    'reactEasyCrop_Image',
+                    z === 'contain' && 'reactEasyCrop_Contain',
+                    z === 'horizontal-cover' && 'reactEasyCrop_Cover_Horizontal',
+                    z === 'vertical-cover' && 'reactEasyCrop_Cover_Vertical',
+                    j
+                  ),
+                },
+                s
+              ),
+              {},
+              {
+                src: e,
+                ref: this.imageRef,
+                style: b(
+                  b({}, y),
+                  {},
+                  { transform: d || `translate(${n}px, ${h}px) rotate(${c}deg) scale(${m})` }
+                ),
+                onLoad: this.onMediaLoad,
+              }
+            )
+          )
+        : i &&
+            p.createElement(
+              'video',
+              b(
+                b(
+                  {
+                    autoPlay: !0,
+                    playsInline: !0,
+                    loop: !0,
+                    muted: !0,
+                    className: F(
+                      'reactEasyCrop_Video',
+                      z === 'contain' && 'reactEasyCrop_Contain',
+                      z === 'horizontal-cover' && 'reactEasyCrop_Cover_Horizontal',
+                      z === 'vertical-cover' && 'reactEasyCrop_Cover_Vertical',
+                      j
+                    ),
+                  },
+                  s
+                ),
+                {},
+                {
+                  ref: this.videoRef,
+                  onLoadedMetadata: this.onMediaLoad,
+                  style: b(
+                    b({}, y),
+                    {},
+                    { transform: d || `translate(${n}px, ${h}px) rotate(${c}deg) scale(${m})` }
+                  ),
+                  controls: !1,
+                }
+              ),
+              (Array.isArray(i) ? i : [{ src: i }]).map((E) =>
+                p.createElement('source', b({ key: E.src }, E))
+              )
+            ),
+      this.state.cropSize &&
+        p.createElement(
+          'div',
+          b(
+            {
+              ref: this.cropperRef,
+              style: b(
+                b({}, N),
+                {},
+                {
+                  width: k ? Math.round(this.state.cropSize.width) : this.state.cropSize.width,
+                  height: k ? Math.round(this.state.cropSize.height) : this.state.cropSize.height,
+                }
+              ),
+              tabIndex: 0,
+              onKeyDown: this.onKeyDown,
+              onKeyUp: this.onKeyUp,
+              'data-testid': 'cropper',
+              className: F(
+                'reactEasyCrop_CropArea',
+                g === 'round' && 'reactEasyCrop_CropAreaRound',
+                v && 'reactEasyCrop_CropAreaGrid',
+                R
+              ),
+            },
+            a
+          )
+        )
+    );
+  }
+};
+X.defaultProps = {
+  zoom: 1,
+  rotation: 0,
+  aspect: 4 / 3,
+  maxZoom: zt,
+  minZoom: Nt,
+  cropShape: 'rect',
+  objectFit: 'contain',
+  showGrid: !0,
+  style: {},
+  classes: {},
+  mediaProps: {},
+  cropperProps: {},
+  zoomSpeed: 1,
+  restrictPosition: !0,
+  zoomWithScroll: !0,
+  keyboardStep: Pt,
+};
+X.getMousePoint = (o) => ({ x: Number(o.clientX), y: Number(o.clientY) });
+X.getTouchPoint = (o) => ({ x: Number(o.clientX), y: Number(o.clientY) });
+var Et = X;
+const Dt = async (o, t) => {
+    const e = new Image();
+    ((e.src = o),
+      await new Promise((d) => {
+        e.onload = d;
+      }));
+    const i = document.createElement('canvas'),
+      s = 1024;
+    ((i.width = s), (i.height = s));
+    const a = i.getContext('2d');
+    if (!a) throw new Error('No 2d context');
+    return (
+      a.drawImage(e, t.x, t.y, t.width, t.height, 0, 0, s, s),
+      i.toDataURL('image/jpeg', 0.85)
+    );
+  },
+  Ot = () => {
+    const { currentUser: o, userData: t, loading: e, updateUserData: i } = Fe(),
+      s = He(),
+      [a, d] = p.useState(!1),
+      [n, h] = p.useState(!1),
+      [c, m] = p.useState(!1),
+      [g, v] = p.useState({ newPassword: '', confirmPassword: '' }),
+      [k, S] = p.useState([]),
+      [N, y] = p.useState(!1),
+      [f, R] = p.useState({
+        name: '',
+        year: '',
+        role: '',
+        linkedin: '',
+        instagram: '',
+        profileImage: '',
+      }),
+      j = p.useRef(null),
+      [z, E] = p.useState(null),
+      [Se, Ne] = p.useState({ x: 0, y: 0 }),
+      [te, re] = p.useState(1),
+      [ze, Pe] = p.useState(null),
+      [Ee, B] = p.useState(!1),
+      [O, G] = p.useState(!1);
+    (p.useEffect(() => {
+      t &&
+        R({
+          name: t.name || '',
+          year: t.year || '',
+          role: t.role || '',
+          linkedin: t.linkedin || '',
+          instagram: t.instagram || '',
+          profileImage: t.profileImage || '',
+        });
+    }, [t]),
+      p.useEffect(() => {
+        o && ie();
+      }, [o]));
+    const ie = async () => {
+        try {
+          y(!0);
+          const l = await Le(o.uid);
+          S(l);
+        } catch (l) {
+          console.error(l);
+        } finally {
+          y(!1);
+        }
+      },
+      De = async (l, u) => {
+        try {
+          const P = u === 'completed' ? 'pending' : 'completed';
+          (await Ze(l, P), ie(), w.success(`Task marked as ${P}`));
+        } catch {
+          w.error('Failed to update task');
+        }
+      },
+      Re = async () => {
+        try {
+          (await Xe(oe), s('/login'));
+        } catch {
+          w.error('Failed to log out');
+        }
+      },
+      T = (l) => {
+        const { name: u, value: P } = l.target;
+        R((We) => ({ ...We, [u]: P }));
+      },
+      Me = async (l) => {
+        if ((l.preventDefault(), !!o)) {
+          d(!0);
+          try {
+            const u = { ...f, linkedin: _(f.linkedin), instagram: W(f.instagram) };
+            (await se(o.uid, u),
+              i && i(u),
+              R(u),
+              w.success('Profile updated successfully!'),
+              h(!1));
+          } catch (u) {
+            (console.error(u), w.error('Failed to update profile'));
+          } finally {
+            d(!1);
+          }
+        }
+      },
+      Te = (l) => {
+        if (l.target.files && l.target.files.length > 0) {
+          const u = l.target.files[0];
+          if (u.size > 5 * 1024 * 1024) {
+            (w.error('File is too large. Max size is 5MB.'), (l.target.value = ''));
+            return;
+          }
+          const P = new FileReader();
+          (P.addEventListener('load', () => {
+            (E(P.result), B(!0));
+          }),
+            P.readAsDataURL(u));
+        }
+      },
+      Ae = (l, u) => {
+        Pe(u);
+      },
+      Ie = async () => {
+        try {
+          G(!0);
+          const l = await Dt(z, ze);
+          (await se(o.uid, { profileImage: l }),
+            i && i({ profileImage: l }),
+            R((u) => ({ ...u, profileImage: l })),
+            w.success('Profile photo updated live!'),
+            B(!1),
+            G(!1),
+            E(null),
+            j.current && (j.current.value = ''));
+        } catch (l) {
+          (console.error(l), w.error('Failed to process image: ' + l.message), G(!1));
+        }
+      },
+      Oe = async (l) => {
+        if ((l.preventDefault(), g.newPassword !== g.confirmPassword)) {
+          w.error('Passwords do not match');
+          return;
+        }
+        if (g.newPassword.length < 6) {
+          w.error('Password must be at least 6 characters');
+          return;
+        }
+        m(!0);
+        try {
+          (await Be(oe.currentUser, g.newPassword),
+            w.success('Password updated successfully!'),
+            v({ newPassword: '', confirmPassword: '' }));
+        } catch (u) {
+          (console.error(u),
+            u.code === 'auth/requires-recent-login'
+              ? w.error('Please log out and log back in to change your password.', {
+                  duration: 5e3,
+                })
+              : w.error('Failed to update password'));
+        } finally {
+          m(!1);
+        }
+      };
+    if (e)
+      return r.jsx('div', {
+        className: 'min-h-screen flex items-center justify-center',
+        children: 'Loading...',
+      });
+    const _e =
+      (t == null ? void 0 : t.role) === 'admin' || (t == null ? void 0 : t.systemRole) === 'admin';
+    return r.jsxs('div', {
+      className: 'min-h-screen pt-28 pb-12 px-4 max-w-7xl mx-auto relative z-10',
+      children: [
+        r.jsxs('div', {
+          className:
+            'flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4',
+          children: [
+            r.jsxs('div', {
+              children: [
+                r.jsx('span', {
+                  className:
+                    'text-xs font-mono font-bold tracking-widest text-indigo-600 dark:text-indigo-400 uppercase mb-3 inline-block bg-indigo-50 dark:bg-indigo-500/10 px-3 py-1 rounded-full border border-indigo-100 dark:border-indigo-500/20',
+                  children: 'Account',
+                }),
+                r.jsx('h1', {
+                  className:
+                    'text-3xl md:text-5xl font-display font-bold text-gray-900 dark:text-white tracking-tight',
+                  children: 'My Profile',
+                }),
+                r.jsx('p', {
+                  className: 'text-gray-600 dark:text-gray-300 mt-2 font-medium',
+                  children: 'Manage your public E-Cell information',
+                }),
+              ],
+            }),
+            r.jsxs('div', {
+              className: 'flex items-center gap-3',
+              children: [
+                _e &&
+                  r.jsx('button', {
+                    onClick: () => s('/admin'),
+                    className:
+                      'px-5 py-2.5 bg-white/60 dark:bg-dark-surface/60 backdrop-blur-md text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-500/30 rounded-full hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition-all font-bold text-sm shadow-sm',
+                    children: 'Admin Panel',
+                  }),
+                r.jsxs('button', {
+                  onClick: Re,
+                  className:
+                    'flex items-center gap-2 px-5 py-2.5 bg-white/60 dark:bg-dark-surface/60 backdrop-blur-md text-red-600 dark:text-red-400 border border-red-100 dark:border-red-900/30 rounded-full hover:bg-red-50 dark:hover:bg-red-900/30 transition-all font-bold text-sm shadow-sm',
+                  children: [r.jsx(Ge, { size: 16 }), r.jsx('span', { children: 'Sign Out' })],
+                }),
+              ],
+            }),
+          ],
+        }),
+        r.jsxs('div', {
+          className: 'grid grid-cols-1 lg:grid-cols-12 gap-8',
+          children: [
+            r.jsxs('div', {
+              className: 'lg:col-span-5 space-y-6',
+              children: [
+                r.jsx('div', {
+                  className:
+                    'bg-white/60 dark:bg-dark-card/40 backdrop-blur-3xl rounded-3xl shadow-premium dark:shadow-premium-dark overflow-hidden border border-white/60 dark:border-white/10 transition-all duration-500 hover:shadow-premium-hover dark:hover:shadow-premium-dark-hover',
+                  children: r.jsxs('div', {
+                    className: 'p-6 md:p-8',
+                    children: [
+                      r.jsxs('div', {
+                        className:
+                          'flex justify-between items-center mb-6 pb-4 border-b border-gray-200/50 dark:border-white/10',
+                        children: [
+                          r.jsx('h3', {
+                            className:
+                              'text-lg font-display font-bold text-gray-900 dark:text-white',
+                            children: 'Personal Details',
+                          }),
+                          !n &&
+                            r.jsxs('button', {
+                              onClick: () => h(!0),
+                              type: 'button',
+                              className:
+                                'flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold uppercase tracking-wider bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-full hover:bg-indigo-100 dark:hover:bg-indigo-500/20 transition-colors border border-indigo-100 dark:border-indigo-500/20',
+                              children: [r.jsx(qe, { size: 12 }), 'Edit'],
+                            }),
+                        ],
+                      }),
+                      r.jsxs('form', {
+                        onSubmit: Me,
+                        className: 'space-y-6',
+                        children: [
+                          r.jsxs('div', {
+                            className: 'flex flex-col sm:flex-row gap-8 items-start',
+                            children: [
+                              r.jsxs('div', {
+                                className: 'flex-shrink-0 flex flex-col items-center',
+                                children: [
+                                  r.jsx('input', {
+                                    type: 'file',
+                                    accept: 'image/*',
+                                    ref: j,
+                                    onChange: Te,
+                                    className: 'hidden',
+                                  }),
+                                  r.jsxs('div', {
+                                    className: 'relative',
+                                    children: [
+                                      r.jsxs('div', {
+                                        onClick: () => {
+                                          var l;
+                                          return (
+                                            n && ((l = j.current) == null ? void 0 : l.click())
+                                          );
+                                        },
+                                        className: `w-32 h-32 md:w-36 md:h-36 rounded-full bg-white/60 dark:bg-dark-surface/50 backdrop-blur-md overflow-hidden border-4 border-white dark:border-dark-surface shadow-xl flex items-center justify-center relative group ${n ? 'cursor-pointer' : 'cursor-default'}`,
+                                        children: [
+                                          f.profileImage
+                                            ? r.jsx('img', {
+                                                src: f.profileImage,
+                                                alt: 'Profile',
+                                                className: `w-full h-full object-cover transition-transform duration-500 ${n ? 'group-hover:scale-110' : ''}`,
+                                              })
+                                            : r.jsx(Ye, {
+                                                size: 48,
+                                                className: 'text-gray-400 dark:text-gray-500',
+                                              }),
+                                          n &&
+                                            r.jsx('div', {
+                                              className:
+                                                'absolute inset-0 bg-black/40 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300',
+                                              children: r.jsx(Ke, {
+                                                className: 'text-white mb-1',
+                                                size: 24,
+                                              }),
+                                            }),
+                                        ],
+                                      }),
+                                      n &&
+                                        r.jsx('div', {
+                                          onClick: () => {
+                                            var l;
+                                            return (l = j.current) == null ? void 0 : l.click();
+                                          },
+                                          className:
+                                            'absolute bottom-1 right-1 w-9 h-9 bg-indigo-600 text-white rounded-full flex items-center justify-center shadow-lg border-2 border-white dark:border-dark-card cursor-pointer hover:bg-indigo-700 hover:scale-110 transition-all z-10',
+                                          title: 'Change Profile Photo',
+                                          children: r.jsx(Ve, { size: 14 }),
+                                        }),
+                                    ],
+                                  }),
+                                ],
+                              }),
+                              r.jsxs('div', {
+                                className: 'flex-grow w-full space-y-4',
+                                children: [
+                                  r.jsxs('div', {
+                                    children: [
+                                      r.jsx('label', {
+                                        className:
+                                          'block text-xs font-bold mb-1.5 text-gray-700 dark:text-gray-300 font-sans uppercase tracking-wide',
+                                        children: 'Full Name',
+                                      }),
+                                      r.jsx('input', {
+                                        type: 'text',
+                                        name: 'name',
+                                        value: f.name,
+                                        onChange: T,
+                                        required: !0,
+                                        disabled: !n,
+                                        className:
+                                          'w-full px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-white/10 bg-white/50 dark:bg-dark-surface/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none transition-all backdrop-blur-sm disabled:opacity-60 disabled:cursor-not-allowed',
+                                      }),
+                                    ],
+                                  }),
+                                  r.jsxs('div', {
+                                    children: [
+                                      r.jsx('label', {
+                                        className:
+                                          'block text-xs font-bold mb-1.5 text-gray-700 dark:text-gray-300 font-sans uppercase tracking-wide',
+                                        children: 'E-Cell Role',
+                                      }),
+                                      r.jsx('input', {
+                                        type: 'text',
+                                        name: 'role',
+                                        value: f.role,
+                                        onChange: T,
+                                        required: !0,
+                                        disabled: !n,
+                                        className:
+                                          'w-full px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-white/10 bg-white/50 dark:bg-dark-surface/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none transition-all backdrop-blur-sm disabled:opacity-60 disabled:cursor-not-allowed',
+                                      }),
+                                    ],
+                                  }),
+                                ],
+                              }),
+                            ],
+                          }),
+                          r.jsxs('div', {
+                            className:
+                              'grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-gray-200/50 dark:border-white/10',
+                            children: [
+                              r.jsxs('div', {
+                                children: [
+                                  r.jsx('label', {
+                                    className:
+                                      'block text-xs font-bold mb-1.5 text-gray-400 dark:text-gray-500 font-sans uppercase tracking-wide',
+                                    children: 'Email Address (Locked)',
+                                  }),
+                                  r.jsx('input', {
+                                    type: 'email',
+                                    value: (o == null ? void 0 : o.email) || '',
+                                    disabled: !0,
+                                    className:
+                                      'w-full px-3 py-2 text-sm rounded-lg border border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-black/20 text-gray-400 dark:text-gray-500 cursor-not-allowed outline-none backdrop-blur-sm',
+                                  }),
+                                ],
+                              }),
+                              r.jsxs('div', {
+                                children: [
+                                  r.jsx('label', {
+                                    className:
+                                      'block text-xs font-bold mb-1.5 text-gray-700 dark:text-gray-300 font-sans uppercase tracking-wide',
+                                    children: 'Year',
+                                  }),
+                                  r.jsx('input', {
+                                    type: 'number',
+                                    min: '1',
+                                    max: '5',
+                                    name: 'year',
+                                    value: f.year,
+                                    onChange: T,
+                                    required: !0,
+                                    disabled: !n,
+                                    placeholder: 'e.g. 2',
+                                    className:
+                                      'w-full px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-white/10 bg-white/50 dark:bg-dark-surface/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none transition-all backdrop-blur-sm disabled:opacity-60 disabled:cursor-not-allowed',
+                                  }),
+                                ],
+                              }),
+                              n
+                                ? r.jsxs(r.Fragment, {
+                                    children: [
+                                      r.jsxs('div', {
+                                        children: [
+                                          r.jsx('label', {
+                                            className:
+                                              'block text-xs font-bold mb-1.5 text-gray-700 dark:text-gray-300 font-sans uppercase tracking-wide',
+                                            children: 'LinkedIn Username',
+                                          }),
+                                          r.jsxs('div', {
+                                            className: 'relative',
+                                            children: [
+                                              r.jsx('div', {
+                                                className:
+                                                  'absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none',
+                                                children: r.jsx(ne, {
+                                                  size: 14,
+                                                  className: 'text-gray-400',
+                                                }),
+                                              }),
+                                              r.jsx('input', {
+                                                type: 'text',
+                                                name: 'linkedin',
+                                                value: f.linkedin,
+                                                onChange: T,
+                                                placeholder: 'username',
+                                                className:
+                                                  'w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-white/10 bg-white/50 dark:bg-dark-surface/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none transition-all backdrop-blur-sm',
+                                              }),
+                                            ],
+                                          }),
+                                        ],
+                                      }),
+                                      r.jsxs('div', {
+                                        children: [
+                                          r.jsx('label', {
+                                            className:
+                                              'block text-xs font-bold mb-1.5 text-gray-700 dark:text-gray-300 font-sans uppercase tracking-wide',
+                                            children: 'Instagram Username',
+                                          }),
+                                          r.jsxs('div', {
+                                            className: 'relative',
+                                            children: [
+                                              r.jsx('div', {
+                                                className:
+                                                  'absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none',
+                                                children: r.jsx(ae, {
+                                                  size: 14,
+                                                  className: 'text-gray-400',
+                                                }),
+                                              }),
+                                              r.jsx('input', {
+                                                type: 'text',
+                                                name: 'instagram',
+                                                value: f.instagram,
+                                                onChange: T,
+                                                placeholder: 'username',
+                                                className:
+                                                  'w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-white/10 bg-white/50 dark:bg-dark-surface/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none transition-all backdrop-blur-sm',
+                                              }),
+                                            ],
+                                          }),
+                                        ],
+                                      }),
+                                    ],
+                                  })
+                                : r.jsxs('div', {
+                                    className: 'md:col-span-2 pt-2',
+                                    children: [
+                                      r.jsx('label', {
+                                        className:
+                                          'block text-xs font-bold mb-3 text-gray-700 dark:text-gray-300 font-sans uppercase tracking-wide',
+                                        children: 'Social Connect',
+                                      }),
+                                      r.jsxs('div', {
+                                        className: 'flex gap-3',
+                                        children: [
+                                          _(f.linkedin)
+                                            ? r.jsxs('a', {
+                                                href: _(f.linkedin),
+                                                target: '_blank',
+                                                rel: 'noopener noreferrer',
+                                                className:
+                                                  'flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-500/20 hover:bg-blue-100 dark:hover:bg-blue-500/20 transition-colors text-sm font-bold',
+                                                children: [r.jsx(ne, { size: 16 }), 'LinkedIn'],
+                                              })
+                                            : null,
+                                          W(f.instagram)
+                                            ? r.jsxs('a', {
+                                                href: W(f.instagram),
+                                                target: '_blank',
+                                                rel: 'noopener noreferrer',
+                                                className:
+                                                  'flex items-center gap-2 px-4 py-2 rounded-lg bg-pink-50 dark:bg-pink-500/10 text-pink-600 dark:text-pink-400 border border-pink-100 dark:border-pink-500/20 hover:bg-pink-100 dark:hover:bg-pink-500/20 transition-colors text-sm font-bold',
+                                                children: [r.jsx(ae, { size: 16 }), 'Instagram'],
+                                              })
+                                            : null,
+                                          !_(f.linkedin) &&
+                                            !W(f.instagram) &&
+                                            r.jsx('div', {
+                                              className:
+                                                'text-sm text-gray-500 dark:text-gray-400 italic px-1',
+                                              children:
+                                                'No social links added. Click Edit to add them.',
+                                            }),
+                                        ],
+                                      }),
+                                    ],
+                                  }),
+                            ],
+                          }),
+                          n &&
+                            r.jsxs('div', {
+                              className:
+                                'pt-4 flex gap-3 border-t border-gray-200/50 dark:border-white/10',
+                              children: [
+                                r.jsx('button', {
+                                  type: 'button',
+                                  onClick: () => h(!1),
+                                  className:
+                                    'flex-1 flex justify-center items-center px-4 py-2.5 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-700 dark:text-gray-300 font-sans font-bold text-sm rounded-lg transition-all duration-300',
+                                  children: 'Cancel',
+                                }),
+                                r.jsx('button', {
+                                  type: 'submit',
+                                  disabled: a,
+                                  className:
+                                    'flex-[2] flex justify-center items-center gap-2 px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-sans font-bold text-sm rounded-lg transition-all duration-300 disabled:opacity-70 shadow-sm',
+                                  children: a
+                                    ? r.jsx('div', {
+                                        className:
+                                          'w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin',
+                                      })
+                                    : r.jsxs(r.Fragment, {
+                                        children: [
+                                          r.jsx(Je, { size: 16 }),
+                                          r.jsx('span', { children: 'Save Changes' }),
+                                        ],
+                                      }),
+                                }),
+                              ],
+                            }),
+                        ],
+                      }),
+                    ],
+                  }),
+                }),
+                r.jsx('div', {
+                  className:
+                    'bg-white/60 dark:bg-dark-card/40 backdrop-blur-3xl rounded-3xl shadow-premium dark:shadow-premium-dark overflow-hidden border border-white/60 dark:border-white/10 transition-all duration-500 hover:shadow-premium-hover dark:hover:shadow-premium-dark-hover',
+                  children: r.jsxs('div', {
+                    className: 'p-6 md:p-8',
+                    children: [
+                      r.jsx('div', {
+                        className:
+                          'flex justify-between items-center mb-6 pb-4 border-b border-gray-200/50 dark:border-white/10',
+                        children: r.jsxs('div', {
+                          className: 'flex items-center gap-3',
+                          children: [
+                            r.jsx('div', {
+                              className:
+                                'p-2 bg-indigo-50 dark:bg-indigo-500/10 rounded-lg border border-indigo-100 dark:border-indigo-500/20 text-indigo-600 dark:text-indigo-400',
+                              children: r.jsx(Qe, { size: 18 }),
+                            }),
+                            r.jsx('h3', {
+                              className:
+                                'text-lg font-display font-bold text-gray-900 dark:text-white',
+                              children: 'Change Password',
+                            }),
+                          ],
+                        }),
+                      }),
+                      r.jsxs('form', {
+                        onSubmit: Oe,
+                        className: 'space-y-4',
+                        children: [
+                          r.jsxs('div', {
+                            children: [
+                              r.jsx('label', {
+                                className:
+                                  'block text-xs font-bold mb-1.5 text-gray-700 dark:text-gray-300 font-sans uppercase tracking-wide',
+                                children: 'New Password',
+                              }),
+                              r.jsx('input', {
+                                type: 'password',
+                                value: g.newPassword,
+                                onChange: (l) => v((u) => ({ ...u, newPassword: l.target.value })),
+                                placeholder: '••••••••',
+                                required: !0,
+                                minLength: 6,
+                                className:
+                                  'w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 dark:border-white/10 bg-white/50 dark:bg-dark-surface/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none transition-all backdrop-blur-sm',
+                              }),
+                            ],
+                          }),
+                          r.jsxs('div', {
+                            children: [
+                              r.jsx('label', {
+                                className:
+                                  'block text-xs font-bold mb-1.5 text-gray-700 dark:text-gray-300 font-sans uppercase tracking-wide',
+                                children: 'Confirm Password',
+                              }),
+                              r.jsx('input', {
+                                type: 'password',
+                                value: g.confirmPassword,
+                                onChange: (l) =>
+                                  v((u) => ({ ...u, confirmPassword: l.target.value })),
+                                placeholder: '••••••••',
+                                required: !0,
+                                minLength: 6,
+                                className:
+                                  'w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 dark:border-white/10 bg-white/50 dark:bg-dark-surface/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none transition-all backdrop-blur-sm',
+                              }),
+                            ],
+                          }),
+                          r.jsx('button', {
+                            type: 'submit',
+                            disabled: c || !g.newPassword,
+                            className:
+                              'w-full flex justify-center items-center gap-2 px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-sans font-bold text-sm rounded-xl transition-all duration-300 disabled:opacity-70 shadow-sm mt-2',
+                            children: c
+                              ? r.jsx('div', {
+                                  className:
+                                    'w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin',
+                                })
+                              : 'Update Password',
+                          }),
+                        ],
+                      }),
+                    ],
+                  }),
+                }),
+              ],
+            }),
+            r.jsx('div', {
+              className: 'lg:col-span-7 space-y-6',
+              children: r.jsxs('div', {
+                className:
+                  'bg-white/60 dark:bg-dark-card/40 backdrop-blur-3xl rounded-3xl shadow-premium dark:shadow-premium-dark overflow-hidden border border-white/60 dark:border-white/10 transition-all duration-500 hover:shadow-premium-hover dark:hover:shadow-premium-dark-hover h-full flex flex-col',
+                children: [
+                  r.jsxs('div', {
+                    className:
+                      'p-5 md:p-6 border-b border-gray-200/50 dark:border-white/10 flex items-center gap-4 bg-gray-50/50 dark:bg-dark-surface/30',
+                    children: [
+                      r.jsx('div', {
+                        className:
+                          'p-2.5 bg-purple-50 dark:bg-purple-500/10 rounded-lg border border-purple-100 dark:border-purple-500/20 text-purple-600 dark:text-purple-400 shadow-sm shrink-0',
+                        children: r.jsx($e, { size: 20 }),
+                      }),
+                      r.jsxs('div', {
+                        children: [
+                          r.jsx('h2', {
+                            className:
+                              'text-lg font-display font-bold text-gray-900 dark:text-white',
+                            children: 'Assigned Tasks',
+                          }),
+                          r.jsx('p', {
+                            className: 'text-gray-500 dark:text-gray-400 text-xs font-medium',
+                            children: 'Tasks assigned to you by the admin',
+                          }),
+                        ],
+                      }),
+                    ],
+                  }),
+                  r.jsx('div', {
+                    className: 'p-5 md:p-6 flex-1 overflow-y-auto',
+                    children: N
+                      ? r.jsx('div', {
+                          className: 'grid grid-cols-1 md:grid-cols-2 gap-4',
+                          children: [1, 2, 3, 4].map((l) =>
+                            r.jsxs(
+                              'div',
+                              {
+                                className:
+                                  'bg-white/40 dark:bg-dark-surface/40 border border-gray-100 dark:border-white/5 p-5 rounded-xl animate-pulse flex flex-col',
+                                children: [
+                                  r.jsxs('div', {
+                                    className: 'flex justify-between items-start gap-3 mb-4',
+                                    children: [
+                                      r.jsx('div', {
+                                        className:
+                                          'h-5 bg-gray-200/60 dark:bg-white/10 rounded w-3/4',
+                                      }),
+                                      r.jsx('div', {
+                                        className:
+                                          'h-5 bg-gray-200/60 dark:bg-white/10 rounded w-16',
+                                      }),
+                                    ],
+                                  }),
+                                  r.jsx('div', {
+                                    className:
+                                      'h-3 bg-gray-200/60 dark:bg-white/10 rounded w-full mb-2',
+                                  }),
+                                  r.jsx('div', {
+                                    className:
+                                      'h-3 bg-gray-200/60 dark:bg-white/10 rounded w-5/6 mb-6',
+                                  }),
+                                  r.jsxs('div', {
+                                    className:
+                                      'flex justify-between items-center pt-3 border-t border-gray-100 dark:border-white/5 mt-auto',
+                                    children: [
+                                      r.jsx('div', {
+                                        className:
+                                          'h-3 bg-gray-200/60 dark:bg-white/10 rounded w-12',
+                                      }),
+                                      r.jsx('div', {
+                                        className:
+                                          'h-4 bg-gray-200/60 dark:bg-white/10 rounded w-20',
+                                      }),
+                                    ],
+                                  }),
+                                ],
+                              },
+                              l
+                            )
+                          ),
+                        })
+                      : k.length === 0
+                        ? r.jsxs('div', {
+                            className:
+                              'flex flex-col items-center justify-center h-48 text-gray-500 dark:text-gray-400',
+                            children: [
+                              r.jsx('div', {
+                                className: 'p-4 bg-gray-100 dark:bg-white/5 rounded-full mb-3',
+                                children: r.jsx(de, { size: 32, className: 'opacity-50' }),
+                              }),
+                              r.jsx('p', {
+                                className: 'font-medium',
+                                children: 'You have no tasks assigned to you.',
+                              }),
+                            ],
+                          })
+                        : r.jsx('div', {
+                            className: 'grid grid-cols-1 md:grid-cols-2 gap-4',
+                            children: k.map((l) =>
+                              r.jsxs(
+                                'div',
+                                {
+                                  className:
+                                    'bg-white/80 dark:bg-dark-surface/80 border border-gray-100 dark:border-white/5 p-5 rounded-xl shadow-sm hover:shadow-md transition-all flex flex-col',
+                                  children: [
+                                    r.jsxs('div', {
+                                      className: 'flex justify-between items-start gap-3 mb-3',
+                                      children: [
+                                        r.jsx('h3', {
+                                          className:
+                                            'font-bold text-base text-gray-900 dark:text-white leading-tight',
+                                          children: l.title,
+                                        }),
+                                        r.jsxs('button', {
+                                          onClick: () => De(l.id, l.status),
+                                          className: `shrink-0 flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider transition-all border ${l.status === 'completed' ? 'bg-green-50 text-green-700 border-green-200 dark:bg-green-500/20 dark:text-green-400 dark:border-green-500/30' : 'bg-white text-gray-500 border-gray-200 hover:border-indigo-300 hover:text-indigo-600 dark:bg-dark-card dark:text-gray-400 dark:border-white/10 dark:hover:border-indigo-500/50'}`,
+                                          children: [
+                                            r.jsx(de, {
+                                              size: 12,
+                                              className:
+                                                l.status === 'completed'
+                                                  ? 'text-green-600 dark:text-green-400'
+                                                  : 'text-gray-400',
+                                            }),
+                                            l.status,
+                                          ],
+                                        }),
+                                      ],
+                                    }),
+                                    r.jsx('p', {
+                                      className:
+                                        'text-gray-600 dark:text-gray-300 text-xs leading-relaxed mb-4 flex-1',
+                                      children: l.description,
+                                    }),
+                                    r.jsxs('div', {
+                                      className:
+                                        'flex justify-between items-center pt-3 border-t border-gray-100 dark:border-white/10',
+                                      children: [
+                                        r.jsx('span', {
+                                          className:
+                                            'text-[10px] font-bold text-gray-400 uppercase tracking-widest',
+                                          children: 'Deadline',
+                                        }),
+                                        r.jsx('span', {
+                                          className:
+                                            'text-xs font-bold text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 px-2 py-1 rounded-md',
+                                          children: new Date(l.deadline).toLocaleDateString(),
+                                        }),
+                                      ],
+                                    }),
+                                  ],
+                                },
+                                l.id
+                              )
+                            ),
+                          }),
+                  }),
+                ],
+              }),
+            }),
+          ],
+        }),
+        Ee &&
+          r.jsx('div', {
+            className:
+              'fixed inset-0 z-[10000] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4',
+            children: r.jsxs('div', {
+              className:
+                'bg-white dark:bg-dark-card rounded-3xl overflow-hidden max-w-lg w-full shadow-2xl border border-white/10',
+              children: [
+                r.jsxs('div', {
+                  className:
+                    'p-4 border-b border-gray-100 dark:border-white/10 flex justify-between items-center bg-gray-50 dark:bg-dark-surface/50',
+                  children: [
+                    r.jsx('h3', {
+                      className: 'font-display font-bold text-xl text-gray-900 dark:text-white',
+                      children: 'Crop Photo',
+                    }),
+                    r.jsx('button', {
+                      onClick: () => {
+                        (B(!1), E(null), j.current && (j.current.value = ''));
+                      },
+                      className:
+                        'p-2 bg-gray-200/50 dark:bg-white/5 rounded-full hover:bg-gray-200 dark:hover:bg-white/10 transition-colors',
+                      disabled: O,
+                      children: r.jsx(et, { size: 20, className: 'text-gray-900 dark:text-white' }),
+                    }),
+                  ],
+                }),
+                r.jsx('div', {
+                  className: 'relative w-full h-[350px] bg-black',
+                  children: r.jsx(Et, {
+                    image: z,
+                    crop: Se,
+                    zoom: te,
+                    aspect: 1,
+                    cropShape: 'round',
+                    onCropChange: Ne,
+                    onCropComplete: Ae,
+                    onZoomChange: re,
+                  }),
+                }),
+                r.jsxs('div', {
+                  className: 'p-6 bg-gray-50 dark:bg-dark-surface/50',
+                  children: [
+                    r.jsx('label', {
+                      className:
+                        'block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 font-sans',
+                      children: 'Zoom',
+                    }),
+                    r.jsx('input', {
+                      type: 'range',
+                      value: te,
+                      min: 1,
+                      max: 3,
+                      step: 0.1,
+                      'aria-labelledby': 'Zoom',
+                      onChange: (l) => re(l.target.value),
+                      className: 'w-full accent-indigo-500 mb-6',
+                      disabled: O,
+                    }),
+                    r.jsx('button', {
+                      onClick: Ie,
+                      disabled: O,
+                      className:
+                        'w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-sans font-bold rounded-xl transition-all shadow-glow hover:shadow-glow-strong flex justify-center items-center',
+                      children: O
+                        ? r.jsxs('span', {
+                            className: 'flex items-center gap-3',
+                            children: [
+                              r.jsx('div', {
+                                className:
+                                  'w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin',
+                              }),
+                              'Uploading...',
+                            ],
+                          })
+                        : 'Crop & Upload',
+                    }),
+                  ],
+                }),
+              ],
+            }),
+          }),
+      ],
+    });
+  };
+export { Ot as default };

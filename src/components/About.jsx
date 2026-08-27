@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Award, Trophy, Lightbulb, Users, Coins, Rocket, Building2, Globe2, Target, Volume2, VolumeX, Play, Pause } from 'lucide-react';
+import { Award, Trophy, Lightbulb, Users, Coins, Rocket, Building2, Globe2, Target, Play, Pause } from 'lucide-react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { mentors } from '../data/constants';
@@ -117,32 +117,42 @@ const About = () => {
           <div className="about-card md:col-span-12 bg-white/60 dark:bg-dark-card/40 backdrop-blur-3xl border border-white/60 dark:border-white/10 rounded-3xl p-6 md:p-8 shadow-premium dark:shadow-premium-dark transition-all duration-300 hover:shadow-premium-hover dark:hover:shadow-premium-dark-hover">
             <div className="flex flex-col md:flex-row gap-8 items-center">
               <div 
-                className="w-full md:w-1/2 flex-1 rounded-2xl overflow-hidden shadow-sm border border-gray-100 dark:border-white/5 aspect-video relative group/video cursor-pointer"
-                onClick={togglePlay}
+                className="w-full md:w-1/2 flex-1 rounded-2xl overflow-hidden shadow-sm border border-gray-100 dark:border-white/5 aspect-video relative group/video cursor-pointer bg-black/90"
+                onClick={() => {
+                  if (!isPlaying) setIsPlaying(true);
+                }}
               >
-                <div className={`absolute inset-0 bg-black/30 transition-opacity duration-300 pointer-events-none z-10 flex items-center justify-center ${isPlaying ? 'opacity-0 group-hover/video:opacity-100' : 'opacity-100'}`}>
-                  <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm border border-white/40 flex items-center justify-center text-white shadow-lg transition-transform duration-300 group-hover/video:scale-110">
-                    {isPlaying ? <Pause size={32} /> : <Play size={32} className="ml-1" />}
-                  </div>
-                </div>
-                <iframe 
-                  ref={videoRef}
-                  className="absolute inset-0 w-full h-full relative z-0 pointer-events-none"
-                  src="https://www.youtube.com/embed/VtlmAhrgK24?autoplay=0&mute=1&controls=0&modestbranding=1&rel=0&loop=1&playlist=VtlmAhrgK24&enablejsapi=1" 
-                  title="E-Cell Freshie Intro Task" 
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                  allowFullScreen
-                  loading="lazy"
-                ></iframe>
-                
-                {/* Custom Mute/Unmute Toggle */}
-                <button 
-                  onClick={toggleMute}
-                  className="absolute bottom-4 right-4 z-20 w-10 h-10 rounded-full bg-black/60 backdrop-blur-md text-white flex items-center justify-center hover:bg-black/80 hover:scale-110 transition-all duration-300 border border-white/20"
-                  aria-label="Toggle Mute"
-                >
-                  {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
-                </button>
+                {isPlaying ? (
+                  <iframe 
+                    ref={videoRef}
+                    className="absolute inset-0 w-full h-full relative z-10"
+                    src="https://www.youtube.com/embed/VtlmAhrgK24?autoplay=1&controls=1&modestbranding=1&rel=0&enablejsapi=1" 
+                    title="E-Cell Freshie Intro Task" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowFullScreen
+                  />
+                ) : (
+                  <>
+                    <img
+                      src="https://img.youtube.com/vi/VtlmAhrgK24/maxresdefault.jpg"
+                      alt="E-Cell REC ABN Video Preview"
+                      width="640"
+                      height="360"
+                      loading="lazy"
+                      decoding="async"
+                      className="absolute inset-0 w-full h-full object-cover opacity-80 group-hover/video:opacity-90 group-hover/video:scale-105 transition-all duration-500"
+                      onError={(e) => { e.currentTarget.src = "https://img.youtube.com/vi/VtlmAhrgK24/hqdefault.jpg"; }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/20 flex flex-col items-center justify-center p-4 text-center z-10">
+                      <div className="w-16 h-16 rounded-full bg-indigo-600/90 text-white flex items-center justify-center shadow-glow group-hover/video:scale-110 group-hover/video:bg-indigo-500 transition-all duration-300 mb-3 border border-white/20">
+                        <Play size={28} className="ml-1" fill="currentColor" />
+                      </div>
+                      <span className="text-xs font-mono font-bold uppercase tracking-wider text-white/90 bg-black/60 px-3 py-1 rounded-full border border-white/10 backdrop-blur-md">
+                        Click to Play Video
+                      </span>
+                    </div>
+                  </>
+                )}
               </div>
               <div className="w-full md:w-1/2 md:pr-4">
                 <span className="text-xs font-mono font-bold tracking-widest text-indigo-600 dark:text-indigo-400 uppercase mb-3 inline-block bg-indigo-50 dark:bg-indigo-500/10 px-3 py-1 rounded-full border border-indigo-100 dark:border-indigo-500/20">

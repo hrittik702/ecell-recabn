@@ -11,7 +11,7 @@ const StatCounter = ({ endValue, suffix, label, delay }) => {
     const obj = { val: 0 };
     const tween = gsap.to(obj, {
       val: endValue,
-      duration: 2,
+      duration: 1.8,
       delay: delay,
       ease: 'power3.out',
       scrollTrigger: {
@@ -29,7 +29,7 @@ const StatCounter = ({ endValue, suffix, label, delay }) => {
 
   return (
     <div ref={counterRef} className="flex flex-col items-center">
-      <div className="text-2xl md:text-4xl font-display font-bold text-white mb-1">
+      <div className="text-2xl md:text-4xl font-display font-bold text-white mb-1 tabular-nums tracking-tight">
         {value}{suffix}
       </div>
       <div className="text-xs md:text-sm font-sans font-semibold text-gray-400 uppercase tracking-widest">
@@ -57,29 +57,24 @@ const Hero = () => {
       }
     });
 
-    // Staggered text reveal
-    tl.fromTo('.hero-badge', 
-      { y: 20, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' }
+    // Fast progressive entrance (allows immediate browser paint for instant LCP)
+    tl.from('.hero-badge', 
+      { y: 15, opacity: 0, duration: 0.4, ease: 'power2.out' }
     )
-    .fromTo('.hero-title-line', 
-      { y: 40, opacity: 0, rotateX: -20 },
-      { y: 0, opacity: 1, rotateX: 0, duration: 0.8, stagger: 0.15, ease: 'power3.out' },
+    .from('.hero-title-line', 
+      { y: 25, opacity: 0, duration: 0.5, stagger: 0.1, ease: 'power2.out' },
       '-=0.2'
     )
-    .fromTo('.hero-subtext', 
-      { y: 20, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out' }, 
-      '-=0.4'
+    .from('.hero-subtext', 
+      { y: 15, opacity: 0, duration: 0.5, ease: 'power2.out' }, 
+      '-=0.3'
     )
-    .fromTo('.hero-actions', 
-      { y: 20, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' }, 
-      '-=0.4'
+    .from('.hero-actions', 
+      { y: 15, opacity: 0, duration: 0.4, ease: 'power2.out' }, 
+      '-=0.3'
     )
-    .fromTo('.hero-stats', 
-      { y: 30, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out' }, 
+    .from('.hero-stats', 
+      { y: 20, opacity: 0, duration: 0.5, ease: 'power2.out' }, 
       '-=0.2'
     );
   }, { scope: containerRef });
@@ -96,9 +91,6 @@ const Hero = () => {
         />
         {/* Subtle bottom gradient to blend into next section in dark mode */}
         <div className="hidden dark:block absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-dark-bg/90" />
-        
-        {/* Radial Glow */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[400px] h-[400px] md:w-[800px] md:h-[800px] bg-indigo-600/20 rounded-full blur-[80px] md:blur-[120px] pointer-events-none md:mix-blend-screen" />
       </div>
 
       <div className="relative z-10 w-full max-w-5xl px-6 mx-auto flex flex-col items-center text-center mt-12 md:mt-auto">

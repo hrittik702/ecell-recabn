@@ -57,6 +57,8 @@ const Events = () => {
                     <img 
                       src={event.image} 
                       alt={event.title} 
+                      width="800"
+                      height="500"
                       loading="lazy"
                       decoding="async"
                       className="w-full h-full object-cover opacity-90 transition-transform duration-700 ease-smooth group-hover:scale-105" 

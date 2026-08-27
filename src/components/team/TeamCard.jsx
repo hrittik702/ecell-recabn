@@ -43,6 +43,8 @@ const TeamCard = memo(({ member, isAlumni = false }) => {
           <img
             src={member.image}
             alt={`Portrait of ${member.name}`}
+            width="400"
+            height="500"
             loading="lazy"
             decoding="async"
             className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-[1.03]"
