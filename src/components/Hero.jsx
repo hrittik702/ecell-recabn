@@ -75,14 +75,9 @@ const Hero = () => {
     <section ref={containerRef} id="home" className="relative min-h-screen flex flex-col items-center justify-end pt-24 pb-10 md:pb-14 overflow-hidden md:[perspective:1000px]">
       
       {/* Parallax Background Asset */}
-      <div className="hero-bg absolute inset-0 z-0 overflow-hidden bg-charcoal dark:bg-transparent">
-        {/* Premium Layered Gradient Overlay (Light Mode Only) */}
-        <div 
-          className="absolute inset-0 dark:hidden"
-          style={{ background: 'linear-gradient(180deg, rgba(8,12,24,0.18) 0%, rgba(8,12,24,0.22) 35%, rgba(8,12,24,0.45) 100%)' }}
-        />
-        {/* Subtle bottom gradient to blend into next section in dark mode */}
-        <div className="hidden dark:block absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-dark-bg/90" />
+      <div className="hero-bg absolute inset-0 z-0 overflow-hidden bg-transparent">
+        {/* Subtle bottom gradient to blend into next section */}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-dark-bg/90" />
       </div>
 
       <div className="relative z-10 w-full max-w-5xl px-6 mx-auto flex flex-col items-center text-center mt-auto">
