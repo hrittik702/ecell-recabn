@@ -61,13 +61,9 @@ const Hero = () => {
     tl.from('.hero-title-line', 
       { y: 25, opacity: 0, duration: 0.5, stagger: 0.1, ease: 'power2.out' }
     )
-    .from('.hero-subtext', 
-      { y: 15, opacity: 0, duration: 0.5, ease: 'power2.out' }, 
-      '-=0.3'
-    )
     .from('.hero-actions', 
       { y: 15, opacity: 0, duration: 0.4, ease: 'power2.out' }, 
-      '-=0.3'
+      '-=0.2'
     )
     .from('.hero-stats', 
       { y: 20, opacity: 0, duration: 0.5, ease: 'power2.out' }, 
@@ -76,7 +72,7 @@ const Hero = () => {
   }, { scope: containerRef });
 
   return (
-    <section ref={containerRef} id="home" className="relative min-h-screen flex flex-col items-center justify-end pt-32 pb-24 md:pb-32 overflow-hidden md:[perspective:1000px]">
+    <section ref={containerRef} id="home" className="relative min-h-screen flex flex-col items-center justify-end pt-24 pb-10 md:pb-14 overflow-hidden md:[perspective:1000px]">
       
       {/* Parallax Background Asset */}
       <div className="hero-bg absolute inset-0 z-0 overflow-hidden bg-charcoal dark:bg-transparent">
@@ -89,34 +85,26 @@ const Hero = () => {
         <div className="hidden dark:block absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-dark-bg/90" />
       </div>
 
-      <div className="relative z-10 w-full max-w-5xl px-6 mx-auto flex flex-col items-center text-center mt-12 md:mt-auto">
+      <div className="relative z-10 w-full max-w-5xl px-6 mx-auto flex flex-col items-center text-center mt-auto">
         
         {/* Premium Typography Headline */}
         <h1 
-          className="font-display font-bold text-5xl sm:text-6xl md:text-7xl lg:text-[6rem] leading-[1.1] tracking-tight text-white mb-8 max-w-4xl md:[transform-style:preserve-3d]"
+          className="font-display font-bold text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] xl:text-[6rem] leading-[1.1] tracking-tight text-white mb-8 md:mb-10 max-w-5xl md:[transform-style:preserve-3d]"
           style={{ textShadow: '0 2px 10px rgba(0,0,0,0.25)' }}
         >
-          <div className="hero-title-line">Vichar Aakar</div>
+          <div className="hero-title-line">Giving Ideas</div>
           <div className="hero-title-line text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 drop-shadow-sm">
-            Sakar Bazar
+            The Power To Grow
           </div>
         </h1>
 
-        {/* Refined Subtext */}
-        <p 
-          className="hero-subtext text-lg md:text-xl text-gray-200 mb-12 font-medium max-w-[650px] mx-auto font-sans leading-relaxed text-balance"
-          style={{ textShadow: '0 2px 10px rgba(0,0,0,0.25)' }}
-        >
-          Fostering entrepreneurship and innovation at REC Ambedkar Nagar. Join the network of visionary students building the future.
-        </p>
-
         {/* CTA Buttons */}
-        <div className="hero-actions flex flex-col sm:flex-row items-center gap-4 mb-12 md:mb-20 w-full sm:w-auto">
+        <div className="hero-actions flex flex-col sm:flex-row items-center gap-4 mb-8 md:mb-12 w-full sm:w-auto">
           <a 
-            href="#about" 
+            href="#team" 
             className="w-full sm:w-auto px-8 py-4 rounded-xl bg-white text-gray-900 font-sans font-bold text-base hover:bg-gray-50 transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
           >
-            Discover More
+            Meet Team
             <ArrowRight size={18} className="ml-2 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
           </a>
           <a 
@@ -128,7 +116,7 @@ const Hero = () => {
         </div>
 
         {/* Animated Statistics */}
-        <div className="hero-stats grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-16 pt-12 border-t border-white/10 w-full max-w-4xl">
+        <div className="hero-stats grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-16 pt-8 md:pt-10 border-t border-white/10 w-full max-w-4xl">
           <StatCounter endValue={600} suffix="+" label="Colleges" delay={0.6} />
           <StatCounter endValue={104} suffix="" label="National Rank" delay={0.7} />
           <StatCounter endValue={5000} suffix="+" label="Students" delay={0.8} />
@@ -138,8 +126,8 @@ const Hero = () => {
       </div>
       
       {/* Scroll Indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce text-gray-500" aria-hidden="true">
-        <ChevronDown size={24} />
+      <div className="absolute bottom-3 md:bottom-4 left-1/2 -translate-x-1/2 animate-bounce text-gray-500" aria-hidden="true">
+        <ChevronDown size={20} />
       </div>
     </section>
   );
