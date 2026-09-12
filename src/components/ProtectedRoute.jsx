@@ -1,6 +1,7 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { isAdmin } from '../utils/auth';
 
 const ProtectedRoute = ({ children, requireAdmin }) => {
   const { currentUser, userData, loading } = useAuth();
@@ -18,7 +19,7 @@ const ProtectedRoute = ({ children, requireAdmin }) => {
     return <Navigate to="/login" replace />;
   }
 
-  if (requireAdmin && userData?.role !== 'admin') {
+  if (requireAdmin && !isAdmin(userData)) {
     // Requires admin but user is not admin, redirect to profile
     return <Navigate to="/profile" replace />;
   }
@@ -27,3 +28,4 @@ const ProtectedRoute = ({ children, requireAdmin }) => {
 };
 
 export default ProtectedRoute;
+

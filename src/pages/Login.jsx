@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase/firebase';
+import { useAuth } from '../context/AuthContext';
 import { LogIn } from 'lucide-react';
 
 const Login = () => {
@@ -10,6 +11,13 @@ const Login = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { currentUser, loading: authLoading } = useAuth();
+
+  useEffect(() => {
+    if (!authLoading && currentUser) {
+      navigate('/profile', { replace: true });
+    }
+  }, [currentUser, authLoading, navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -18,12 +26,10 @@ const Login = () => {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      // Wait a moment for auth state to propagate (optional, just to be safe before redirect)
-      navigate('/profile'); // We will handle redirection based on role later
+      // Once auth state resolves, the reactive useEffect will cleanly redirect to /profile
     } catch (err) {
       console.error("Login error details:", err);
       setError(`Login failed: ${err.message || 'Please check your credentials.'}`);
-    } finally {
       setLoading(false);
     }
   };
@@ -40,17 +46,18 @@ const Login = () => {
         </div>
 
         {error && (
-          <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-4 rounded-xl text-sm mb-6 text-center border border-red-100 dark:border-red-900/30 font-medium">
+          <div role="alert" className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-4 rounded-xl text-sm mb-6 text-center border border-red-100 dark:border-red-900/30 font-medium">
             {error}
           </div>
         )}
 
         <form onSubmit={handleLogin} className="space-y-6">
           <div>
-            <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 font-sans">
+            <label htmlFor="login-email" className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 font-sans">
               Email Address
             </label>
             <input
+              id="login-email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -61,10 +68,11 @@ const Login = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 font-sans">
+            <label htmlFor="login-password" className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 font-sans">
               Password
             </label>
             <input
+              id="login-password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -77,7 +85,7 @@ const Login = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-sans font-bold py-4 rounded-xl transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed shadow-glow hover:shadow-glow-strong mt-2"
+            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-sans font-bold py-4 rounded-xl transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed shadow-glow hover:shadow-glow-strong mt-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
           >
             {loading ? 'Signing in...' : 'Sign In'}
           </button>

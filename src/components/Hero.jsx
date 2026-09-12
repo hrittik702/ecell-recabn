@@ -58,12 +58,8 @@ const Hero = () => {
     });
 
     // Fast progressive entrance (allows immediate browser paint for instant LCP)
-    tl.from('.hero-badge', 
-      { y: 15, opacity: 0, duration: 0.4, ease: 'power2.out' }
-    )
-    .from('.hero-title-line', 
-      { y: 25, opacity: 0, duration: 0.5, stagger: 0.1, ease: 'power2.out' },
-      '-=0.2'
+    tl.from('.hero-title-line', 
+      { y: 25, opacity: 0, duration: 0.5, stagger: 0.1, ease: 'power2.out' }
     )
     .from('.hero-subtext', 
       { y: 15, opacity: 0, duration: 0.5, ease: 'power2.out' }, 
@@ -118,14 +114,14 @@ const Hero = () => {
         <div className="hero-actions flex flex-col sm:flex-row items-center gap-4 mb-12 md:mb-20 w-full sm:w-auto">
           <a 
             href="#about" 
-            className="w-full sm:w-auto px-8 py-4 rounded-xl bg-white text-gray-900 font-sans font-bold text-base hover:bg-gray-50 transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center group"
+            className="w-full sm:w-auto px-8 py-4 rounded-xl bg-white text-gray-900 font-sans font-bold text-base hover:bg-gray-50 transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
           >
             Discover More
-            <ArrowRight size={18} className="ml-2 group-hover:translate-x-1 transition-transform" />
+            <ArrowRight size={18} className="ml-2 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
           </a>
           <a 
             href="#timeline" 
-            className="w-full sm:w-auto px-8 py-4 rounded-xl bg-white/10 md:backdrop-blur-md border border-white text-white font-sans font-bold text-base hover:bg-white/20 transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-0.5 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center"
+            className="w-full sm:w-auto px-8 py-4 rounded-xl bg-white/10 md:backdrop-blur-md border border-white text-white font-sans font-bold text-base hover:bg-white/20 transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-0.5 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
           >
             Explore Timeline
           </a>
@@ -142,7 +138,7 @@ const Hero = () => {
       </div>
       
       {/* Scroll Indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce text-gray-500">
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce text-gray-500" aria-hidden="true">
         <ChevronDown size={24} />
       </div>
     </section>

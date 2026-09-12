@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { UserPlus, Edit2, X } from 'lucide-react';
 
 const MemberFormDrawer = ({
@@ -12,12 +12,27 @@ const MemberFormDrawer = ({
   handleAddMember,
   isSubmitting
 }) => {
+  // Close drawer on Escape key press
+  useEffect(() => {
+    if (!isAddingMember) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setIsAddingMember(false);
+        setEditingMemberId(null);
+        setFormData({ name: '', email: '', password: '', role: '', year: '', status: 'active' });
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isAddingMember, setIsAddingMember, setEditingMemberId, setFormData]);
+
   return (
     <div 
+      aria-hidden={!isAddingMember}
       className={`transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] overflow-hidden shrink-0 ${
         isAddingMember
           ? 'max-h-[800px] lg:max-h-none opacity-100 lg:w-[350px] xl:w-[400px]'
-          : 'max-h-0 lg:max-h-none lg:w-0 opacity-0'
+          : 'max-h-0 lg:max-h-none lg:w-0 opacity-0 pointer-events-none'
       }`}
     >
       <div className="bg-white/60 dark:bg-dark-card/40 backdrop-blur-3xl rounded-3xl shadow-premium dark:shadow-premium-dark border border-white/60 dark:border-white/10 p-6 h-fit w-full lg:w-[350px] xl:w-[400px]">
@@ -32,12 +47,13 @@ const MemberFormDrawer = ({
           </div>
           <button 
             type="button"
+            aria-label="Close member form"
             onClick={() => {
               setIsAddingMember(false);
               setEditingMemberId(null);
               setFormData({ name: '', email: '', password: '', role: '', year: '', status: 'active' });
             }} 
-            className="text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors"
+            className="text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500 rounded-lg p-1"
           >
             <X size={18} />
           </button>
@@ -45,8 +61,9 @@ const MemberFormDrawer = ({
         
         <form onSubmit={handleAddMember} className="space-y-4">
           <div>
-            <label className="block text-xs font-bold mb-1.5 text-gray-700 dark:text-gray-300 font-sans">Full Name</label>
+            <label htmlFor="member-name" className="block text-xs font-bold mb-1.5 text-gray-700 dark:text-gray-300 font-sans">Full Name</label>
             <input
+              id="member-name"
               type="text"
               name="name"
               value={formData.name}
@@ -57,8 +74,9 @@ const MemberFormDrawer = ({
           </div>
           
           <div>
-            <label className="block text-xs font-bold mb-1.5 text-gray-700 dark:text-gray-300 font-sans">Email Address</label>
+            <label htmlFor="member-email" className="block text-xs font-bold mb-1.5 text-gray-700 dark:text-gray-300 font-sans">Email Address</label>
             <input
+              id="member-email"
               type="email"
               name="email"
               value={formData.email}
@@ -71,8 +89,9 @@ const MemberFormDrawer = ({
 
           {!editingMemberId && (
             <div>
-              <label className="block text-xs font-bold mb-1.5 text-gray-700 dark:text-gray-300 font-sans">Initial Password</label>
+              <label htmlFor="member-password" className="block text-xs font-bold mb-1.5 text-gray-700 dark:text-gray-300 font-sans">Initial Password</label>
               <input
+                id="member-password"
                 type="text"
                 name="password"
                 value={formData.password}
@@ -85,8 +104,9 @@ const MemberFormDrawer = ({
           )}
 
           <div>
-            <label className="block text-xs font-bold mb-1.5 text-gray-700 dark:text-gray-300 font-sans">Role / Designation</label>
+            <label htmlFor="member-role" className="block text-xs font-bold mb-1.5 text-gray-700 dark:text-gray-300 font-sans">Role / Designation</label>
             <input
+              id="member-role"
               type="text"
               name="role"
               value={formData.role}
@@ -98,8 +118,9 @@ const MemberFormDrawer = ({
           </div>
 
           <div>
-            <label className="block text-xs font-bold mb-1.5 text-gray-700 dark:text-gray-300 font-sans">Academic Year / Status</label>
+            <label htmlFor="member-year" className="block text-xs font-bold mb-1.5 text-gray-700 dark:text-gray-300 font-sans">Academic Year / Status</label>
             <select
+              id="member-year"
               name="year"
               value={formData.year}
               onChange={handleChange}

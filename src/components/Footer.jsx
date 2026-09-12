@@ -1,7 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Mail, MapPin, CheckCircle2, ArrowRight, Instagram, Linkedin, Twitter, Zap } from 'lucide-react';
 import gsap from 'gsap';
-import { useGSAP } from '@gsap/react';
 import toast from 'react-hot-toast';
 
 const Footer = () => {
@@ -10,26 +9,51 @@ const Footer = () => {
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
-  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const [formData, setFormData] = useState({ name: '', email: '', message: '', botcheck: '' });
 
-  useGSAP(() => {
-    gsap.fromTo('.contact-header',
-      { y: 20, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out', scrollTrigger: { trigger: containerRef.current, start: 'top 85%' } }
-    );
 
-    gsap.fromTo('.contact-card',
-      { y: 30, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.8, stagger: 0.15, ease: 'power3.out', scrollTrigger: { trigger: '.contact-header', start: 'top 80%' } }
-    );
-  }, { scope: containerRef });
+
+  const lastSubmitRef = useRef(0);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitting(true);
     setSubmitError('');
 
+    // Honeypot bot protection
+    if (formData.botcheck) {
+      // Silently ignore bot submission
+      setSubmitted(true);
+      return;
+    }
+
+    // Input validation
+    const trimmedName = (formData.name || '').trim();
+    const trimmedEmail = (formData.email || '').trim();
+    const trimmedMessage = (formData.message || '').trim();
+
+    if (!trimmedName || !trimmedEmail || !trimmedMessage) {
+      toast.error('Please fill out all required fields.');
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(trimmedEmail)) {
+      toast.error('Please enter a valid email address.');
+      return;
+    }
+
+    // Rate limiting: 10 second cooldown between submissions
+    const now = Date.now();
+    if (now - lastSubmitRef.current < 10000) {
+      toast.error('Please wait a few seconds before sending another message.');
+      return;
+    }
+    lastSubmitRef.current = now;
+
+    setIsSubmitting(true);
+
     try {
+      const accessKey = import.meta.env.VITE_WEB3FORMS_KEY || "095a87c3-62a5-493b-87b1-b8549b53b1ce";
       const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         headers: {
@@ -37,10 +61,12 @@ const Footer = () => {
           Accept: "application/json",
         },
         body: JSON.stringify({
-          access_key: "095a87c3-62a5-493b-87b1-b8549b53b1ce",
-          name: formData.name,
-          email: formData.email,
-          message: formData.message,
+          access_key: accessKey,
+          name: trimmedName,
+          email: trimmedEmail,
+          message: trimmedMessage,
+          from_name: "E-Cell RECABN Web Portal",
+          subject: `New message from ${trimmedName} via E-Cell RECABN Website`,
         }),
       });
       
@@ -49,7 +75,7 @@ const Footer = () => {
       if (result.success) {
         setSubmitted(true);
         toast.success("Message sent successfully!");
-        setFormData({ name: '', email: '', message: '' });
+        setFormData({ name: '', email: '', message: '', botcheck: '' });
         
         // Animate Success State
         setTimeout(() => {
@@ -144,41 +170,62 @@ const Footer = () => {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="font-sans space-y-3">
+                {/* Honeypot spam/bot protection - hidden from legitimate human users */}
+                <input
+                  type="checkbox"
+                  name="botcheck"
+                  checked={Boolean(formData.botcheck)}
+                  onChange={(e) => setFormData({ ...formData, botcheck: e.target.checked })}
+                  className="hidden"
+                  style={{ display: 'none' }}
+                  tabIndex={-1}
+                  autoComplete="off"
+                />
                 <div className="grid grid-cols-2 gap-3">
-                  <input 
-                    id="contact-name"
-                    type="text" 
-                    placeholder="Name" 
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
-                    required 
-                  />
-                  <input 
-                    id="contact-email"
-                    type="email" 
-                    placeholder="Email" 
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
-                    required 
-                  />
+                  <div>
+                    <label htmlFor="contact-name" className="sr-only">Your Name</label>
+                    <input 
+                      id="contact-name"
+                      type="text" 
+                      placeholder="Name" 
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                      required 
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="contact-email" className="sr-only">Your Email</label>
+                    <input 
+                      id="contact-email"
+                      type="email" 
+                      placeholder="Email" 
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                      required 
+                    />
+                  </div>
                 </div>
                 <div className="flex gap-3">
-                  <textarea 
-                    id="contact-message"
-                    placeholder="Your message..." 
-                    value={formData.message}
-                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                    className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all resize-none h-[80px]"
-                    required
-                  ></textarea>
+                  <div className="w-full">
+                    <label htmlFor="contact-message" className="sr-only">Your Message</label>
+                    <textarea 
+                      id="contact-message"
+                      placeholder="Your message..." 
+                      value={formData.message}
+                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all resize-none h-[80px]"
+                      required
+                    ></textarea>
+                  </div>
                   <button 
                     type="submit" 
                     disabled={isSubmitting}
-                    className="px-5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-70 text-white rounded-lg font-sans font-bold text-xs tracking-wide flex items-center justify-center transition-all duration-300 shrink-0 group"
+                    aria-label="Send message"
+                    className="px-5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-70 text-white rounded-lg font-sans font-bold text-xs tracking-wide flex items-center justify-center transition-all duration-300 shrink-0 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
                   >
-                    <ArrowRight size={18} className="group-hover:translate-x-0.5 transition-transform" />
+                    <ArrowRight size={18} className="group-hover:translate-x-0.5 transition-transform" aria-hidden="true" />
                   </button>
                 </div>
                 {submitError && (

@@ -23,6 +23,17 @@ const Navbar = () => {
   const navigate = useNavigate();
   const isHomePage = location.pathname === '/';
 
+  // Close mobile menu on Escape key press
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && mobileMenuOpen) {
+        setMobileMenuOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [mobileMenuOpen]);
+
   // Scroll handler for seamless transition
   useEffect(() => {
     let ticking = false;
@@ -78,6 +89,7 @@ const Navbar = () => {
 
 
   useGSAP(() => {
+    if (!navRef.current) return;
     gsap.fromTo(navRef.current, {
       y: -20,
       opacity: 0,
@@ -87,7 +99,7 @@ const Navbar = () => {
       duration: 0.8,
       ease: 'power3.out',
     });
-  });
+  }, { scope: navRef, dependencies: [] });
 
   return (
     <nav 

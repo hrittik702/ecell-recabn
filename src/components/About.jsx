@@ -117,9 +117,18 @@ const About = () => {
           <div className="about-card md:col-span-12 bg-white/60 dark:bg-dark-card/40 backdrop-blur-3xl border border-white/60 dark:border-white/10 rounded-3xl p-6 md:p-8 shadow-premium dark:shadow-premium-dark transition-all duration-300 hover:shadow-premium-hover dark:hover:shadow-premium-dark-hover">
             <div className="flex flex-col md:flex-row gap-8 items-center">
               <div 
-                className="w-full md:w-1/2 flex-1 rounded-2xl overflow-hidden shadow-sm border border-gray-100 dark:border-white/5 aspect-video relative group/video cursor-pointer bg-black/90"
+                role="button"
+                tabIndex={0}
+                aria-label="Play E-Cell Freshie Intro Task video"
+                className="w-full md:w-1/2 flex-1 rounded-2xl overflow-hidden shadow-sm border border-gray-100 dark:border-white/5 aspect-video relative group/video cursor-pointer bg-black/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
                 onClick={() => {
                   if (!isPlaying) setIsPlaying(true);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    if (!isPlaying) setIsPlaying(true);
+                  }
                 }}
               >
                 {isPlaying ? (
@@ -134,14 +143,13 @@ const About = () => {
                 ) : (
                   <>
                     <img
-                      src="https://img.youtube.com/vi/VtlmAhrgK24/maxresdefault.jpg"
+                      src="https://img.youtube.com/vi/VtlmAhrgK24/hqdefault.jpg"
                       alt="E-Cell REC ABN Video Preview"
                       width="640"
                       height="360"
                       loading="lazy"
                       decoding="async"
                       className="absolute inset-0 w-full h-full object-cover opacity-80 group-hover/video:opacity-90 group-hover/video:scale-105 transition-all duration-500"
-                      onError={(e) => { e.currentTarget.src = "https://img.youtube.com/vi/VtlmAhrgK24/hqdefault.jpg"; }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/20 flex flex-col items-center justify-center p-4 text-center z-10">
                       <div className="w-16 h-16 rounded-full bg-indigo-600/90 text-white flex items-center justify-center shadow-glow group-hover/video:scale-110 group-hover/video:bg-indigo-500 transition-all duration-300 mb-3 border border-white/20">

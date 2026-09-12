@@ -23,8 +23,9 @@ const TaskFormDrawer = ({
       
       <form onSubmit={handleAddTask} className="space-y-4">
         <div>
-          <label className="block text-xs font-bold mb-1.5 text-gray-700 dark:text-gray-300 font-sans">Task Title</label>
+          <label htmlFor="task-title" className="block text-xs font-bold mb-1.5 text-gray-700 dark:text-gray-300 font-sans">Task Title</label>
           <input
+            id="task-title"
             type="text"
             name="title"
             value={taskData.title}
@@ -36,8 +37,9 @@ const TaskFormDrawer = ({
         </div>
         
         <div>
-          <label className="block text-xs font-bold mb-1.5 text-gray-700 dark:text-gray-300 font-sans">Description</label>
+          <label htmlFor="task-description" className="block text-xs font-bold mb-1.5 text-gray-700 dark:text-gray-300 font-sans">Description</label>
           <textarea
+            id="task-description"
             name="description"
             value={taskData.description}
             onChange={handleTaskChange}
@@ -49,10 +51,21 @@ const TaskFormDrawer = ({
         </div>
 
         <div className="relative">
-          <label className="block text-xs font-bold mb-1.5 text-gray-700 dark:text-gray-300 font-sans">Assign To</label>
-          <div 
-            className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-white/10 bg-white/50 dark:bg-dark-surface/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none transition-all backdrop-blur-sm cursor-pointer flex justify-between items-center"
+          <label id="assign-to-label" className="block text-xs font-bold mb-1.5 text-gray-700 dark:text-gray-300 font-sans">Assign To</label>
+          <button 
+            type="button"
+            role="combobox"
+            aria-expanded={isDropdownOpen}
+            aria-haspopup="listbox"
+            aria-labelledby="assign-to-label"
+            className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-white/10 bg-white/50 dark:bg-dark-surface/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none transition-all backdrop-blur-sm cursor-pointer flex justify-between items-center text-left"
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            onKeyDown={(e) => {
+              if (e.key === 'Escape' && isDropdownOpen) {
+                e.preventDefault();
+                setIsDropdownOpen(false);
+              }
+            }}
           >
             <span className={taskData.assignedTo ? 'text-gray-900 dark:text-white font-medium' : 'text-gray-500 dark:text-gray-400'}>
               {taskData.assignedTo 
@@ -63,17 +76,31 @@ const TaskFormDrawer = ({
                 : 'Select a member...'}
             </span>
             <ChevronDown size={16} className={`transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`} />
-          </div>
+          </button>
           
           {isDropdownOpen && (
-            <div className="absolute z-50 w-full mt-2 bg-white/95 dark:bg-[#1a1c23]/95 backdrop-blur-xl border border-gray-200/50 dark:border-white/10 rounded-xl shadow-2xl max-h-56 overflow-y-auto custom-scrollbar">
+            <div 
+              role="listbox"
+              aria-labelledby="assign-to-label"
+              className="absolute z-50 w-full mt-2 bg-white/95 dark:bg-[#1a1c23]/95 backdrop-blur-xl border border-gray-200/50 dark:border-white/10 rounded-xl shadow-2xl max-h-56 overflow-y-auto custom-scrollbar"
+            >
               {filteredMembers.filter(m => parseInt(m.year || 0) < 4).map(member => (
                 <div 
                   key={member.id}
-                  className="px-4 py-3 text-sm hover:bg-gray-50/80 dark:hover:bg-white/5 cursor-pointer text-gray-800 dark:text-gray-200 border-b border-gray-100/50 dark:border-white/5 last:border-0 transition-colors flex items-center gap-3"
+                  role="option"
+                  tabIndex={0}
+                  aria-selected={taskData.assignedTo === member.id}
+                  className="px-4 py-3 text-sm hover:bg-gray-50/80 dark:hover:bg-white/5 cursor-pointer text-gray-800 dark:text-gray-200 border-b border-gray-100/50 dark:border-white/5 last:border-0 transition-colors flex items-center gap-3 focus:outline-none focus:bg-indigo-50 dark:focus:bg-indigo-900/30"
                   onClick={() => {
                     setTaskData(prev => ({ ...prev, assignedTo: member.id }));
                     setIsDropdownOpen(false);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      setTaskData(prev => ({ ...prev, assignedTo: member.id }));
+                      setIsDropdownOpen(false);
+                    }
                   }}
                 >
                   <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-100 dark:bg-dark-surface shrink-0 border border-gray-200/50 dark:border-white/10 flex items-center justify-center">
@@ -95,8 +122,9 @@ const TaskFormDrawer = ({
         </div>
 
         <div>
-          <label className="block text-xs font-bold mb-1.5 text-gray-700 dark:text-gray-300 font-sans">Deadline</label>
+          <label htmlFor="task-deadline" className="block text-xs font-bold mb-1.5 text-gray-700 dark:text-gray-300 font-sans">Deadline</label>
           <input
+            id="task-deadline"
             type="date"
             name="deadline"
             value={taskData.deadline}

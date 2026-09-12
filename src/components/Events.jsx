@@ -47,7 +47,7 @@ const Events = () => {
               <CardWrapper 
                 key={event.id} 
                 {...linkProps} 
-                className={`event-card relative block rounded-3xl overflow-hidden group shadow-premium dark:shadow-premium-dark hover:shadow-premium-hover dark:hover:shadow-premium-dark-hover transition-all duration-500 ease-smooth hover:-translate-y-1 bg-white/60 dark:bg-dark-card/40 backdrop-blur-3xl border border-white/50 dark:border-white/10 ${
+                className={`event-card relative block rounded-3xl overflow-hidden group shadow-premium dark:shadow-premium-dark hover:shadow-premium-hover dark:hover:shadow-premium-dark-hover transition-all duration-500 ease-smooth hover:-translate-y-1 bg-white/60 dark:bg-dark-card/40 backdrop-blur-3xl border border-white/50 dark:border-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 ${
                   isLarge ? 'md:col-span-12 min-h-[400px] md:min-h-[500px]' : 'md:col-span-6 min-h-[300px]'
                 }`}
               >

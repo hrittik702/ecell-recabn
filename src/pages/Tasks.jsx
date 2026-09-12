@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { ExternalLink, CheckCircle2, AlertCircle, Calendar, User, Target } from 'lucide-react';
 import { tasksData } from '../data/tasksData';
 import { getAllTasks } from '../firebase/db';
+import { useAuth } from '../context/AuthContext';
 
 const TABS = ['Ignite Propel', 'Comprehensive'];
 
 const Tasks = () => {
+  const { currentUser, loading: authLoading } = useAuth();
   const [activeTab, setActiveTab] = useState('Ignite Propel');
   const [allTasks, setAllTasks] = useState(tasksData);
   const [loading, setLoading] = useState(false);
@@ -13,13 +15,35 @@ const Tasks = () => {
   // Ensure we start at the top of the page when navigating here
   useEffect(() => {
     window.scrollTo(0, 0);
+  }, []);
 
+  useEffect(() => {
+    // If auth state is still resolving, keep curated static tasks displayed
+    // without firing an unauthenticated query
+    if (authLoading) {
+      return;
+    }
+
+    // Unauthenticated visitors: display curated static task catalog.
+    // Do NOT attempt authenticated Firestore query (avoids predictable permission-denied errors).
+    if (!currentUser) {
+      setAllTasks(tasksData);
+      setLoading(false);
+      return;
+    }
+
+    // Authenticated members and admins: load live Firestore tasks
     let isMounted = true;
     const fetchLiveTasks = async () => {
       try {
         setLoading(true);
         const remote = await getAllTasks();
-        if (!isMounted || !remote || remote.length === 0) return;
+        if (!isMounted) return;
+
+        if (!remote || remote.length === 0) {
+          setAllTasks(tasksData);
+          return;
+        }
 
         // Map and merge remote tasks with local catalog
         const formattedRemote = remote.map(t => ({
@@ -30,11 +54,22 @@ const Tasks = () => {
 
         setAllTasks(prev => {
           const remoteIds = new Set(formattedRemote.map(r => r.id));
-          const filteredDefaults = prev.filter(d => !remoteIds.has(d.id));
+          const filteredDefaults = tasksData.filter(d => !remoteIds.has(d.id));
           return [...formattedRemote, ...filteredDefaults];
         });
       } catch (err) {
-        console.warn("Using default curated task list:", err);
+        // Provide informative diagnostics for authenticated failures
+        if (err?.code === 'permission-denied') {
+          console.error("Firestore permission denied: Authenticated user cannot read tasks collection.", err);
+        } else if (err?.code === 'unavailable') {
+          console.error("Firestore unavailable: Network connection issue or offline.", err);
+        } else {
+          console.error("Error fetching live tasks from Firestore for authenticated user:", err);
+        }
+        // Preserve static fallback
+        if (isMounted) {
+          setAllTasks(tasksData);
+        }
       } finally {
         if (isMounted) setLoading(false);
       }
@@ -42,7 +77,7 @@ const Tasks = () => {
 
     fetchLiveTasks();
     return () => { isMounted = false; };
-  }, []);
+  }, [currentUser, authLoading]);
 
   const filteredTasks = allTasks.filter(task => (task.category || 'Ignite Propel') === activeTab);
 
@@ -64,12 +99,15 @@ const Tasks = () => {
 
       {/* Tabs */}
       <div className="flex justify-center mb-8 md:mb-12">
-        <div className="inline-flex bg-white/60 dark:bg-[#1a1a1a]/40 backdrop-blur-xl p-1 md:p-1.5 rounded-full border border-gray-200/50 dark:border-white/10 shadow-sm w-full max-w-sm sm:w-auto">
+        <div role="tablist" aria-label="Task category tabs" className="inline-flex bg-white/60 dark:bg-[#1a1a1a]/40 backdrop-blur-xl p-1 md:p-1.5 rounded-full border border-gray-200/50 dark:border-white/10 shadow-sm w-full max-w-sm sm:w-auto">
           {TABS.map((tab) => (
             <button
               key={tab}
+              type="button"
+              role="tab"
+              aria-selected={activeTab === tab}
               onClick={() => setActiveTab(tab)}
-              className={`flex-1 sm:flex-none px-4 sm:px-6 py-2 md:py-2.5 rounded-full font-sans font-semibold text-xs sm:text-sm transition-all duration-300 ${
+              className={`flex-1 sm:flex-none px-4 sm:px-6 py-2 md:py-2.5 rounded-full font-sans font-semibold text-xs sm:text-sm transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 ${
                 activeTab === tab
                   ? 'bg-indigo-600 text-white shadow-md'
                   : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100/50 dark:hover:bg-white/5'
@@ -106,10 +144,11 @@ const Tasks = () => {
                   href={task.link} 
                   target="_blank" 
                   rel="noreferrer" 
-                  className="p-2 rounded-full bg-gray-50 dark:bg-white/5 text-gray-500 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-white hover:bg-indigo-50 dark:hover:bg-white/10 transition-colors border border-gray-100 dark:border-white/10 shadow-sm active:scale-95"
+                  className="p-2 rounded-full bg-gray-50 dark:bg-white/5 text-gray-500 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-white hover:bg-indigo-50 dark:hover:bg-white/10 transition-colors border border-gray-100 dark:border-white/10 shadow-sm active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+                  aria-label={`View ${task.title} on NEC Portal`}
                   title="View on NEC Portal"
                 >
-                  <ExternalLink size={16} className="md:w-[18px] md:h-[18px]" />
+                  <ExternalLink size={16} className="md:w-[18px] md:h-[18px]" aria-hidden="true" />
                 </a>
               </div>
 

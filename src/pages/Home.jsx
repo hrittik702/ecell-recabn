@@ -7,13 +7,13 @@ import Team from '../components/Team';
 
 const Home = () => {
   return (
-    <main className="relative z-10">
+    <div className="relative z-10">
       <Hero />
       <About />
       <Events />
       <Timeline />
       <Team />
-    </main>
+    </div>
   );
 };
 

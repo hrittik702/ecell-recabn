@@ -7,11 +7,14 @@ import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { LogOut, Save, User, Camera, X, ClipboardList, CheckCircle, Edit2, Upload, Instagram, Linkedin, Key } from 'lucide-react';
 import Cropper from 'react-easy-crop';
-import { getCroppedImg } from '../utils/cropImage';
+import { getCroppedImg, getCroppedBlob } from '../utils/cropImage';
 import { normalizeLinkedInUrl, normalizeInstagramUrl } from '../utils/socialLinks';
+import { isAdmin as checkIsAdmin } from '../utils/auth';
+import { uploadUserAvatar } from '../firebase/storage';
 
 const Profile = () => {
   const { currentUser, userData, loading: authLoading, updateUserData } = useAuth();
+  const isAdmin = checkIsAdmin(userData);
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -19,7 +22,7 @@ const Profile = () => {
   const [passwordForm, setPasswordForm] = useState({ newPassword: '', confirmPassword: '' });
   const [tasks, setTasks] = useState([]);
   const [loadingTasks, setLoadingTasks] = useState(false);
-  
+
   const [formData, setFormData] = useState({
     name: '',
     year: '',
@@ -37,6 +40,20 @@ const Profile = () => {
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
   const [isCropping, setIsCropping] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+
+  // Close crop modal on Escape key press
+  useEffect(() => {
+    if (!isCropping) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && !isUploading) {
+        setIsCropping(false);
+        setImageSrc(null);
+        if (fileInputRef.current) fileInputRef.current.value = '';
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isCropping, isUploading]);
 
   useEffect(() => {
     if (userData) {
@@ -58,6 +75,7 @@ const Profile = () => {
   }, [currentUser]);
 
   const fetchTasks = async () => {
+    if (!currentUser?.uid) return;
     try {
       setLoadingTasks(true);
       const data = await getTasksForUser(currentUser.uid);
@@ -101,10 +119,15 @@ const Profile = () => {
     setIsSubmitting(true);
     try {
       const cleanedData = {
-        ...formData,
+        name: formData.name,
+        year: formData.year,
+        profileImage: formData.profileImage,
         linkedin: normalizeLinkedInUrl(formData.linkedin),
         instagram: normalizeInstagramUrl(formData.instagram)
       };
+      if (isAdmin && formData.role) {
+        cleanedData.role = formData.role;
+      }
       await updateUserProfile(currentUser.uid, cleanedData);
       if (updateUserData) updateUserData(cleanedData);
       setFormData(cleanedData);
@@ -145,15 +168,17 @@ const Profile = () => {
   const handleCropAndUpload = async () => {
     try {
       setIsUploading(true);
-      // We now get a highly compressed Base64 string back (approx 15-20KB)
-      const base64Image = await getCroppedImg(imageSrc, croppedAreaPixels);
+      // Produce compressed binary JPEG Blob (512x512 retina avatar, quality 0.8)
+      const imageBlob = await getCroppedBlob(imageSrc, croppedAreaPixels);
       
-      // Save it directly into the Firestore database! 
-      // This completely bypasses the need for Firebase Storage.
-      await updateUserProfile(currentUser.uid, { profileImage: base64Image });
-      if (updateUserData) updateUserData({ profileImage: base64Image });
+      // Upload directly to Firebase Storage
+      const downloadUrl = await uploadUserAvatar(currentUser.uid, imageBlob);
       
-      setFormData(prev => ({ ...prev, profileImage: base64Image }));
+      // Save lightweight download URL in Firestore
+      await updateUserProfile(currentUser.uid, { profileImage: downloadUrl });
+      if (updateUserData) updateUserData({ profileImage: downloadUrl });
+      
+      setFormData(prev => ({ ...prev, profileImage: downloadUrl }));
       toast.success("Profile photo updated live!");
       
       setIsCropping(false);
@@ -162,8 +187,8 @@ const Profile = () => {
       if (fileInputRef.current) fileInputRef.current.value = '';
       
     } catch (e) {
-      console.error(e);
-      toast.error("Failed to process image: " + e.message);
+      console.error("Failed to upload avatar to Firebase Storage:", e);
+      toast.error("Failed to process and upload image: " + e.message);
       setIsUploading(false);
     }
   };
@@ -199,8 +224,6 @@ const Profile = () => {
   if (authLoading) {
     return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
   }
-
-  const isAdmin = userData?.role === 'admin' || userData?.systemRole === 'admin';
 
   return (
     <div className="min-h-screen pt-28 pb-12 px-4 max-w-7xl mx-auto relative z-10">
@@ -315,14 +338,16 @@ const Profile = () => {
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold mb-1.5 text-gray-700 dark:text-gray-300 font-sans uppercase tracking-wide">E-Cell Role</label>
+                      <label className="block text-xs font-bold mb-1.5 text-gray-700 dark:text-gray-300 font-sans uppercase tracking-wide">
+                        E-Cell Role {!isAdmin && '(Assigned by Admin)'}
+                      </label>
                       <input
                         type="text"
                         name="role"
                         value={formData.role}
                         onChange={handleChange}
                         required
-                        disabled={!isEditing}
+                        disabled={!isEditing || !isAdmin}
                         className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-white/10 bg-white/50 dark:bg-dark-surface/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none transition-all backdrop-blur-sm disabled:opacity-60 disabled:cursor-not-allowed"
                       />
                     </div>
@@ -561,7 +586,7 @@ const Profile = () => {
                       <div className="flex justify-between items-center pt-3 border-t border-gray-100 dark:border-white/10">
                         <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Deadline</span>
                         <span className="text-xs font-bold text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 px-2 py-1 rounded-md">
-                          {new Date(task.deadline).toLocaleDateString()}
+                          {task.deadline ? (isNaN(new Date(task.deadline).getTime()) ? task.deadline : new Date(task.deadline).toLocaleDateString()) : 'No deadline'}
                         </span>
                       </div>
                     </div>
@@ -576,13 +601,19 @@ const Profile = () => {
 
       {/* Crop Modal */}
       {isCropping && (
-        <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+        <div 
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="crop-modal-title"
+          className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+        >
           <div className="bg-white dark:bg-dark-card rounded-3xl overflow-hidden max-w-lg w-full shadow-2xl border border-white/10">
             <div className="p-4 border-b border-gray-100 dark:border-white/10 flex justify-between items-center bg-gray-50 dark:bg-dark-surface/50">
-              <h3 className="font-display font-bold text-xl text-gray-900 dark:text-white">Crop Photo</h3>
+              <h3 id="crop-modal-title" className="font-display font-bold text-xl text-gray-900 dark:text-white">Crop Photo</h3>
               <button 
                 onClick={() => { setIsCropping(false); setImageSrc(null); if (fileInputRef.current) fileInputRef.current.value = ''; }}
-                className="p-2 bg-gray-200/50 dark:bg-white/5 rounded-full hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
+                aria-label="Close crop dialog"
+                className="p-2 bg-gray-200/50 dark:bg-white/5 rounded-full hover:bg-gray-200 dark:hover:bg-white/10 transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500"
                 disabled={isUploading}
               >
                 <X size={20} className="text-gray-900 dark:text-white" />
@@ -603,14 +634,15 @@ const Profile = () => {
             </div>
             
             <div className="p-6 bg-gray-50 dark:bg-dark-surface/50">
-              <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 font-sans">Zoom</label>
+              <label htmlFor="crop-zoom" className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 font-sans">Zoom</label>
               <input
+                id="crop-zoom"
                 type="range"
                 value={zoom}
                 min={1}
                 max={3}
                 step={0.1}
-                aria-labelledby="Zoom"
+                aria-label="Zoom level"
                 onChange={(e) => setZoom(e.target.value)}
                 className="w-full accent-indigo-500 mb-6"
                 disabled={isUploading}

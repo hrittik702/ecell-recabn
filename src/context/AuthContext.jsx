@@ -2,20 +2,31 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth, db } from '../firebase/firebase';
 import { doc, getDoc } from 'firebase/firestore';
+import { isAdmin } from '../utils/auth';
 
-const AuthContext = createContext();
+const defaultAuthValue = {
+  currentUser: null,
+  userData: null,
+  loading: false,
+  isAdmin: false,
+  updateUserData: () => {}
+};
+
+export const AuthContext = createContext(defaultAuthValue);
 
 export function useAuth() {
-  return useContext(AuthContext);
+  const context = useContext(AuthContext);
+  return context || defaultAuthValue;
 }
 
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
-  const [userData, setUserData] = useState(null); // Firestore data (including role)
+  const [userData, setUserData] = useState(null); // Firestore data (including role & systemRole)
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      setLoading(true);
       setCurrentUser(user);
       
       if (user) {
@@ -26,12 +37,12 @@ export function AuthProvider({ children }) {
           if (docSnap.exists()) {
             setUserData(docSnap.data());
           } else {
-            // Document doesn't exist, might be a newly created user or admin without a doc yet
-            setUserData({ role: 'member' }); // Fallback
+            // Document doesn't exist, fallback to non-admin member
+            setUserData({ role: 'member', systemRole: 'member' });
           }
         } catch (error) {
           console.error("Error fetching user data:", error);
-          setUserData(null);
+          setUserData({ role: 'member', systemRole: 'member' });
         }
       } else {
         setUserData(null);
@@ -51,12 +62,14 @@ export function AuthProvider({ children }) {
     currentUser,
     userData,
     loading,
+    isAdmin: isAdmin(userData),
     updateUserData
   };
 
   return (
     <AuthContext.Provider value={value}>
-      {!loading && children}
+      {children}
     </AuthContext.Provider>
   );
 }
+

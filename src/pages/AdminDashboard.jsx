@@ -18,6 +18,7 @@ import MemberFormDrawer from '../components/admin/MemberFormDrawer';
 import MemberTable from '../components/admin/MemberTable';
 import TaskFormDrawer from '../components/admin/TaskFormDrawer';
 import TaskManagerTab from '../components/admin/TaskManagerTab';
+import { isAdmin } from '../utils/auth';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('team'); // 'team', 'tasks'
@@ -224,7 +225,7 @@ const AdminDashboard = () => {
   };
 
   const filteredMembers = members
-    .filter(m => m.systemRole !== 'admin' && m.role !== 'admin')
+    .filter(m => !isAdmin(m))
     .sort((a, b) => {
       const yearDiff = parseInt(b.year || 0) - parseInt(a.year || 0);
       if (yearDiff !== 0) return yearDiff;
@@ -258,25 +259,33 @@ const AdminDashboard = () => {
         </button>
       </div>
 
-      <div className="flex border-b border-gray-200/50 dark:border-white/10 mb-8 gap-8 overflow-x-auto">
+      <div role="tablist" aria-label="Admin Dashboard Sections" className="flex border-b border-gray-200/50 dark:border-white/10 mb-8 gap-8 overflow-x-auto">
         <button 
           type="button"
+          role="tab"
+          id="tab-team"
+          aria-controls="panel-team"
+          aria-selected={activeTab === 'team'}
           onClick={() => setActiveTab('team')}
-          className={`pb-4 font-display font-bold text-lg whitespace-nowrap transition-colors border-b-2 ${activeTab === 'team' ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400' : 'border-transparent text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}
+          className={`pb-4 font-display font-bold text-lg whitespace-nowrap transition-colors border-b-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded-t ${activeTab === 'team' ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400' : 'border-transparent text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}
         >
           Team Management
         </button>
         <button 
           type="button"
+          role="tab"
+          id="tab-tasks"
+          aria-controls="panel-tasks"
+          aria-selected={activeTab === 'tasks'}
           onClick={() => setActiveTab('tasks')}
-          className={`pb-4 font-display font-bold text-lg whitespace-nowrap transition-colors border-b-2 ${activeTab === 'tasks' ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400' : 'border-transparent text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}
+          className={`pb-4 font-display font-bold text-lg whitespace-nowrap transition-colors border-b-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded-t ${activeTab === 'tasks' ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400' : 'border-transparent text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}
         >
           Task Manager
         </button>
       </div>
 
       {activeTab === 'team' ? (
-        <div className={`flex flex-col lg:flex-row-reverse items-start transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${isAddingMember ? 'gap-8' : 'gap-0'}`}>
+        <div role="tabpanel" id="panel-team" aria-labelledby="tab-team" className={`flex flex-col lg:flex-row-reverse items-start transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${isAddingMember ? 'gap-8' : 'gap-0'}`}>
           <MemberFormDrawer 
             isAddingMember={isAddingMember}
             setIsAddingMember={setIsAddingMember}
@@ -304,7 +313,7 @@ const AdminDashboard = () => {
           />
         </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div role="tabpanel" id="panel-tasks" aria-labelledby="tab-tasks" className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <TaskFormDrawer 
             taskData={taskData}
             setTaskData={setTaskData}

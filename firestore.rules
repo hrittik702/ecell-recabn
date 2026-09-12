@@ -6,13 +6,33 @@ service cloud.firestore {
     function isAdmin() {
       return request.auth != null && 
              exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
-             (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' || 
-              get(/databases/$(database)/documents/users/$(request.auth.uid)).data.systemRole == 'admin');
+             (
+               ('systemRole' in get(/databases/$(database)/documents/users/$(request.auth.uid)).data &&
+                get(/databases/$(database)/documents/users/$(request.auth.uid)).data.systemRole.lower() == 'admin') ||
+               ('role' in get(/databases/$(database)/documents/users/$(request.auth.uid)).data &&
+                get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role.lower() == 'admin')
+             );
     }
 
     // Function to check if the user is modifying their own document
     function isOwner(userId) {
       return request.auth != null && request.auth.uid == userId;
+    }
+
+    // Validate that a member is only updating non-privileged, self-service profile fields
+    function isAllowedProfileUpdate() {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+        'name',
+        'year',
+        'profileImage',
+        'image',
+        'linkedin',
+        'instagram',
+        'portfolio',
+        'website',
+        'department',
+        'updatedAt'
+      ]);
     }
 
     match /users/{userId} {
@@ -22,8 +42,8 @@ service cloud.firestore {
       // Only an admin can create or delete team member documents
       allow create, delete: if isAdmin();
       
-      // A member can update their own document, or an admin can update any document
-      allow update: if isAdmin() || isOwner(userId);
+      // An admin can update any document; a member can only update their own non-privileged profile fields
+      allow update: if isAdmin() || (isOwner(userId) && isAllowedProfileUpdate());
     }
 
     match /tasks/{taskId} {
@@ -33,11 +53,16 @@ service cloud.firestore {
       // Only an admin can create or delete tasks
       allow create, delete: if isAdmin();
       
-      // An assigned member can update their task status, or an admin can update any task
+      // An admin can update any task; an assigned member can only update the task status and timestamp
       allow update: if request.auth != null && (
         isAdmin() || 
-        resource.data.assignedTo == request.auth.uid
+        (
+          resource.data.assignedTo == request.auth.uid &&
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'updatedAt']) &&
+          request.resource.data.status in ['pending', 'in-progress', 'completed']
+        )
       );
     }
   }
 }
+

@@ -70,10 +70,10 @@ const TeamCard = memo(({ member, isAlumni = false }) => {
                 target="_blank"
                 rel="noreferrer noopener"
                 aria-label={`Personal portfolio of ${member.name}`}
-                className="w-8 h-8 rounded-full bg-black/70 backdrop-blur-md text-zinc-300 hover:text-white hover:bg-white/20 border border-white/15 flex items-center justify-center transition-colors shadow-sm"
+                className="w-8 h-8 rounded-full bg-black/70 backdrop-blur-md text-zinc-300 hover:text-white hover:bg-white/20 border border-white/15 flex items-center justify-center transition-colors shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
                 title="Personal Portfolio"
               >
-                <Globe size={14} />
+                <Globe size={14} aria-hidden="true" />
               </a>
             )}
             {linkedinUrl && (
@@ -82,10 +82,10 @@ const TeamCard = memo(({ member, isAlumni = false }) => {
                 target="_blank"
                 rel="noreferrer noopener"
                 aria-label={`LinkedIn profile of ${member.name}`}
-                className="w-8 h-8 rounded-full bg-black/70 backdrop-blur-md text-zinc-300 hover:text-white hover:bg-white/20 border border-white/15 flex items-center justify-center transition-colors shadow-sm"
+                className="w-8 h-8 rounded-full bg-black/70 backdrop-blur-md text-zinc-300 hover:text-white hover:bg-white/20 border border-white/15 flex items-center justify-center transition-colors shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
                 title="LinkedIn Profile"
               >
-                <Linkedin size={14} />
+                <Linkedin size={14} aria-hidden="true" />
               </a>
             )}
             {instagramUrl && (
@@ -94,10 +94,10 @@ const TeamCard = memo(({ member, isAlumni = false }) => {
                 target="_blank"
                 rel="noreferrer noopener"
                 aria-label={`Instagram profile of ${member.name}`}
-                className="w-8 h-8 rounded-full bg-black/70 backdrop-blur-md text-zinc-300 hover:text-white hover:bg-white/20 border border-white/15 flex items-center justify-center transition-colors shadow-sm"
+                className="w-8 h-8 rounded-full bg-black/70 backdrop-blur-md text-zinc-300 hover:text-white hover:bg-white/20 border border-white/15 flex items-center justify-center transition-colors shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
                 title="Instagram Profile"
               >
-                <Instagram size={14} />
+                <Instagram size={14} aria-hidden="true" />
               </a>
             )}
           </div>

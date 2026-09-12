@@ -15,6 +15,18 @@ const MemberTable = ({
   handleDeleteMember,
   getOrdinalYear
 }) => {
+  // Dismiss dropdown on Escape key
+  React.useEffect(() => {
+    if (!activeDropdownId) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setActiveDropdownId(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [activeDropdownId, setActiveDropdownId]);
+
   return (
     <div className="flex-1 w-full space-y-8 overflow-hidden">
       {/* Current Members Table */}
@@ -62,11 +74,11 @@ const MemberTable = ({
             <table className="w-full text-left border-collapse min-w-[600px]">
               <thead>
                 <tr className="bg-gray-50/50 dark:bg-dark-surface/50 text-gray-500 dark:text-gray-400 text-sm border-b border-gray-200/50 dark:border-white/10">
-                  <th className="px-4 py-3 font-bold font-sans tracking-wide uppercase text-[11px]">Member</th>
-                  <th className="px-4 py-3 font-bold font-sans tracking-wide uppercase text-[11px]">Email</th>
-                  <th className="px-4 py-3 font-bold font-sans tracking-wide uppercase text-[11px]">Role</th>
-                  <th className="px-4 py-3 font-bold font-sans tracking-wide uppercase text-[11px]">Year</th>
-                  <th className="px-4 py-3 w-10"></th>
+                  <th scope="col" className="px-4 py-3 font-bold font-sans tracking-wide uppercase text-[11px]">Member</th>
+                  <th scope="col" className="px-4 py-3 font-bold font-sans tracking-wide uppercase text-[11px]">Email</th>
+                  <th scope="col" className="px-4 py-3 font-bold font-sans tracking-wide uppercase text-[11px]">Role</th>
+                  <th scope="col" className="px-4 py-3 font-bold font-sans tracking-wide uppercase text-[11px]">Year</th>
+                  <th scope="col" className="px-4 py-3 w-10"><span className="sr-only">Actions</span></th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -95,23 +107,27 @@ const MemberTable = ({
                       <button 
                         type="button"
                         onClick={() => setActiveDropdownId(activeDropdownId === member.id ? null : member.id)}
-                        className="p-1.5 text-gray-400 hover:text-indigo-500 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-colors"
+                        className="p-1.5 text-gray-400 hover:text-indigo-500 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+                        aria-label={`Actions for ${member.name}`}
+                        aria-haspopup="menu"
+                        aria-expanded={activeDropdownId === member.id}
                       >
-                        <MoreVertical size={18} />
+                        <MoreVertical size={18} aria-hidden="true" />
                       </button>
                       
                       {activeDropdownId === member.id && (
-                        <div ref={dropdownRef} className="absolute right-8 top-10 w-36 bg-white dark:bg-dark-surface rounded-xl shadow-premium dark:shadow-premium-dark border border-gray-100 dark:border-white/10 overflow-hidden z-50 py-1">
-                          <button type="button" onClick={() => handleEditClick(member)} className="w-full px-4 py-2 text-left text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-2">
-                            <Edit2 size={14} />
+                        <div ref={dropdownRef} role="menu" aria-label={`Actions for ${member.name}`} className="absolute right-8 top-10 w-36 bg-white dark:bg-dark-surface rounded-xl shadow-premium dark:shadow-premium-dark border border-gray-100 dark:border-white/10 overflow-hidden z-50 py-1">
+                          <button role="menuitem" type="button" onClick={() => handleEditClick(member)} className="w-full px-4 py-2 text-left text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500">
+                            <Edit2 size={14} aria-hidden="true" />
                             Edit Profile
                           </button>
                           <button 
+                            role="menuitem"
                             type="button"
                             onClick={() => handleDeleteMember(member.id, member.name)}
-                            className="w-full px-4 py-2 text-left text-xs font-bold text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-2"
+                            className="w-full px-4 py-2 text-left text-xs font-bold text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
                           >
-                            <Trash2 size={14} />
+                            <Trash2 size={14} aria-hidden="true" />
                             Delete
                           </button>
                         </div>
@@ -147,10 +163,10 @@ const MemberTable = ({
             <table className="w-full text-left border-collapse min-w-[600px]">
               <thead>
                 <tr className="bg-gray-50/50 dark:bg-dark-surface/50 text-gray-500 dark:text-gray-400 text-sm border-b border-gray-200/50 dark:border-white/10">
-                  <th className="px-4 py-3 font-bold font-sans tracking-wide uppercase text-[11px]">Member</th>
-                  <th className="px-4 py-3 font-bold font-sans tracking-wide uppercase text-[11px]">Email</th>
-                  <th className="px-4 py-3 font-bold font-sans tracking-wide uppercase text-[11px]">Role</th>
-                  <th className="px-4 py-3 w-10"></th>
+                  <th scope="col" className="px-4 py-3 font-bold font-sans tracking-wide uppercase text-[11px]">Member</th>
+                  <th scope="col" className="px-4 py-3 font-bold font-sans tracking-wide uppercase text-[11px]">Email</th>
+                  <th scope="col" className="px-4 py-3 font-bold font-sans tracking-wide uppercase text-[11px]">Role</th>
+                  <th scope="col" className="px-4 py-3 w-10"><span className="sr-only">Actions</span></th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -178,23 +194,27 @@ const MemberTable = ({
                       <button 
                         type="button"
                         onClick={() => setActiveDropdownId(activeDropdownId === member.id ? null : member.id)}
-                        className="p-1.5 text-gray-400 hover:text-purple-500 rounded-lg hover:bg-purple-50 dark:hover:bg-purple-500/10 transition-colors"
+                        className="p-1.5 text-gray-400 hover:text-purple-500 rounded-lg hover:bg-purple-50 dark:hover:bg-purple-500/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
+                        aria-label={`Actions for ${member.name}`}
+                        aria-haspopup="menu"
+                        aria-expanded={activeDropdownId === member.id}
                       >
-                        <MoreVertical size={18} />
+                        <MoreVertical size={18} aria-hidden="true" />
                       </button>
                       
                       {activeDropdownId === member.id && (
-                        <div ref={dropdownRef} className="absolute right-8 top-10 w-36 bg-white dark:bg-dark-surface rounded-xl shadow-premium dark:shadow-premium-dark border border-gray-100 dark:border-white/10 overflow-hidden z-50 py-1">
-                          <button type="button" onClick={() => handleEditClick(member)} className="w-full px-4 py-2 text-left text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-2">
-                            <Edit2 size={14} />
+                        <div ref={dropdownRef} role="menu" aria-label={`Actions for ${member.name}`} className="absolute right-8 top-10 w-36 bg-white dark:bg-dark-surface rounded-xl shadow-premium dark:shadow-premium-dark border border-gray-100 dark:border-white/10 overflow-hidden z-50 py-1">
+                          <button role="menuitem" type="button" onClick={() => handleEditClick(member)} className="w-full px-4 py-2 text-left text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500">
+                            <Edit2 size={14} aria-hidden="true" />
                             Edit Profile
                           </button>
                           <button 
+                            role="menuitem"
                             type="button"
                             onClick={() => handleDeleteMember(member.id, member.name)}
-                            className="w-full px-4 py-2 text-left text-xs font-bold text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-2"
+                            className="w-full px-4 py-2 text-left text-xs font-bold text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
                           >
-                            <Trash2 size={14} />
+                            <Trash2 size={14} aria-hidden="true" />
                             Delete
                           </button>
                         </div>
@@ -230,11 +250,11 @@ const MemberTable = ({
             <table className="w-full text-left border-collapse min-w-[600px]">
               <thead>
                 <tr className="bg-gray-50/50 dark:bg-dark-surface/50 text-gray-500 dark:text-gray-400 text-sm border-b border-gray-200/50 dark:border-white/10">
-                  <th className="px-4 py-3 font-bold font-sans tracking-wide uppercase text-[11px]">Member</th>
-                  <th className="px-4 py-3 font-bold font-sans tracking-wide uppercase text-[11px]">Email</th>
-                  <th className="px-4 py-3 font-bold font-sans tracking-wide uppercase text-[11px]">Role</th>
-                  <th className="px-4 py-3 font-bold font-sans tracking-wide uppercase text-[11px]">Year</th>
-                  <th className="px-4 py-3 w-10"></th>
+                  <th scope="col" className="px-4 py-3 font-bold font-sans tracking-wide uppercase text-[11px]">Member</th>
+                  <th scope="col" className="px-4 py-3 font-bold font-sans tracking-wide uppercase text-[11px]">Email</th>
+                  <th scope="col" className="px-4 py-3 font-bold font-sans tracking-wide uppercase text-[11px]">Role</th>
+                  <th scope="col" className="px-4 py-3 font-bold font-sans tracking-wide uppercase text-[11px]">Year</th>
+                  <th scope="col" className="px-4 py-3 w-10"><span className="sr-only">Actions</span></th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -263,23 +283,27 @@ const MemberTable = ({
                       <button 
                         type="button"
                         onClick={() => setActiveDropdownId(activeDropdownId === member.id ? null : member.id)}
-                        className="p-1.5 text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                        className="p-1.5 text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-500"
+                        aria-label={`Actions for ${member.name}`}
+                        aria-haspopup="menu"
+                        aria-expanded={activeDropdownId === member.id}
                       >
-                        <MoreVertical size={18} />
+                        <MoreVertical size={18} aria-hidden="true" />
                       </button>
                       
                       {activeDropdownId === member.id && (
-                        <div ref={dropdownRef} className="absolute right-8 top-10 w-36 bg-white dark:bg-dark-surface rounded-xl shadow-premium dark:shadow-premium-dark border border-gray-100 dark:border-white/10 overflow-hidden z-50 py-1">
-                          <button type="button" onClick={() => handleEditClick(member)} className="w-full px-4 py-2 text-left text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-2">
-                            <Edit2 size={14} />
+                        <div ref={dropdownRef} role="menu" aria-label={`Actions for ${member.name}`} className="absolute right-8 top-10 w-36 bg-white dark:bg-dark-surface rounded-xl shadow-premium dark:shadow-premium-dark border border-gray-100 dark:border-white/10 overflow-hidden z-50 py-1">
+                          <button role="menuitem" type="button" onClick={() => handleEditClick(member)} className="w-full px-4 py-2 text-left text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-500">
+                            <Edit2 size={14} aria-hidden="true" />
                             Edit Profile
                           </button>
                           <button 
+                            role="menuitem"
                             type="button"
                             onClick={() => handleDeleteMember(member.id, member.name)}
-                            className="w-full px-4 py-2 text-left text-xs font-bold text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-2"
+                            className="w-full px-4 py-2 text-left text-xs font-bold text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
                           >
-                            <Trash2 size={14} />
+                            <Trash2 size={14} aria-hidden="true" />
                             Delete
                           </button>
                         </div>

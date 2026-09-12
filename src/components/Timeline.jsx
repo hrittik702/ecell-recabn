@@ -35,8 +35,18 @@ const TimelineNode = memo(({ item, index, status, isSelected, onClick }) => {
 
   return (
     <div
+      role="button"
+      tabIndex={0}
+      aria-label={`Select stage ${item.title}`}
+      aria-pressed={isSelected}
       onClick={() => onClick(index)}
-      className={`relative cursor-pointer transition-all duration-300 group rounded-xl p-4 md:p-5 flex items-center justify-between border-t border-l border-r md:[transform-style:preserve-3d] shadow-sm hover:shadow-xl hover:scale-[1.02] hover:-translate-y-1 dark:shadow-premium-dark dark:hover:shadow-premium-dark-hover ${
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onClick(index);
+        }
+      }}
+      className={`relative cursor-pointer transition-all duration-300 group rounded-xl p-4 md:p-5 flex items-center justify-between border-t border-l border-r md:[transform-style:preserve-3d] shadow-sm hover:shadow-xl hover:scale-[1.02] hover:-translate-y-1 dark:shadow-premium-dark dark:hover:shadow-premium-dark-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 ${
         isSelected
           ? 'bg-white/60 backdrop-blur-3xl border-2 border-indigo-600 text-gray-900 shadow-md z-30 dark:bg-dark-card dark:text-white'
           : isCurrent

@@ -8,6 +8,7 @@ import {
   ecellMembers as defaultEcellMembers,
   alumniTeam as defaultAlumniTeam
 } from '../data/constants';
+import { isAdmin } from '../utils/auth';
 
 const sortByYearAndRank = (list) => {
   return [...list].sort((a, b) => {
@@ -36,11 +37,7 @@ const Team = () => {
         const alumni = [];
 
         remoteMembers
-          .filter(m => {
-            const role = (m.role || '').toLowerCase();
-            const sysRole = (m.systemRole || '').toLowerCase();
-            return role !== 'admin' && sysRole !== 'admin';
-          })
+          .filter(m => !isAdmin(m))
           .forEach(m => {
             const name = (m.name || '').toLowerCase();
             const formatted = {

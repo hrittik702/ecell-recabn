@@ -66,10 +66,11 @@ const TaskManagerTab = ({
                   <button 
                     type="button"
                     onClick={() => handleDeleteTask(task.id)}
-                    className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors shrink-0"
+                    className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
+                    aria-label={`Delete task ${task.title}`}
                     title="Delete Task"
                   >
-                    <Trash2 size={18} />
+                    <Trash2 size={18} aria-hidden="true" />
                   </button>
                 </div>
               );

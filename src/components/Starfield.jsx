@@ -199,6 +199,7 @@ const Starfield = () => {
   return (
     <canvas
       ref={canvasRef}
+      aria-hidden="true"
       className="fixed inset-0 z-0 pointer-events-none will-change-transform"
       style={{ background: '#0a0a0a' }}
     />
